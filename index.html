@@ -82,12 +82,12 @@
         <div class="glass-card p-4 sm:p-5 rounded-2xl relative overflow-hidden group hover:border-amber-500/40 transition-all">
           <p class="text-[11px] sm:text-xs font-medium text-slate-400">Anak Terdaftar</p>
           <p class="text-xl sm:text-3xl font-black text-white mt-1" id="statTotalAnak">0</p>
-          <p class="text-[10px] sm:text-[11px] text-slate-400 mt-0.5 font-medium">Siswa aktif bimbingan</p>
+          <p class="text-[10px] sm:text-[11px] text-slate-400 mt-0.5 font-medium">Siswa unik aktif</p>
         </div>
         <div class="glass-card p-4 sm:p-5 rounded-2xl relative overflow-hidden group hover:border-amber-500/40 transition-all">
-          <p class="text-[11px] sm:text-xs font-medium text-slate-400">Total Kuota</p>
-          <p class="text-xl sm:text-3xl font-black text-white mt-1" id="statTotalAlokasi">0 sesi</p>
-          <p class="text-[10px] sm:text-[11px] text-slate-400 mt-0.5 font-medium">Alokasi seluruh paket</p>
+          <p class="text-[11px] sm:text-xs font-medium text-slate-400">Total Paket Berjalan</p>
+          <p class="text-xl sm:text-3xl font-black text-white mt-1" id="statTotalAlokasi">0 kegiatan</p>
+          <p class="text-[10px] sm:text-[11px] text-slate-400 mt-0.5 font-medium">Per kegiatan/paket aktif</p>
         </div>
         <div class="glass-card p-4 sm:p-5 rounded-2xl relative overflow-hidden group hover:border-emerald-500/40 transition-all">
           <p class="text-[11px] sm:text-xs font-medium text-slate-400">Sisa Deposit</p>
@@ -808,8 +808,11 @@
     }
 
     function renderRingkasan() {
-      let totalAnak = window.dataSiswa.length;
-      let totalAlokasi = 0;
+      // Menghitung jumlah anak unik (nama yang sama dihitung 1 anak)
+      const uniqueNames = new Set(window.dataSiswa.map(s => (s.anak || '').trim().toLowerCase()));
+      let totalAnakUnik = uniqueNames.size;
+      
+      let totalPaketBerjalan = window.dataSiswa.length; // Total kegiatan/paket yang aktif
       let totalTerisi = 0;
       let perluPerhatian = 0;
 
@@ -820,7 +823,6 @@
       window.dataSiswa.forEach(s => {
         const terisi = s.terisi || 0;
         const sisa = s.paket - terisi;
-        totalAlokasi += s.paket;
         totalTerisi += terisi;
 
         if (sisa <= 1) perluPerhatian++;
@@ -836,9 +838,9 @@
         `;
       });
 
-      document.getElementById('statTotalAnak').innerText = totalAnak;
-      document.getElementById('statTotalAlokasi').innerText = totalAlokasi + ' sesi';
-      document.getElementById('statTotalSisa').innerText = (totalAlokasi - totalTerisi) + ' sesi';
+      document.getElementById('statTotalAnak').innerText = totalAnakUnik;
+      document.getElementById('statTotalAlokasi').innerText = totalPaketBerjalan + ' kegiatan';
+      document.getElementById('statTotalSisa').innerText = (window.dataSiswa.reduce((acc, curr) => acc + curr.paket, 0) - totalTerisi) + ' sesi';
       document.getElementById('statPerluPerhatian').innerText = perluPerhatian;
     }
 
