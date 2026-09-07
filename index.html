@@ -303,16 +303,24 @@
         </div>
         <div>
           <label class="block text-slate-300 font-medium mb-1">Kegiatan / Mapel</label>
-          <select id="newKegiatanAnak" class="w-full bg-[#0f172a] border border-slate-700 rounded-xl p-2.5 sm:p-3 text-white outline-none focus:border-amber-400 transition-all">
+          <select id="newKegiatanAnak" onchange="toggleManualFeeOpsi()" class="w-full bg-[#0f172a] border border-slate-700 rounded-xl p-2.5 sm:p-3 text-white outline-none focus:border-amber-400 transition-all">
             <option value="Calistung">Calistung</option>
             <option value="Sensori">Sensori</option>
             <option value="Mengaji">Mengaji</option>
             <option value="English Phonic">English Phonic</option>
             <option value="English">English / Mapel English</option>
-            <option value="Mapel SD">Mapel SD</option>
-            <option value="Mapel SMP">Mapel SMP</option>
+            <option value="Mapel SD - Umum">Mapel SD (Pelajaran Umum)</option>
+            <option value="Mapel SD - English">Mapel SD (Khusus English)</option>
+            <option value="Mapel SMP - Umum">Mapel SMP (Pelajaran Umum)</option>
+            <option value="Mapel SMP - English">Mapel SMP (Khusus English)</option>
             <option value="Mapel SMA">Mapel SMA</option>
           </select>
+        </div>
+        <!-- Input Fee Manual Khusus SD & SMP -->
+        <div id="containerManualFee" class="hidden bg-[#0f172a] p-3 rounded-xl border border-amber-500/30 space-y-2">
+          <label class="block text-amber-300 font-bold mb-0.5">Input Nominal Fee Guru per Sesi (SD/SMP):</label>
+          <p class="text-[10px] text-slate-400 mb-1">Masukkan nominal angka saja tanpa titik/rupiah (Contoh: 70000)</p>
+          <input type="number" id="inputManualFeeValue" placeholder="Contoh: 75000" class="w-full bg-[#1e293b] border border-slate-700 rounded-xl p-2.5 text-white outline-none focus:border-amber-400 transition-all">
         </div>
         <div>
           <label class="block text-slate-300 font-medium mb-1">Guru Pengajar</label>
@@ -369,6 +377,7 @@
             <label class="flex items-center space-x-2.5 text-slate-300 hover:text-white cursor-pointer"><input type="checkbox" name="mapelGuruOption" value="Mengaji" class="rounded bg-slate-800 border-slate-600 text-amber-400 w-4 h-4"><span>Mengaji</span></label>
             <label class="flex items-center space-x-2.5 text-slate-300 hover:text-white cursor-pointer"><input type="checkbox" name="mapelGuruOption" value="English Phonic" class="rounded bg-slate-800 border-slate-600 text-amber-400 w-4 h-4"><span>English Phonic</span></label>
             <label class="flex items-center space-x-2.5 text-slate-300 hover:text-white cursor-pointer"><input type="checkbox" name="mapelGuruOption" value="Mapel SD" class="rounded bg-slate-800 border-slate-600 text-amber-400 w-4 h-4"><span>Mapel SD</span></label>
+            <label class="flex items-center space-x-2.5 text-slate-300 hover:text-white cursor-pointer"><input type="checkbox" name="mapelGuruOption" value="Mapel SMP" class="rounded bg-slate-800 border-slate-600 text-amber-400 w-4 h-4"><span>Mapel SMP</span></label>
           </div>
         </div>
       </div>
@@ -407,6 +416,7 @@
             <label class="flex items-center space-x-2.5 text-slate-300 hover:text-white cursor-pointer"><input type="checkbox" name="editMapelGuruOption" value="Mengaji" class="rounded bg-slate-800 border-slate-600 text-amber-400 w-4 h-4"><span>Mengaji</span></label>
             <label class="flex items-center space-x-2.5 text-slate-300 hover:text-white cursor-pointer"><input type="checkbox" name="editMapelGuruOption" value="English Phonic" class="rounded bg-slate-800 border-slate-600 text-amber-400 w-4 h-4"><span>English Phonic</span></label>
             <label class="flex items-center space-x-2.5 text-slate-300 hover:text-white cursor-pointer"><input type="checkbox" name="editMapelGuruOption" value="Mapel SD" class="rounded bg-slate-800 border-slate-600 text-amber-400 w-4 h-4"><span>Mapel SD</span></label>
+            <label class="flex items-center space-x-2.5 text-slate-300 hover:text-white cursor-pointer"><input type="checkbox" name="editMapelGuruOption" value="Mapel SMP" class="rounded bg-slate-800 border-slate-600 text-amber-400 w-4 h-4"><span>Mapel SMP</span></label>
           </div>
         </div>
       </div>
@@ -484,6 +494,7 @@
     function bukaModalTambahAnakDirect() {
       document.getElementById('modalAnak').classList.remove('hidden'); 
       toggleWilayahOpsi();
+      toggleManualFeeOpsi();
     }
 
     function verifikasiPin() {
@@ -514,6 +525,16 @@
         c.classList.remove('hidden');
       } else {
         c.classList.add('hidden');
+      }
+    }
+
+    function toggleManualFeeOpsi() {
+      const kegiatan = document.getElementById('newKegiatanAnak').value;
+      const containerFee = document.getElementById('containerManualFee');
+      if (kegiatan.includes('Mapel SD') || kegiatan.includes('Mapel SMP')) {
+        containerFee.classList.remove('hidden');
+      } else {
+        containerFee.classList.add('hidden');
       }
     }
 
@@ -582,28 +603,35 @@
       const kegiatan = s.kegiatan || 'Calistung';
       const jarak = s.jarak || 'kurang_7';
 
-      if (tipe === 'lama') {
-        if (kegiatan === 'English Phonic') {
-          fee = (wilayah === 'Bandung') ? 75000 : 55000;
-        } else if (kegiatan.includes('English')) {
-          fee = (wilayah === 'Bandung') ? 60000 : 50000;
+      // Jika Mapel SD / SMP, ambil nilai fee manual yang sudah diinput
+      if (kegiatan.includes('Mapel SD') || kegiatan.includes('Mapel SMP')) {
+        fee = Number(s.manualFee) || 0;
+      } else {
+        if (tipe === 'lama') {
+          if (kegiatan === 'English Phonic') {
+            fee = (wilayah === 'Bandung') ? 75000 : 55000;
+          } else if (kegiatan.includes('English')) {
+            fee = (wilayah === 'Bandung') ? 60000 : 50000;
+          } else {
+            fee = (wilayah === 'Bandung') ? 50000 : 40000;
+          }
         } else {
-          fee = (wilayah === 'Bandung') ? 50000 : 40000;
+          if (kegiatan === 'English Phonic' || kegiatan.includes('English')) {
+            fee = 80000;
+          } else {
+            fee = 60000;
+          }
         }
+      }
 
+      // Hitung Transport berdasarkan jarak
+      if (tipe === 'lama') {
         if (jarak === '7_10' || jarak === 'lebih_10') {
           transport = 15000;
         } else {
           transport = 0;
         }
-
       } else {
-        if (kegiatan === 'English Phonic' || kegiatan.includes('English')) {
-          fee = 80000;
-        } else {
-          fee = 60000;
-        }
-
         if (jarak === '7_10') {
           transport = 15000;
         } else if (jarak === 'lebih_10') {
@@ -1115,6 +1143,7 @@
       const guru = document.getElementById('newGuruAnak').value;
       const jarak = document.getElementById('newJarak').value;
       const paket = parseInt(document.getElementById('newPaketAnak').value) || 4;
+      const manualFee = parseFloat(document.getElementById('inputManualFeeValue').value) || 0;
       const fileInput = document.getElementById('fileAnakInput');
 
       if (!anak) {
@@ -1135,6 +1164,7 @@
         guru,
         jarak,
         paket,
+        manualFee,
         terisi: 0,
         fileUrl: uploadedFile ? uploadedFile.url : null,
         filePath: uploadedFile ? uploadedFile.path : null,
@@ -1159,6 +1189,7 @@
         }
 
         document.getElementById('newNamaAnak').value = '';
+        document.getElementById('inputManualFeeValue').value = '';
         fileInput.value = '';
         tutupModalAnak();
       } catch (err) {
