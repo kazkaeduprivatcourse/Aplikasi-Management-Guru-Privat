@@ -1,144 +1,183 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Management Guru Privat Kazka Edu</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#fffbeb',
+              100: '#fef3c7',
+              500: '#f59e0b',
+              600: '#d97706',
+              700: '#b45309',
+            }
+          }
+        }
+      }
+    }
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
-    .tab-active { 
-      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-      color: #ffffff !important;
-      font-weight: 700;
-      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
-    }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    .glass-card {
-      background: rgba(255, 255, 255, 0.03);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
   </style>
 </head>
-<body class="bg-[#0f172a] text-slate-100 min-h-screen pb-16 selection:bg-amber-400 selection:text-slate-900">
+<body class="bg-slate-100 dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 min-h-screen selection:bg-amber-400 selection:text-slate-900 flex flex-col md:flex-row transition-colors duration-300">
 
-  <!-- Header Modern dengan Logo Gambar Kazka Edu (Tanpa Frame) -->
-  <header class="bg-[#1e293b]/95 backdrop-blur-md border-b border-slate-800/80 sticky top-0 z-30 px-3 sm:px-8 py-3 shadow-lg">
-    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2.5">
-      <div class="flex items-center space-x-3 w-full justify-between sm:justify-start">
+  <!-- SIDEBAR NAVIGATION -->
+  <aside class="w-full md:w-64 bg-white dark:bg-[#1e293b]/95 border-r border-slate-200 dark:border-slate-800 flex flex-col justify-between p-4 md:p-6 sticky top-0 md:h-screen z-45 shadow-lg">
+    <div class="space-y-6">
+      <!-- Logo Brand -->
+      <div class="flex items-center justify-between md:justify-start space-x-3">
         <div class="flex items-center space-x-2.5">
-          <!-- Logo Gambar Kazka Edu Tanpa Frame/Border -->
           <div class="flex items-center justify-center flex-shrink-0">
-            <img src="https://asuxuopnlouervbyvcfg.supabase.co/storage/v1/object/public/kazkaedu/logo.png.PNG" alt="Logo Kazka Edu" id="headerLogoImg" class="w-9 h-9 sm:w-10 sm:h-10 object-contain">
+            <img src="https://asuxuopnlouervbyvcfg.supabase.co/storage/v1/object/public/kazkaedu/logo.png.PNG" alt="Logo Kazka Edu" class="w-9 h-9 object-contain">
           </div>
           <div>
-            <span class="font-extrabold text-sm sm:text-lg text-white tracking-tight block leading-tight">Kazka Edu</span>
-            <span class="text-[9px] sm:text-[10px] text-amber-400 font-semibold tracking-wide uppercase">Management Guru Privat</span>
+            <span class="font-extrabold text-base text-slate-900 dark:text-white tracking-tight block leading-tight">Kazka Edu</span>
+            <span class="text-[10px] text-amber-500 font-semibold tracking-wide uppercase">Management Privat</span>
           </div>
         </div>
-        <span class="inline-flex items-center gap-1.5 text-[10px] sm:text-[11px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-1 rounded-full font-medium">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Live Sync
+        <!-- Mobile Menu Toggle Button / Indicator -->
+        <span class="inline-flex items-center md:hidden gap-1 text-[10px] bg-emerald-500/10 text-emerald-500 px-2 py-0.5 rounded-full font-medium">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Live
         </span>
       </div>
 
-      <!-- Navigasi Tab Lebih Nyaman di HP (Scrollable & Touch-friendly) -->
-      <nav class="flex space-x-1 text-xs sm:text-sm text-slate-300 overflow-x-auto no-scrollbar w-full py-1 px-0.5">
-        <button onclick="pindahTab('ringkasan')" id="tab-ringkasan" class="px-3 py-2 rounded-xl transition-all whitespace-nowrap tab-active flex-shrink-0">Ringkasan</button>
-        <button onclick="pindahTab('anak', true)" id="tab-anak" class="px-3 py-2 rounded-xl transition-all whitespace-nowrap hover:bg-slate-800/60 hover:text-white flex-shrink-0">🔒 Data Anak</button>
-        <button onclick="pindahTab('guru')" id="tab-guru" class="px-3 py-2 rounded-xl transition-all whitespace-nowrap hover:bg-slate-800/60 hover:text-white flex-shrink-0">Guru</button>
-        <button onclick="pindahTab('pertemuan')" id="tab-pertemuan" class="px-3 py-2 rounded-xl transition-all whitespace-nowrap hover:bg-slate-800/60 hover:text-white flex-shrink-0">Pertemuan</button>
-        <button onclick="pindahTab('dokumen', true)" id="tab-dokumen" class="px-3 py-2 rounded-xl transition-all whitespace-nowrap hover:bg-slate-800/60 hover:text-white text-sky-400 font-medium flex-shrink-0">🔒 Arsip</button>
-        <button onclick="pindahTab('rekap', true)" id="tab-rekap" class="px-3 py-2 rounded-xl transition-all whitespace-nowrap hover:bg-slate-800/60 hover:text-white text-amber-400 font-medium flex-shrink-0">🔒 Fee</button>
+      <!-- Menu Links -->
+      <nav class="space-y-1.5 text-sm font-medium">
+        <button onclick="pindahTab('ringkasan')" id="tab-ringkasan" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all text-left tab-active bg-amber-500 text-white font-bold shadow-lg shadow-amber-500/20">
+          Ringkasan
+        </button>
+        <button onclick="pindahTab('anak', true)" id="tab-anak" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all text-left text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white">
+          <span>🔒</span> Data Anak
+        </button>
+        <button onclick="pindahTab('guru')" id="tab-guru" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all text-left text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white">
+          Guru
+        </button>
+        <button onclick="pindahTab('pertemuan')" id="tab-pertemuan" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all text-left text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white">
+          Pertemuan
+        </button>
+        <button onclick="pindahTab('dokumen', true)" id="tab-dokumen" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all text-left text-sky-600 dark:text-sky-400 hover:bg-slate-100 dark:hover:bg-slate-800/60">
+          <span>🔒</span> Arsip Dokumen
+        </button>
+        <button onclick="pindahTab('rekap', true)" id="tab-rekap" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all text-left text-amber-600 dark:text-amber-400 hover:bg-slate-100 dark:hover:bg-slate-800/60">
+          <span>🔒</span> Rekap Fee
+        </button>
       </nav>
     </div>
-  </header>
 
-  <main class="max-w-7xl mx-auto p-3 sm:p-8 space-y-5 sm:space-y-8">
+    <!-- Sidebar Footer / Card Bantuan (Dihapus) -->
+  </aside>
 
-    <!-- PAGE: RINGKASAN -->
-    <div id="page-ringkasan" class="space-y-5">
-      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3.5 bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent p-4 sm:p-6 rounded-2xl border border-amber-500/20">
-        <div>
-          <span class="inline-block px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider mb-1">Dashboard Utama</span>
-          <h1 class="text-xl sm:text-3xl font-extrabold text-white tracking-tight">Ringkasan Operasional</h1>
+  <!-- MAIN CONTENT AREA -->
+  <div class="flex-1 flex flex-col min-w-0">
+    <!-- Top Bar dengan Tombol Tema & Info -->
+    <header class="bg-white/80 dark:bg-[#1e293b]/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 sm:px-8 py-3.5 sticky top-0 z-30 flex justify-between items-center shadow-sm">
+      <div class="flex items-center gap-3">
+        <h2 id="currentTopTitle" class="font-extrabold text-base sm:text-lg text-slate-900 dark:text-white">Ringkasan Operasional</h2>
+      </div>
+      <div class="flex items-center gap-3">
+        <!-- Theme Toggle Switch -->
+        <button onclick="toggleTheme()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-amber-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all text-sm flex items-center gap-1.5 font-medium" title="Ganti Tema">
+          <span id="themeIcon">🌙</span> <span class="hidden sm:inline text-xs" id="themeText">Dark Mode</span>
+        </button>
+        <span class="hidden sm:inline-flex items-center gap-1.5 text-xs bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 px-3 py-1 rounded-full font-medium">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Live Sync
+        </span>
+      </div>
+    </header>
+
+    <main class="p-4 sm:p-8 space-y-6 flex-1">
+
+      <!-- PAGE: RINGKASAN -->
+      <div id="page-ringkasan" class="space-y-6">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent p-5 sm:p-6 rounded-2xl border border-amber-500/20">
+          <div>
+            <span class="inline-block px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-300 text-[11px] font-bold uppercase tracking-wider mb-1">Dashboard Utama</span>
+            <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">Ringkasan Operasional</h1>
+          </div>
+          <div class="flex items-center gap-2.5">
+            <button onclick="pindahTab('pertemuan')" class="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-lg shadow-amber-500/20 transition-all flex items-center gap-1.5">
+              Catat Sesi
+            </button>
+            <button onclick="bukaModalTambahAnak()" class="bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-white font-semibold text-xs px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 transition-all flex items-center gap-1.5">
+              <span>🔒</span> + Anak
+            </button>
+          </div>
         </div>
-        <div class="flex items-center gap-2 w-full sm:w-auto">
-          <button onclick="pindahTab('pertemuan')" class="flex-1 sm:flex-none bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs px-3.5 py-2.5 rounded-xl shadow-lg shadow-amber-400/20 transition-all flex items-center justify-center gap-1.5">
-            <span>📝</span> Catat Sesi
-          </button>
-          <button onclick="bukaModalTambahAnak()" class="flex-1 sm:flex-none bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs px-3.5 py-2.5 rounded-xl border border-slate-700 transition-all flex items-center justify-center gap-1.5">
-            <span>🔒</span> + Anak
-          </button>
+
+        <!-- Grid Statistik -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-white dark:bg-[#1e293b] p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:border-amber-500/40 transition-all">
+            <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Anak Terdaftar</p>
+            <p class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mt-1" id="statTotalAnak">0</p>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 font-medium">Siswa unik aktif</p>
+          </div>
+          <div class="bg-white dark:bg-[#1e293b] p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:border-amber-500/40 transition-all">
+            <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Total Paket Berjalan</p>
+            <p class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mt-1" id="statTotalAlokasi">0 kegiatan</p>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 font-medium">Per kegiatan/paket aktif</p>
+          </div>
+          <div class="bg-white dark:bg-[#1e293b] p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:border-emerald-500/40 transition-all">
+            <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Sisa Deposit</p>
+            <p class="text-2xl sm:text-3xl font-black text-emerald-600 dark:text-emerald-400 mt-1" id="statTotalSisa">0 sesi</p>
+            <p class="text-[11px] text-emerald-600 dark:text-emerald-500/80 mt-0.5 font-medium">Sesi siap digunakan</p>
+          </div>
+          <div class="bg-white dark:bg-[#1e293b] p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:border-amber-500/40 transition-all">
+            <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Perlu Perhatian</p>
+            <p class="text-2xl sm:text-3xl font-black text-amber-500 dark:text-amber-400 mt-1" id="statPerluPerhatian">0</p>
+            <p class="text-[11px] text-amber-600 dark:text-amber-500/80 mt-0.5 font-medium">Sisa &le; 1 sesi / habis</p>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-[#1e293b] rounded-2xl p-5 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-amber-500"></span> Status Deposit Anak
+            </h2>
+            <button onclick="pindahTab('anak', true)" class="text-xs text-amber-600 dark:text-amber-400 font-bold hover:underline">Kelola &rarr;</button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs sm:text-sm text-left whitespace-nowrap">
+              <thead class="text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800 text-[11px] uppercase tracking-wider">
+                <tr>
+                  <th class="pb-3 font-semibold">Anak</th>
+                  <th class="pb-3 font-semibold">Guru Pengajar</th>
+                  <th class="pb-3 font-semibold">Kegiatan</th>
+                  <th class="pb-3 font-semibold">Sisa Sesi</th>
+                  <th class="pb-3 font-semibold">Status</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800/60" id="ringkasanTable"></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
-      <!-- Grid Statistik -->
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <div class="glass-card p-4 sm:p-5 rounded-2xl relative overflow-hidden group hover:border-amber-500/40 transition-all">
-          <p class="text-[11px] sm:text-xs font-medium text-slate-400">Anak Terdaftar</p>
-          <p class="text-xl sm:text-3xl font-black text-white mt-1" id="statTotalAnak">0</p>
-          <p class="text-[10px] sm:text-[11px] text-slate-400 mt-0.5 font-medium">Siswa unik aktif</p>
+      <!-- PAGE: DATA ANAK -->
+      <div id="page-anak" class="space-y-6 hidden">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 bg-white dark:bg-[#1e293b] p-5 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+          <div>
+            <span class="text-xs text-amber-600 dark:text-amber-400 font-bold uppercase tracking-wider">Database Siswa</span>
+            <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white mt-0.5">Pengaturan Skema & Deposit</h1>
+          </div>
+          <button onclick="bukaModalTambahAnakDirect()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-lg shadow-amber-500/20 transition-all">+ Tambah Anak</button>
         </div>
-        <div class="glass-card p-4 sm:p-5 rounded-2xl relative overflow-hidden group hover:border-amber-500/40 transition-all">
-          <p class="text-[11px] sm:text-xs font-medium text-slate-400">Total Paket Berjalan</p>
-          <p class="text-xl sm:text-3xl font-black text-white mt-1" id="statTotalAlokasi">0 kegiatan</p>
-          <p class="text-[10px] sm:text-[11px] text-slate-400 mt-0.5 font-medium">Per kegiatan/paket aktif</p>
-        </div>
-        <div class="glass-card p-4 sm:p-5 rounded-2xl relative overflow-hidden group hover:border-emerald-500/40 transition-all">
-          <p class="text-[11px] sm:text-xs font-medium text-slate-400">Sisa Deposit</p>
-          <p class="text-xl sm:text-3xl font-black text-emerald-400 mt-1" id="statTotalSisa">0 sesi</p>
-          <p class="text-[10px] sm:text-[11px] text-emerald-500/80 mt-0.5 font-medium">Sesi siap digunakan</p>
-        </div>
-        <div class="glass-card p-4 sm:p-5 rounded-2xl relative overflow-hidden group hover:border-amber-500/40 transition-all">
-          <p class="text-[11px] sm:text-xs font-medium text-slate-400">Perlu Perhatian</p>
-          <p class="text-xl sm:text-3xl font-black text-amber-400 mt-1" id="statPerluPerhatian">0</p>
-          <p class="text-[10px] sm:text-[11px] text-amber-500/80 mt-0.5 font-medium">Sisa &le; 1 sesi / habis</p>
-        </div>
-      </div>
 
-      <div class="glass-card rounded-2xl p-4 sm:p-6 shadow-xl">
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="font-bold text-white text-sm sm:text-lg flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-amber-400"></span> Status Deposit Anak
-          </h2>
-          <button onclick="pindahTab('anak', true)" class="text-xs text-amber-400 font-bold hover:underline flex items-center gap-1">Kelola &rarr;</button>
-        </div>
-        <div class="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+        <div class="bg-white dark:bg-[#1e293b] rounded-2xl p-5 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm overflow-x-auto">
           <table class="w-full text-xs sm:text-sm text-left whitespace-nowrap">
-            <thead class="text-slate-400 border-b border-slate-800 text-[11px] uppercase tracking-wider">
-              <tr>
-                <th class="pb-3 font-semibold">Anak</th>
-                <th class="pb-3 font-semibold">Guru Pengajar</th>
-                <th class="pb-3 font-semibold">Kegiatan</th>
-                <th class="pb-3 font-semibold">Sisa Sesi</th>
-                <th class="pb-3 font-semibold">Status</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-800/60" id="ringkasanTable"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- PAGE: DATA ANAK -->
-    <div id="page-anak" class="space-y-5 hidden">
-      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3.5 bg-[#1e293b] p-4 sm:p-6 rounded-2xl border border-slate-800">
-        <div>
-          <span class="text-[10px] sm:text-xs text-amber-400 font-bold uppercase tracking-wider">Database Siswa</span>
-          <h1 class="text-xl sm:text-3xl font-extrabold text-white mt-0.5">Pengaturan Skema & Deposit</h1>
-        </div>
-        <button onclick="bukaModalTambahAnakDirect()" class="bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs px-4 py-2.5 rounded-xl shadow-lg shadow-amber-400/20 transition-all">+ Tambah Anak</button>
-      </div>
-
-      <div class="glass-card rounded-2xl p-4 sm:p-6 overflow-x-auto shadow-xl">
-        <div class="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
-          <table class="w-full text-xs sm:text-sm text-left whitespace-nowrap">
-            <thead class="text-slate-400 border-b border-slate-800 text-[11px] uppercase tracking-wider">
+            <thead class="text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800 text-[11px] uppercase tracking-wider">
               <tr>
                 <th class="pb-3.5 font-semibold">Nama Anak</th>
                 <th class="pb-3.5 font-semibold">Tipe / Wilayah</th>
@@ -151,62 +190,60 @@
                 <th class="pb-3.5 font-semibold text-center">Aksi & Perpanjangan</th>
               </tr>
             </thead>
-            <tbody id="tabelAnakBody" class="divide-y divide-slate-800/60"></tbody>
+            <tbody id="tabelAnakBody" class="divide-y divide-slate-200 dark:divide-slate-800/60"></tbody>
           </table>
         </div>
       </div>
-    </div>
 
-    <!-- PAGE: GURU -->
-    <div id="page-guru" class="space-y-5 hidden">
-      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3.5 bg-[#1e293b] p-4 sm:p-6 rounded-2xl border border-slate-800">
-        <div>
-          <span class="text-[10px] sm:text-xs text-amber-400 font-bold uppercase tracking-wider">Pengajar Aktif</span>
-          <h1 class="text-xl sm:text-3xl font-extrabold text-white mt-0.5">Daftar Guru Privat</h1>
+      <!-- PAGE: GURU -->
+      <div id="page-guru" class="space-y-6 hidden">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 bg-white dark:bg-[#1e293b] p-5 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+          <div>
+            <span class="text-xs text-amber-600 dark:text-amber-400 font-bold uppercase tracking-wider">Pengajar Aktif</span>
+            <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white mt-0.5">Daftar Guru Privat</h1>
+          </div>
+          <button onclick="bukaModalTambahGuru()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-lg shadow-amber-500/20 transition-all">+ Tambah Guru</button>
         </div>
-        <button onclick="bukaModalTambahGuru()" class="bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs px-4 py-2.5 rounded-xl shadow-lg shadow-amber-400/20 transition-all">+ Tambah Guru</button>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="gridGuru"></div>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5" id="gridGuru"></div>
-    </div>
-
-    <!-- PAGE: PERTEMUAN -->
-    <div id="page-pertemuan" class="space-y-5 hidden">
-      <div class="bg-[#1e293b] p-4 sm:p-6 rounded-2xl border border-slate-800 space-y-1.5">
-        <span class="text-[10px] sm:text-xs text-amber-400 font-bold uppercase tracking-wider">Log Sesi Harian</span>
-        <h1 class="text-xl sm:text-3xl font-extrabold text-white">Input Pertemuan & Perkembangan</h1>
-      </div>
-
-      <div class="bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs p-3.5 sm:p-4 rounded-2xl flex items-start gap-2.5">
-        <span class="text-base sm:text-lg">💡</span>
-        <div>
-          <strong class="font-bold block text-amber-200 mb-0.5">Panduan Pengajar:</strong>
-          Klik tombol dropdown pada nama Guru di bawah ini untuk mengelola jadwal sesi, mencatat materi harian, serta mengunggah laporan perkembangan siswa.
+      <!-- PAGE: PERTEMUAN -->
+      <div id="page-pertemuan" class="space-y-6 hidden">
+        <div class="bg-white dark:bg-[#1e293b] p-5 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-1">
+          <span class="text-xs text-amber-600 dark:text-amber-400 font-bold uppercase tracking-wider">Log Sesi Harian</span>
+          <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">Input Pertemuan & Perkembangan</h1>
         </div>
-      </div>
 
-      <div id="containerPertemuanPerGuru" class="space-y-4"></div>
-    </div>
-
-    <!-- PAGE: DOKUMEN -->
-    <div id="page-dokumen" class="space-y-5 hidden">
-      <div class="bg-[#1e293b] p-4 sm:p-6 rounded-2xl border border-slate-800">
-        <span class="text-[10px] sm:text-xs text-sky-400 font-bold uppercase tracking-wider">Pusat Berkas</span>
-        <h1 class="text-xl sm:text-3xl font-extrabold text-white mt-0.5">Arsip Dokumen & Laporan</h1>
-      </div>
-
-      <div class="bg-sky-500/10 border border-sky-500/30 text-sky-300 text-xs p-3.5 sm:p-4 rounded-2xl flex items-start gap-2.5">
-        <span class="text-base sm:text-lg">📁</span>
-        <div>
-          <strong class="font-bold block text-sky-200 mb-0.5">Informasi Arsip Aman:</strong>
-          Seluruh berkas pendaftaran dan laporan tersimpan aman di cloud storage dan akan tetap berada di arsip meskipun data anak dihapus, kecuali Anda menghapusnya secara manual di sini.
+        <div class="bg-amber-500/10 border border-amber-500/30 text-amber-800 dark:text-amber-300 text-xs p-4 rounded-2xl flex items-start gap-3">
+          <span class="text-base sm:text-lg">💡</span>
+          <div>
+            <strong class="font-bold block text-amber-900 dark:text-amber-200 mb-0.5">Panduan Pengajar:</strong>
+            Klik tombol dropdown pada nama Guru di bawah ini untuk mengelola jadwal sesi, mencatat materi harian, serta mengunggah laporan perkembangan siswa.
+          </div>
         </div>
+
+        <div id="containerPertemuanPerGuru" class="space-y-4"></div>
       </div>
 
-      <div class="glass-card rounded-2xl p-4 sm:p-6 overflow-x-auto shadow-xl">
-        <div class="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+      <!-- PAGE: DOKUMEN -->
+      <div id="page-dokumen" class="space-y-6 hidden">
+        <div class="bg-white dark:bg-[#1e293b] p-5 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+          <span class="text-xs text-sky-600 dark:text-sky-400 font-bold uppercase tracking-wider">Pusat Berkas</span>
+          <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white mt-0.5">Arsip Dokumen & Laporan</h1>
+        </div>
+
+        <div class="bg-sky-500/10 border border-sky-500/30 text-sky-800 dark:text-sky-300 text-xs p-4 rounded-2xl flex items-start gap-3">
+          <span class="text-base sm:text-lg">📁</span>
+          <div>
+            <strong class="font-bold block text-sky-900 dark:text-sky-200 mb-0.5">Informasi Arsip Aman:</strong>
+            Seluruh berkas pendaftaran dan laporan tersimpan aman di cloud storage dan akan tetap berada di arsip meskipun data anak dihapus, kecuali Anda menghapusnya secara manual di sini.
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-[#1e293b] rounded-2xl p-5 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm overflow-x-auto">
           <table class="w-full text-xs sm:text-sm text-left whitespace-nowrap">
-            <thead class="text-slate-400 border-b border-slate-800 text-[11px] uppercase tracking-wider">
+            <thead class="text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800 text-[11px] uppercase tracking-wider">
               <tr>
                 <th class="pb-3.5 font-semibold">Nama Siswa</th>
                 <th class="pb-3.5 font-semibold">Guru Pengunggah</th>
@@ -216,28 +253,26 @@
                 <th class="pb-3.5 font-semibold text-center">Aksi</th>
               </tr>
             </thead>
-            <tbody id="tabelArsipDokumenBody" class="divide-y divide-slate-800/60"></tbody>
+            <tbody id="tabelArsipDokumenBody" class="divide-y divide-slate-200 dark:divide-slate-800/60"></tbody>
           </table>
         </div>
       </div>
-    </div>
 
-    <!-- PAGE: REKAP FEE -->
-    <div id="page-rekap" class="space-y-5 hidden">
-      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3.5 bg-[#1e293b] p-4 sm:p-6 rounded-2xl border border-slate-800">
-        <div>
-          <span class="text-[10px] sm:text-xs text-amber-400 font-bold uppercase tracking-wider">Payroll & Insentif</span>
-          <h1 class="text-xl sm:text-3xl font-extrabold text-white mt-0.5">Rekap Fee Guru</h1>
+      <!-- PAGE: REKAP FEE -->
+      <div id="page-rekap" class="space-y-6 hidden">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 bg-white dark:bg-[#1e293b] p-5 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+          <div>
+            <span class="text-xs text-amber-600 dark:text-amber-400 font-bold uppercase tracking-wider">Payroll & Insentif</span>
+            <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white mt-0.5">Rekap Fee Guru</h1>
+          </div>
+          <button onclick="eksporKeSpreadsheet()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2">
+            <span>📊</span> Ekspor File Excel (.xlsx)
+          </button>
         </div>
-        <button onclick="eksporKeSpreadsheet()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs px-4 py-2.5 rounded-xl shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2">
-          <span>📊</span> Ekspor File Excel (.xlsx)
-        </button>
-      </div>
 
-      <div class="glass-card rounded-2xl p-4 sm:p-6 overflow-x-auto shadow-xl">
-        <div class="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+        <div class="bg-white dark:bg-[#1e293b] rounded-2xl p-5 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm overflow-x-auto">
           <table class="w-full text-xs sm:text-sm text-left whitespace-nowrap">
-            <thead class="text-slate-400 border-b border-slate-800 text-[11px] uppercase tracking-wider">
+            <thead class="text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800 text-[11px] uppercase tracking-wider">
               <tr>
                 <th class="pb-3.5 font-semibold">Nama Anak</th>
                 <th class="pb-3.5 font-semibold">Skema & Kegiatan</th>
@@ -251,59 +286,59 @@
                 <th class="pb-3.5 font-semibold text-center">Aksi</th>
               </tr>
             </thead>
-            <tbody id="tabelRekapBody" class="divide-y divide-slate-800/60"></tbody>
+            <tbody id="tabelRekapBody" class="divide-y divide-slate-200 dark:divide-slate-800/60"></tbody>
           </table>
         </div>
       </div>
-    </div>
 
-  </main>
+    </main>
+  </div>
 
   <!-- MODAL PIN -->
   <div id="modalPin" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex justify-center items-center p-3 hidden">
-    <div class="glass-card bg-[#1e293b]/95 border border-slate-700/80 rounded-3xl max-w-xs w-full p-5 sm:p-6 text-center space-y-4 shadow-2xl">
-      <div class="w-12 h-12 sm:w-14 sm:h-14 bg-amber-500/15 text-amber-400 border border-amber-500/30 rounded-2xl flex items-center justify-center mx-auto text-xl sm:text-2xl font-bold shadow-inner">🔒</div>
+    <div class="bg-white dark:bg-[#1e293b] border border-slate-200 dark:border-slate-700/80 rounded-3xl max-w-xs w-full p-6 text-center space-y-4 shadow-2xl">
+      <div class="w-12 h-12 bg-amber-500/15 text-amber-500 border border-amber-500/30 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold">🔒</div>
       <div>
-        <h3 class="font-extrabold text-white text-base sm:text-lg">Akses Terbatas</h3>
-        <p class="text-xs text-slate-400 mt-1">Masukkan 4 digit PIN Admin sistem.</p>
+        <h3 class="font-extrabold text-slate-900 dark:text-white text-base">Akses Terbatas</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Masukkan 4 digit PIN Admin sistem.</p>
       </div>
-      <input type="password" id="inputPinAdmin" maxlength="4" placeholder="****" class="w-full text-center text-2xl sm:text-3xl tracking-[0.6em] font-black bg-[#0f172a] border border-slate-700 rounded-2xl py-3 text-amber-400 outline-none focus:border-amber-400 transition-all shadow-inner">
+      <input type="password" id="inputPinAdmin" maxlength="4" placeholder="****" class="w-full text-center text-2xl tracking-[0.6em] font-black bg-slate-100 dark:bg-[#0f172a] border border-slate-300 dark:border-slate-700 rounded-2xl py-3 text-amber-500 outline-none focus:border-amber-500 transition-all">
       <div class="flex gap-2.5 pt-1">
-        <button onclick="tutupModalPin()" class="w-1/2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold py-2.5 rounded-xl text-xs transition-all">Batal</button>
-        <button onclick="verifikasiPin()" class="w-1/2 bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold py-2.5 rounded-xl text-xs shadow-lg shadow-amber-400/20 transition-all">Masuk</button>
+        <button onclick="tutupModalPin()" class="w-1/2 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold py-2.5 rounded-xl text-xs transition-all">Batal</button>
+        <button onclick="verifikasiPin()" class="w-1/2 bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 rounded-xl text-xs shadow-lg shadow-amber-500/20 transition-all">Masuk</button>
       </div>
     </div>
   </div>
 
   <!-- MODAL TAMBAH ANAK -->
   <div id="modalAnak" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex justify-center items-center p-3 hidden">
-    <div class="glass-card bg-[#1e293b]/95 border border-slate-700/80 rounded-3xl max-w-md w-full p-5 sm:p-6 space-y-3.5 max-h-[90vh] overflow-y-auto shadow-2xl">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-        <h3 class="font-extrabold text-white text-base sm:text-lg">Tambah Data Anak</h3>
-        <button onclick="tutupModalAnak()" class="text-slate-400 hover:text-white text-xl sm:text-2xl font-bold">&times;</button>
+    <div class="bg-white dark:bg-[#1e293b] border border-slate-200 dark:border-slate-700/80 rounded-3xl max-w-md w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-200 dark:border-slate-800 pb-3">
+        <h3 class="font-extrabold text-slate-900 dark:text-white text-base">Tambah Data Anak</h3>
+        <button onclick="tutupModalAnak()" class="text-slate-400 hover:text-slate-900 dark:hover:text-white text-2xl font-bold">&times;</button>
       </div>
       <div class="space-y-3 text-xs">
         <div>
-          <label class="block text-slate-300 font-medium mb-1">Nama Anak</label>
-          <input type="text" id="newNamaAnak" placeholder="Contoh: Viero" class="w-full bg-[#0f172a] border border-slate-700 rounded-xl p-2.5 sm:p-3 text-white outline-none focus:border-amber-400 transition-all">
+          <label class="block text-slate-700 dark:text-slate-300 font-medium mb-1">Nama Anak</label>
+          <input type="text" id="newNamaAnak" placeholder="Contoh: Viero" class="w-full bg-slate-100 dark:bg-[#0f172a] border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-slate-900 dark:text-white outline-none focus:border-amber-500 transition-all">
         </div>
         <div>
-          <label class="block text-slate-300 font-medium mb-1">Tipe Pendaftaran / Harga</label>
-          <select id="newTipeHarga" onchange="toggleWilayahOpsi()" class="w-full bg-[#0f172a] border border-slate-700 rounded-xl p-2.5 sm:p-3 text-white outline-none focus:border-amber-400 transition-all">
+          <label class="block text-slate-700 dark:text-slate-300 font-medium mb-1">Tipe Pendaftaran / Harga</label>
+          <select id="newTipeHarga" onchange="toggleWilayahOpsi()" class="w-full bg-slate-100 dark:bg-[#0f172a] border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-slate-900 dark:text-white outline-none focus:border-amber-500 transition-all">
             <option value="baru">Harga Baru (2026/2025)</option>
             <option value="lama">Harga Lama (Pendaftaran Lama)</option>
           </select>
         </div>
         <div id="containerWilayah" class="hidden">
-          <label class="block text-slate-300 font-medium mb-1">Wilayah (Khusus Harga Lama)</label>
-          <select id="newWilayah" class="w-full bg-[#0f172a] border border-slate-700 rounded-xl p-2.5 sm:p-3 text-white outline-none focus:border-amber-400 transition-all">
+          <label class="block text-slate-700 dark:text-slate-300 font-medium mb-1">Wilayah (Khusus Harga Lama)</label>
+          <select id="newWilayah" class="w-full bg-slate-100 dark:bg-[#0f172a] border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-slate-900 dark:text-white outline-none focus:border-amber-500 transition-all">
             <option value="Cimahi">Cimahi</option>
             <option value="Bandung">Bandung</option>
           </select>
         </div>
         <div>
-          <label class="block text-slate-300 font-medium mb-1">Kegiatan / Mapel</label>
-          <select id="newKegiatanAnak" onchange="toggleManualFeeOpsi()" class="w-full bg-[#0f172a] border border-slate-700 rounded-xl p-2.5 sm:p-3 text-white outline-none focus:border-amber-400 transition-all">
+          <label class="block text-slate-700 dark:text-slate-300 font-medium mb-1">Kegiatan / Mapel</label>
+          <select id="newKegiatanAnak" onchange="toggleManualFeeOpsi()" class="w-full bg-slate-100 dark:bg-[#0f172a] border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-slate-900 dark:text-white outline-none focus:border-amber-500 transition-all">
             <option value="Calistung">Calistung</option>
             <option value="Sensori">Sensori</option>
             <option value="Mengaji">Mengaji</option>
@@ -316,34 +351,33 @@
             <option value="Mapel SMA">Mapel SMA</option>
           </select>
         </div>
-        <!-- Input Fee Manual Khusus SD & SMP -->
-        <div id="containerManualFee" class="hidden bg-[#0f172a] p-3 rounded-xl border border-amber-500/30 space-y-2">
-          <label class="block text-amber-300 font-bold mb-0.5">Input Nominal Fee Guru per Sesi (SD/SMP):</label>
-          <p class="text-[10px] text-slate-400 mb-1">Masukkan nominal angka saja tanpa titik/rupiah (Contoh: 70000)</p>
-          <input type="number" id="inputManualFeeValue" placeholder="Contoh: 75000" class="w-full bg-[#1e293b] border border-slate-700 rounded-xl p-2.5 text-white outline-none focus:border-amber-400 transition-all">
+        <div id="containerManualFee" class="hidden bg-slate-100 dark:bg-[#0f172a] p-3 rounded-xl border border-amber-500/30 space-y-1.5">
+          <label class="block text-amber-600 dark:text-amber-300 font-bold mb-0.5">Input Nominal Fee Guru per Sesi (SD/SMP):</label>
+          <p class="text-[10px] text-slate-500 dark:text-slate-400">Masukkan nominal angka saja (Contoh: 70000)</p>
+          <input type="number" id="inputManualFeeValue" placeholder="Contoh: 75000" class="w-full bg-white dark:bg-[#1e293b] border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-slate-900 dark:text-white outline-none focus:border-amber-500 transition-all">
         </div>
         <div>
-          <label class="block text-slate-300 font-medium mb-1">Guru Pengajar</label>
-          <select id="newGuruAnak" class="w-full bg-[#0f172a] border border-slate-700 rounded-xl p-2.5 sm:p-3 text-white outline-none focus:border-amber-400 transition-all"></select>
+          <label class="block text-slate-700 dark:text-slate-300 font-medium mb-1">Guru Pengajar</label>
+          <select id="newGuruAnak" class="w-full bg-slate-100 dark:bg-[#0f172a] border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-slate-900 dark:text-white outline-none focus:border-amber-500 transition-all"></select>
         </div>
         <div>
-          <label class="block text-slate-300 font-medium mb-1">Jarak Tempuh Rumah Guru ke Siswa</label>
-          <select id="newJarak" class="w-full bg-[#0f172a] border border-slate-700 rounded-xl p-2.5 sm:p-3 text-white outline-none focus:border-amber-400 transition-all">
+          <label class="block text-slate-700 dark:text-slate-300 font-medium mb-1">Jarak Tempuh Rumah Guru ke Siswa</label>
+          <select id="newJarak" class="w-full bg-slate-100 dark:bg-[#0f172a] border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-slate-900 dark:text-white outline-none focus:border-amber-500 transition-all">
             <option value="kurang_7">&lt; 7 km (Dekat)</option>
             <option value="7_10">7 - 10 km</option>
             <option value="lebih_10">&gt; 10 km (Jauh)</option>
           </select>
         </div>
         <div>
-          <label class="block text-slate-300 font-medium mb-1">Jumlah Paket Sesi</label>
-          <input type="number" id="newPaketAnak" value="4" class="w-full bg-[#0f172a] border border-slate-700 rounded-xl p-2.5 sm:p-3 text-white outline-none focus:border-amber-400 transition-all">
+          <label class="block text-slate-700 dark:text-slate-300 font-medium mb-1">Jumlah Paket Sesi</label>
+          <input type="number" id="newPaketAnak" value="4" class="w-full bg-slate-100 dark:bg-[#0f172a] border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-slate-900 dark:text-white outline-none focus:border-amber-500 transition-all">
         </div>
         <div>
-          <label class="block text-slate-300 font-medium mb-1">Upload Dokumen Pendaftaran (Supabase)</label>
-          <input type="file" id="fileAnakInput" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-400/10 file:text-amber-300 hover:file:bg-amber-400/20 cursor-pointer">
+          <label class="block text-slate-700 dark:text-slate-300 font-medium mb-1">Upload Dokumen Pendaftaran (Supabase)</label>
+          <input type="file" id="fileAnakInput" class="w-full text-xs text-slate-500 dark:text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-500/10 file:text-amber-600 dark:file:text-amber-300 hover:file:bg-amber-500/20 cursor-pointer">
         </div>
       </div>
-      <button onclick="simpanAnakBaru()" class="w-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold py-3 rounded-xl text-xs sm:text-sm shadow-lg shadow-amber-400/20 transition-all mt-1">
+      <button onclick="simpanAnakBaru()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-xl text-xs sm:text-sm shadow-lg shadow-amber-500/20 transition-all mt-2">
         ➕ Simpan Ke Cloud
       </button>
     </div>
@@ -351,37 +385,37 @@
 
   <!-- MODAL TAMBAH GURU -->
   <div id="modalGuru" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex justify-center items-center p-3 hidden">
-    <div class="glass-card bg-[#1e293b]/95 border border-slate-700/80 rounded-3xl max-w-md w-full p-5 sm:p-6 space-y-3.5 max-h-[90vh] overflow-y-auto shadow-2xl">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-        <h3 class="font-extrabold text-white text-base sm:text-lg">Tambah Data Guru</h3>
-        <button onclick="tutupModalGuru()" class="text-slate-400 hover:text-white text-xl sm:text-2xl font-bold">&times;</button>
+    <div class="bg-white dark:bg-[#1e293b] border border-slate-200 dark:border-slate-700/80 rounded-3xl max-w-md w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-200 dark:border-slate-800 pb-3">
+        <h3 class="font-extrabold text-slate-900 dark:text-white text-base">Tambah Data Guru</h3>
+        <button onclick="tutupModalGuru()" class="text-slate-400 hover:text-slate-900 dark:hover:text-white text-2xl font-bold">&times;</button>
       </div>
       <div class="space-y-3 text-xs">
         <div>
-          <label class="block text-slate-300 font-medium mb-1">Nama Guru</label>
-          <input type="text" id="newNamaGuru" placeholder="Contoh: Miss Resti" class="w-full bg-[#0f172a] border border-slate-700 rounded-xl p-2.5 sm:p-3 text-white outline-none focus:border-amber-400 transition-all">
+          <label class="block text-slate-700 dark:text-slate-300 font-medium mb-1">Nama Guru</label>
+          <input type="text" id="newNamaGuru" placeholder="Contoh: Miss Resti" class="w-full bg-slate-100 dark:bg-[#0f172a] border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-slate-900 dark:text-white outline-none focus:border-amber-500 transition-all">
         </div>
         <div>
-          <label class="block text-slate-300 font-medium mb-1">No. HP / WhatsApp</label>
-          <input type="text" id="newHpGuru" placeholder="0812-xxxx-xxxx" class="w-full bg-[#0f172a] border border-slate-700 rounded-xl p-2.5 sm:p-3 text-white outline-none focus:border-amber-400 transition-all">
+          <label class="block text-slate-700 dark:text-slate-300 font-medium mb-1">No. HP / WhatsApp</label>
+          <input type="text" id="newHpGuru" placeholder="0812-xxxx-xxxx" class="w-full bg-slate-100 dark:bg-[#0f172a] border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-slate-900 dark:text-white outline-none focus:border-amber-500 transition-all">
         </div>
         <div>
-          <label class="block text-slate-300 font-medium mb-1">Upload Foto Guru</label>
-          <input type="file" id="newFotoGuruInput" accept="image/*" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-400/10 file:text-amber-300 hover:file:bg-amber-400/20 cursor-pointer">
+          <label class="block text-slate-700 dark:text-slate-300 font-medium mb-1">Upload Foto Guru</label>
+          <input type="file" id="newFotoGuruInput" accept="image/*" class="w-full text-xs text-slate-500 dark:text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-500/10 file:text-amber-600 dark:file:text-amber-300 hover:file:bg-amber-500/20 cursor-pointer">
         </div>
         <div>
-          <label class="block text-slate-300 font-medium mb-1.5">Mata Pelajaran Keahlian:</label>
-          <div class="bg-[#0f172a] border border-slate-700 rounded-xl p-3 space-y-2 max-h-40 overflow-y-auto">
-            <label class="flex items-center space-x-2.5 text-slate-300 hover:text-white cursor-pointer"><input type="checkbox" name="mapelGuruOption" value="Calistung" class="rounded bg-slate-800 border-slate-600 text-amber-400 w-4 h-4"><span>Calistung</span></label>
-            <label class="flex items-center space-x-2.5 text-slate-300 hover:text-white cursor-pointer"><input type="checkbox" name="mapelGuruOption" value="Sensori" class="rounded bg-slate-800 border-slate-600 text-amber-400 w-4 h-4"><span>Sensori</span></label>
-            <label class="flex items-center space-x-2.5 text-slate-300 hover:text-white cursor-pointer"><input type="checkbox" name="mapelGuruOption" value="Mengaji" class="rounded bg-slate-800 border-slate-600 text-amber-400 w-4 h-4"><span>Mengaji</span></label>
-            <label class="flex items-center space-x-2.5 text-slate-300 hover:text-white cursor-pointer"><input type="checkbox" name="mapelGuruOption" value="English Phonic" class="rounded bg-slate-800 border-slate-600 text-amber-400 w-4 h-4"><span>English Phonic</span></label>
-            <label class="flex items-center space-x-2.5 text-slate-300 hover:text-white cursor-pointer"><input type="checkbox" name="mapelGuruOption" value="Mapel SD" class="rounded bg-slate-800 border-slate-600 text-amber-400 w-4 h-4"><span>Mapel SD</span></label>
-            <label class="flex items-center space-x-2.5 text-slate-300 hover:text-white cursor-pointer"><input type="checkbox" name="mapelGuruOption" value="Mapel SMP" class="rounded bg-slate-800 border-slate-600 text-amber-400 w-4 h-4"><span>Mapel SMP</span></label>
+          <label class="block text-slate-700 dark:text-slate-300 font-medium mb-1.5">Mata Pelajaran Keahlian:</label>
+          <div class="bg-slate-100 dark:bg-[#0f172a] border border-slate-300 dark:border-slate-700 rounded-xl p-3 space-y-2 max-h-40 overflow-y-auto">
+            <label class="flex items-center space-x-2.5 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white cursor-pointer"><input type="checkbox" name="mapelGuruOption" value="Calistung" class="rounded bg-slate-200 dark:bg-slate-800 border-slate-400 text-amber-500 w-4 h-4"><span>Calistung</span></label>
+            <label class="flex items-center space-x-2.5 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white cursor-pointer"><input type="checkbox" name="mapelGuruOption" value="Sensori" class="rounded bg-slate-200 dark:bg-slate-800 border-slate-400 text-amber-500 w-4 h-4"><span>Sensori</span></label>
+            <label class="flex items-center space-x-2.5 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white cursor-pointer"><input type="checkbox" name="mapelGuruOption" value="Mengaji" class="rounded bg-slate-200 dark:bg-slate-800 border-slate-400 text-amber-500 w-4 h-4"><span>Mengaji</span></label>
+            <label class="flex items-center space-x-2.5 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white cursor-pointer"><input type="checkbox" name="mapelGuruOption" value="English Phonic" class="rounded bg-slate-200 dark:bg-slate-800 border-slate-400 text-amber-500 w-4 h-4"><span>English Phonic</span></label>
+            <label class="flex items-center space-x-2.5 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white cursor-pointer"><input type="checkbox" name="mapelGuruOption" value="Mapel SD" class="rounded bg-slate-200 dark:bg-slate-800 border-slate-400 text-amber-500 w-4 h-4"><span>Mapel SD</span></label>
+            <label class="flex items-center space-x-2.5 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white cursor-pointer"><input type="checkbox" name="mapelGuruOption" value="Mapel SMP" class="rounded bg-slate-200 dark:bg-slate-800 border-slate-400 text-amber-500 w-4 h-4"><span>Mapel SMP</span></label>
           </div>
         </div>
       </div>
-      <button onclick="simpanGuruBaru()" class="w-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold py-3 rounded-xl text-xs sm:text-sm shadow-lg shadow-amber-400/20 transition-all mt-1">
+      <button onclick="simpanGuruBaru()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-xl text-xs sm:text-sm shadow-lg shadow-amber-500/20 transition-all mt-2">
         ➕ Simpan Data Guru
       </button>
     </div>
@@ -389,38 +423,38 @@
 
   <!-- MODAL EDIT GURU -->
   <div id="modalEditGuru" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex justify-center items-center p-3 hidden">
-    <div class="glass-card bg-[#1e293b]/95 border border-slate-700/80 rounded-3xl max-w-md w-full p-5 sm:p-6 space-y-3.5 max-h-[90vh] overflow-y-auto shadow-2xl">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-        <h3 class="font-extrabold text-white text-base sm:text-lg">Edit Data Guru</h3>
-        <button onclick="tutupModalEditGuru()" class="text-slate-400 hover:text-white text-xl sm:text-2xl font-bold">&times;</button>
+    <div class="bg-white dark:bg-[#1e293b] border border-slate-200 dark:border-slate-700/80 rounded-3xl max-w-md w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-200 dark:border-slate-800 pb-3">
+        <h3 class="font-extrabold text-slate-900 dark:text-white text-base">Edit Data Guru</h3>
+        <button onclick="tutupModalEditGuru()" class="text-slate-400 hover:text-slate-900 dark:hover:text-white text-2xl font-bold">&times;</button>
       </div>
       <input type="hidden" id="editIdGuru">
       <div class="space-y-3 text-xs">
         <div>
-          <label class="block text-slate-300 font-medium mb-1">Nama Guru</label>
-          <input type="text" id="editNamaGuru" class="w-full bg-[#0f172a] border border-slate-700 rounded-xl p-2.5 sm:p-3 text-white outline-none focus:border-amber-400 transition-all">
+          <label class="block text-slate-700 dark:text-slate-300 font-medium mb-1">Nama Guru</label>
+          <input type="text" id="editNamaGuru" class="w-full bg-slate-100 dark:bg-[#0f172a] border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-slate-900 dark:text-white outline-none focus:border-amber-500 transition-all">
         </div>
         <div>
-          <label class="block text-slate-300 font-medium mb-1">No. HP / WhatsApp</label>
-          <input type="text" id="editHpGuru" class="w-full bg-[#0f172a] border border-slate-700 rounded-xl p-2.5 sm:p-3 text-white outline-none focus:border-amber-400 transition-all">
+          <label class="block text-slate-700 dark:text-slate-300 font-medium mb-1">No. HP / WhatsApp</label>
+          <input type="text" id="editHpGuru" class="w-full bg-slate-100 dark:bg-[#0f172a] border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-slate-900 dark:text-white outline-none focus:border-amber-500 transition-all">
         </div>
         <div>
-          <label class="block text-slate-300 font-medium mb-1">Ganti Foto Guru (Opsional)</label>
-          <input type="file" id="editFotoGuruInput" accept="image/*" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-400/10 file:text-amber-300 hover:file:bg-amber-400/20 cursor-pointer">
+          <label class="block text-slate-700 dark:text-slate-300 font-medium mb-1">Ganti Foto Guru (Opsional)</label>
+          <input type="file" id="editFotoGuruInput" accept="image/*" class="w-full text-xs text-slate-500 dark:text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-500/10 file:text-amber-600 dark:file:text-amber-300 hover:file:bg-amber-500/20 cursor-pointer">
         </div>
         <div>
-          <label class="block text-slate-300 font-medium mb-1.5">Mata Pelajaran:</label>
-          <div class="bg-[#0f172a] border border-slate-700 rounded-xl p-3 space-y-2 max-h-40 overflow-y-auto">
-            <label class="flex items-center space-x-2.5 text-slate-300 hover:text-white cursor-pointer"><input type="checkbox" name="editMapelGuruOption" value="Calistung" class="rounded bg-slate-800 border-slate-600 text-amber-400 w-4 h-4"><span>Calistung</span></label>
-            <label class="flex items-center space-x-2.5 text-slate-300 hover:text-white cursor-pointer"><input type="checkbox" name="editMapelGuruOption" value="Sensori" class="rounded bg-slate-800 border-slate-600 text-amber-400 w-4 h-4"><span>Sensori</span></label>
-            <label class="flex items-center space-x-2.5 text-slate-300 hover:text-white cursor-pointer"><input type="checkbox" name="editMapelGuruOption" value="Mengaji" class="rounded bg-slate-800 border-slate-600 text-amber-400 w-4 h-4"><span>Mengaji</span></label>
-            <label class="flex items-center space-x-2.5 text-slate-300 hover:text-white cursor-pointer"><input type="checkbox" name="editMapelGuruOption" value="English Phonic" class="rounded bg-slate-800 border-slate-600 text-amber-400 w-4 h-4"><span>English Phonic</span></label>
-            <label class="flex items-center space-x-2.5 text-slate-300 hover:text-white cursor-pointer"><input type="checkbox" name="editMapelGuruOption" value="Mapel SD" class="rounded bg-slate-800 border-slate-600 text-amber-400 w-4 h-4"><span>Mapel SD</span></label>
-            <label class="flex items-center space-x-2.5 text-slate-300 hover:text-white cursor-pointer"><input type="checkbox" name="editMapelGuruOption" value="Mapel SMP" class="rounded bg-slate-800 border-slate-600 text-amber-400 w-4 h-4"><span>Mapel SMP</span></label>
+          <label class="block text-slate-700 dark:text-slate-300 font-medium mb-1.5">Mata Pelajaran:</label>
+          <div class="bg-slate-100 dark:bg-[#0f172a] border border-slate-300 dark:border-slate-700 rounded-xl p-3 space-y-2 max-h-40 overflow-y-auto">
+            <label class="flex items-center space-x-2.5 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white cursor-pointer"><input type="checkbox" name="editMapelGuruOption" value="Calistung" class="rounded bg-slate-200 dark:bg-slate-800 border-slate-400 text-amber-500 w-4 h-4"><span>Calistung</span></label>
+            <label class="flex items-center space-x-2.5 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white cursor-pointer"><input type="checkbox" name="editMapelGuruOption" value="Sensori" class="rounded bg-slate-200 dark:bg-slate-800 border-slate-400 text-amber-500 w-4 h-4"><span>Sensori</span></label>
+            <label class="flex items-center space-x-2.5 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white cursor-pointer"><input type="checkbox" name="editMapelGuruOption" value="Mengaji" class="rounded bg-slate-200 dark:bg-slate-800 border-slate-400 text-amber-500 w-4 h-4"><span>Mengaji</span></label>
+            <label class="flex items-center space-x-2.5 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white cursor-pointer"><input type="checkbox" name="editMapelGuruOption" value="English Phonic" class="rounded bg-slate-200 dark:bg-slate-800 border-slate-400 text-amber-500 w-4 h-4"><span>English Phonic</span></label>
+            <label class="flex items-center space-x-2.5 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white cursor-pointer"><input type="checkbox" name="editMapelGuruOption" value="Mapel SD" class="rounded bg-slate-200 dark:bg-slate-800 border-slate-400 text-amber-500 w-4 h-4"><span>Mapel SD</span></label>
+            <label class="flex items-center space-x-2.5 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white cursor-pointer"><input type="checkbox" name="editMapelGuruOption" value="Mapel SMP" class="rounded bg-slate-200 dark:bg-slate-800 border-slate-400 text-amber-500 w-4 h-4"><span>Mapel SMP</span></label>
           </div>
         </div>
       </div>
-      <button onclick="updateDataGuru()" class="w-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold py-3 rounded-xl text-xs sm:text-sm shadow-lg shadow-amber-400/20 transition-all mt-1">
+      <button onclick="updateDataGuru()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-xl text-xs sm:text-sm shadow-lg shadow-amber-500/20 transition-all mt-2">
         💾 Simpan Perubahan Guru
       </button>
     </div>
@@ -428,24 +462,24 @@
 
   <!-- MODAL SESI & LAPORAN -->
   <div id="modalSesi" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex justify-center items-center p-3 hidden">
-    <div class="glass-card bg-[#1e293b]/95 border border-slate-700/80 rounded-3xl max-w-xl w-full p-5 sm:p-6 space-y-3.5 max-h-[90vh] overflow-y-auto shadow-2xl">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-        <h3 class="font-extrabold text-white text-base sm:text-lg" id="modalSesiTitle">Catat Pertemuan & Laporan</h3>
-        <button onclick="tutupModalSesi()" class="text-slate-400 hover:text-white text-xl sm:text-2xl font-bold">&times;</button>
+    <div class="bg-white dark:bg-[#1e293b] border border-slate-200 dark:border-slate-700/80 rounded-3xl max-w-xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-200 dark:border-slate-800 pb-3">
+        <h3 class="font-extrabold text-slate-900 dark:text-white text-base" id="modalSesiTitle">Catat Pertemuan & Laporan</h3>
+        <button onclick="tutupModalSesi()" class="text-slate-400 hover:text-slate-900 dark:hover:text-white text-2xl font-bold">&times;</button>
       </div>
 
       <input type="hidden" id="editSesiId">
       
       <div id="slotInputs" class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs"></div>
 
-      <div class="bg-[#0f172a] p-3.5 sm:p-4 rounded-2xl border border-amber-500/30 space-y-2 mt-3">
-        <label class="block font-bold text-amber-300 text-xs sm:text-sm">📄 Upload File Laporan Perkembangan Anak</label>
-        <p class="text-[10px] sm:text-[11px] text-slate-400">Unggah dokumen laporan akhir setelah rangkaian sesi pembelajaran selesai.</p>
-        <input type="file" id="fileLaporanInput" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-400/10 file:text-amber-300 hover:file:bg-amber-400/20 cursor-pointer">
+      <div class="bg-slate-100 dark:bg-[#0f172a] p-4 rounded-2xl border border-amber-500/30 space-y-2 mt-3">
+        <label class="block font-bold text-amber-600 dark:text-amber-300 text-xs sm:text-sm">📄 Upload File Laporan Perkembangan Anak</label>
+        <p class="text-[11px] text-slate-500 dark:text-slate-400">Unggah dokumen laporan akhir setelah rangkaian sesi pembelajaran selesai.</p>
+        <input type="file" id="fileLaporanInput" class="w-full text-xs text-slate-500 dark:text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-amber-500/10 file:text-amber-600 dark:file:text-amber-300 hover:file:bg-amber-500/20 cursor-pointer">
         <div id="laporanPreview" class="pt-0.5"></div>
       </div>
 
-      <button onclick="simpanSesi()" class="w-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold py-3 rounded-xl text-xs sm:text-sm shadow-lg shadow-amber-400/20 transition-all mt-2">
+      <button onclick="simpanSesi()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-xl text-xs sm:text-sm shadow-lg shadow-amber-500/20 transition-all mt-2">
         💾 Simpan Pertemuan & Laporan
       </button>
     </div>
@@ -457,6 +491,31 @@
     let isUnlocked = false;
     let pendingTab = null;
     let pendingAction = null;
+
+    const titles = {
+      ringkasan: 'Ringkasan Operasional',
+      anak: 'Pengaturan Skema & Deposit',
+      guru: 'Daftar Guru Privat',
+      pertemuan: 'Input Pertemuan & Perkembangan',
+      dokumen: 'Arsip Dokumen & Laporan',
+      rekap: 'Rekap Fee Guru'
+    };
+
+    function toggleTheme() {
+      const htmlEl = document.documentElement;
+      const themeIcon = document.getElementById('themeIcon');
+      const themeText = document.getElementById('themeText');
+      
+      if (htmlEl.classList.contains('dark')) {
+        htmlEl.classList.remove('dark');
+        themeIcon.innerText = '☀️';
+        themeText.innerText = 'Light Mode';
+      } else {
+        htmlEl.classList.add('dark');
+        themeIcon.innerText = '🌙';
+        themeText.innerText = 'Dark Mode';
+      }
+    }
 
     function pindahTab(tabName, butuhPin = false) {
       if (butuhPin && !isUnlocked) {
@@ -471,13 +530,28 @@
         const p = document.getElementById(`page-${t}`);
         const tab = document.getElementById(`tab-${t}`);
         if(p) p.classList.add('hidden');
-        if(tab) tab.classList.remove('tab-active');
+        if(tab) {
+          tab.className = "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all text-left text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white";
+        }
       });
 
       const targetPage = document.getElementById(`page-${tabName}`);
       const targetTab = document.getElementById(`tab-${tabName}`);
       if(targetPage) targetPage.classList.remove('hidden');
-      if(targetTab) targetTab.classList.add('tab-active');
+      if(targetTab) {
+        if (tabName === 'dokumen') {
+          targetTab.className = "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all text-left bg-sky-500 text-white font-bold shadow-lg shadow-sky-500/20";
+        } else if (tabName === 'rekap') {
+          targetTab.className = "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all text-left bg-amber-500 text-white font-bold shadow-lg shadow-amber-500/20";
+        } else {
+          targetTab.className = "w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all text-left bg-amber-500 text-white font-bold shadow-lg shadow-amber-500/20";
+        }
+      }
+
+      const titleEl = document.getElementById('currentTopTitle');
+      if(titleEl && titles[tabName]) {
+        titleEl.innerText = titles[tabName];
+      }
     }
 
     function bukaModalTambahAnak() {
@@ -582,11 +656,11 @@
 
     function getStatusBadge(sisa) {
       if (sisa <= 0) {
-        return `<span class="bg-red-500/20 text-red-400 border border-red-500/30 px-2 py-0.5 rounded-full text-[10px] font-bold">Habis</span>`;
+        return `<span class="bg-red-500/20 text-red-500 dark:text-red-400 border border-red-500/30 px-2.5 py-0.5 rounded-full text-[10px] font-bold">Habis</span>`;
       } else if (sisa === 1) {
-        return `<span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-full text-[10px] font-semibold">Perhatian</span>`;
+        return `<span class="bg-amber-500/20 text-amber-600 dark:text-amber-300 border border-amber-500/30 px-2.5 py-0.5 rounded-full text-[10px] font-semibold">Perhatian</span>`;
       } else {
-        return `<span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full text-[10px] font-semibold">Aman</span>`;
+        return `<span class="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 px-2.5 py-0.5 rounded-full text-[10px] font-semibold">Aman</span>`;
       }
     }
 
@@ -603,7 +677,6 @@
       const kegiatan = s.kegiatan || 'Calistung';
       const jarak = s.jarak || 'kurang_7';
 
-      // Jika Mapel SD / SMP, ambil nilai fee manual yang sudah diinput
       if (kegiatan.includes('Mapel SD') || kegiatan.includes('Mapel SMP')) {
         fee = Number(s.manualFee) || 0;
       } else {
@@ -624,7 +697,6 @@
         }
       }
 
-      // Hitung Transport berdasarkan jarak
       if (tipe === 'lama') {
         if (jarak === '7_10' || jarak === 'lebih_10') {
           transport = 15000;
@@ -646,21 +718,17 @@
 
     function eksporKeSpreadsheet() {
       const rekapHistori = window.dataRekapFee || [];
-
       if (rekapHistori.length === 0) {
         alert("Belum ada data rekap fee untuk diekspor ke Excel.");
         return;
       }
-
       const dataSiapCair = rekapHistori.filter(r => r.laporanUrl);
-
       if (dataSiapCair.length === 0) {
         alert("Tidak ada data dengan status 'Siap dicairkan' (laporan belum diunggah).");
         return;
       }
 
       const excelData = [];
-
       dataSiapCair.forEach(r => {
         excelData.push({
           "Nama Anak": r.anak,
@@ -680,7 +748,6 @@
       const worksheet = XLSX.utils.json_to_sheet(excelData);
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, "Rekap Fee Siap Cair");
-
       XLSX.writeFile(workbook, `Rekap_Fee_Siap_Cair_${new Date().toISOString().slice(0,10)}.xlsx`);
     }
   </script>
@@ -808,11 +875,9 @@
     }
 
     function renderRingkasan() {
-      // Menghitung jumlah anak unik (nama yang sama dihitung 1 anak)
       const uniqueNames = new Set(window.dataSiswa.map(s => (s.anak || '').trim().toLowerCase()));
       let totalAnakUnik = uniqueNames.size;
-      
-      let totalPaketBerjalan = window.dataSiswa.length; // Total kegiatan/paket yang aktif
+      let totalPaketBerjalan = window.dataSiswa.length; 
       let totalTerisi = 0;
       let perluPerhatian = 0;
 
@@ -828,11 +893,11 @@
         if (sisa <= 1) perluPerhatian++;
 
         tbody.innerHTML += `
-          <tr class="hover:bg-slate-800/40 transition-colors">
-            <td class="py-3 font-bold text-white">${s.anak}</td>
-            <td class="py-3 text-slate-300">${s.guru || '-'}</td>
-            <td class="py-3 text-slate-400">${s.kegiatan}</td>
-            <td class="py-3 font-bold ${sisa <= 0 ? 'text-red-400' : 'text-emerald-400'}">${sisa} / ${s.paket}</td>
+          <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+            <td class="py-3 font-bold text-slate-900 dark:text-white">${s.anak}</td>
+            <td class="py-3 text-slate-600 dark:text-slate-300">${s.guru || '-'}</td>
+            <td class="py-3 text-slate-500 dark:text-slate-400">${s.kegiatan}</td>
+            <td class="py-3 font-bold ${sisa <= 0 ? 'text-red-500 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400'}">${sisa} / ${s.paket}</td>
             <td class="py-3">${getStatusBadge(sisa)}</td>
           </tr>
         `;
@@ -859,8 +924,8 @@
           const namaFileDownload = `Form_Pendaftaran_${s.anak}.pdf`;
           fileLink = `
             <div class="flex items-center gap-1.5">
-              <a href="${s.fileUrl}" target="_blank" class="text-amber-400 underline font-semibold">Lihat</a>
-              <button onclick="downloadFileSupabase('${s.fileUrl}', '${namaFileDownload}')" class="bg-amber-400/10 text-amber-300 hover:bg-amber-400 hover:text-slate-950 px-2 py-1 rounded-lg text-[10px] font-bold transition-all">⬇️ Download</button>
+              <a href="${s.fileUrl}" target="_blank" class="text-amber-600 dark:text-amber-400 underline font-semibold">Lihat</a>
+              <button onclick="downloadFileSupabase('${s.fileUrl}', '${namaFileDownload}')" class="bg-amber-500/10 text-amber-600 dark:text-amber-300 hover:bg-amber-500 hover:text-white px-2 py-1 rounded-lg text-[10px] font-bold transition-all">⬇️ Download</button>
             </div>`;
         }
 
@@ -874,18 +939,18 @@
         }
 
         tbody.innerHTML += `
-          <tr class="hover:bg-slate-800/40 transition-colors">
-            <td class="py-3.5 font-bold text-white">${s.anak}</td>
-            <td class="py-3.5 text-slate-300">${skemaLabel}</td>
-            <td class="py-3.5 text-slate-400">${s.kegiatan}</td>
-            <td class="py-3.5 text-slate-300">${s.guru || '-'}</td>
-            <td class="py-3.5 text-slate-300">${formatRupiah(calc.fee)}</td>
-            <td class="py-3.5 text-slate-300">${formatRupiah(calc.transport)}</td>
-            <td class="py-3.5 font-bold ${sisa <= 0 ? 'text-red-400' : 'text-emerald-400'}">${sisa} / ${s.paket}</td>
+          <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+            <td class="py-3.5 font-bold text-slate-900 dark:text-white">${s.anak}</td>
+            <td class="py-3.5 text-slate-600 dark:text-slate-300">${skemaLabel}</td>
+            <td class="py-3.5 text-slate-500 dark:text-slate-400">${s.kegiatan}</td>
+            <td class="py-3.5 text-slate-600 dark:text-slate-300">${s.guru || '-'}</td>
+            <td class="py-3.5 text-slate-600 dark:text-slate-300">${formatRupiah(calc.fee)}</td>
+            <td class="py-3.5 text-slate-600 dark:text-slate-300">${formatRupiah(calc.transport)}</td>
+            <td class="py-3.5 font-bold ${sisa <= 0 ? 'text-red-500 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400'}">${sisa} / ${s.paket}</td>
             <td class="py-3.5">${fileLink}</td>
             <td class="py-3.5 text-center flex items-center justify-center gap-1.5">
               ${tombolPerpanjanganAdmin}
-              <button onclick="hapusAnak('${s.id}')" class="bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white px-2.5 py-1 rounded-lg font-semibold transition-all">Hapus</button>
+              <button onclick="hapusAnak('${s.id}')" class="bg-red-500/10 text-red-500 dark:text-red-400 hover:bg-red-500 hover:text-white px-2.5 py-1 rounded-lg font-semibold transition-all">Hapus</button>
             </td>
           </tr>
         `;
@@ -898,30 +963,30 @@
       grid.innerHTML = '';
 
       window.dataGuru.forEach(g => {
-        let mapelList = (g.mapel || []).map(m => `<span class="bg-slate-800 text-slate-300 text-[10px] sm:text-[11px] px-2 py-0.5 rounded-md font-medium">${m}</span>`).join(' ');
+        let mapelList = (g.mapel || []).map(m => `<span class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[10px] sm:text-[11px] px-2 py-0.5 rounded-md font-medium">${m}</span>`).join(' ');
 
         let fotoHtml = g.fotoUrl ? 
           `<img src="${g.fotoUrl}" alt="${g.nama}" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl object-cover border border-amber-500/30 shadow-inner flex-shrink-0">` : 
-          `<div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-amber-400/15 border border-amber-400/30 flex items-center justify-center text-amber-400 font-bold text-base sm:text-lg shadow-inner flex-shrink-0">👨‍🏫</div>`;
+          `<div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-600 dark:text-amber-400 font-bold text-base shadow-inner flex-shrink-0">👨‍🏫</div>`;
 
         grid.innerHTML += `
-          <div class="glass-card rounded-2xl p-4 sm:p-5 space-y-3.5 flex flex-col justify-between hover:border-amber-500/30 transition-all shadow-lg">
+          <div class="bg-white dark:bg-[#1e293b] rounded-2xl p-5 border border-slate-200 dark:border-slate-800 space-y-3.5 flex flex-col justify-between hover:border-amber-500/30 transition-all shadow-sm">
             <div class="space-y-2.5">
               <div class="flex justify-between items-start">
                 <div class="flex items-center gap-3">
                   ${fotoHtml}
                   <div>
-                    <h3 class="font-extrabold text-white text-sm sm:text-base">${g.nama}</h3>
-                    <p class="text-xs text-slate-400 mt-0.5 flex items-center gap-1">📞 ${g.hp || '-'}</p>
+                    <h3 class="font-extrabold text-slate-900 dark:text-white text-sm sm:text-base">${g.nama}</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5 flex items-center gap-1">📞 ${g.hp || '-'}</p>
                   </div>
                 </div>
                 <div class="flex gap-1">
-                  <button onclick="bukaModalEditGuru('${g.id}')" class="bg-sky-500/10 hover:bg-sky-500 text-sky-400 hover:text-white p-1.5 sm:p-2 rounded-xl text-xs transition-all" title="Edit Guru">✏️</button>
-                  <button onclick="hapusGuru('${g.id}', '${g.fotoFilePath || ''}')" class="bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white p-1.5 sm:p-2 rounded-xl text-xs transition-all" title="Hapus Guru">🗑️</button>
+                  <button onclick="bukaModalEditGuru('${g.id}')" class="bg-sky-500/10 hover:bg-sky-500 text-sky-600 dark:text-sky-400 hover:text-white p-1.5 sm:p-2 rounded-xl text-xs transition-all" title="Edit Guru">✏️</button>
+                  <button onclick="hapusGuru('${g.id}', '${g.fotoFilePath || ''}')" class="bg-red-500/10 hover:bg-red-500 text-red-500 dark:text-red-400 hover:text-white p-1.5 sm:p-2 rounded-xl text-xs transition-all" title="Hapus Guru">🗑️</button>
                 </div>
               </div>
               <div>
-                <p class="text-[10px] sm:text-[11px] text-slate-400 font-medium mb-1">Mata Pelajaran:</p>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mb-1">Mata Pelajaran:</p>
                 <div class="flex flex-wrap gap-1">${mapelList || '-'}</div>
               </div>
             </div>
@@ -936,7 +1001,7 @@
       container.innerHTML = '';
 
       if (window.dataGuru.length === 0 && window.dataSiswa.length === 0) {
-        container.innerHTML = `<div class="glass-card p-5 rounded-2xl text-center text-xs text-slate-400">Belum ada data guru atau anak terdaftar.</div>`;
+        container.innerHTML = `<div class="bg-white dark:bg-[#1e293b] p-5 rounded-2xl text-center text-xs text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-800">Belum ada data guru atau anak terdaftar.</div>`;
         return;
       }
 
@@ -947,7 +1012,7 @@
       });
 
       if (daftarNamaGuru.size === 0) {
-        container.innerHTML = `<div class="glass-card p-5 rounded-2xl text-center text-xs text-slate-400">Belum ada guru yang terdaftar atau ditugaskan.</div>`;
+        container.innerHTML = `<div class="bg-white dark:bg-[#1e293b] p-5 rounded-2xl text-center text-xs text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-800">Belum ada guru yang terdaftar atau ditugaskan.</div>`;
         return;
       }
 
@@ -960,11 +1025,11 @@
         let cardSiswaHtml = '';
 
         let fotoHeaderHtml = (dataObjGuru && dataObjGuru.fotoUrl) ? 
-          `<img src="${dataObjGuru.fotoUrl}" alt="${namaGuru}" class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl object-cover border border-amber-400/30 flex-shrink-0 shadow-inner">` :
-          `<div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-amber-400/15 border border-amber-400/30 flex items-center justify-center text-amber-400 font-bold text-base sm:text-lg shadow-inner flex-shrink-0">👨‍🏫</div>`;
+          `<img src="${dataObjGuru.fotoUrl}" alt="${namaGuru}" class="w-10 h-10 rounded-xl object-cover border border-amber-500/30 flex-shrink-0 shadow-inner">` :
+          `<div class="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-600 dark:text-amber-400 font-bold text-base shadow-inner flex-shrink-0">👨‍🏫</div>`;
 
         if (siswaDihandle.length === 0) {
-          cardSiswaHtml = `<div class="text-xs text-slate-400 italic p-3 text-center">Belum ada anak didik yang ditugaskan ke guru ini.</div>`;
+          cardSiswaHtml = `<div class="text-xs text-slate-500 dark:text-slate-400 italic p-3 text-center">Belum ada anak didik yang ditugaskan ke guru ini.</div>`;
         } else {
           siswaDihandle.forEach(s => {
             const terisi = s.terisi || 0;
@@ -976,12 +1041,12 @@
               const isTerisi = detailSesi.terisi;
 
               sesiBoxes += `
-                <div class="bg-[#0f172a] border ${isTerisi ? 'border-emerald-500/40' : 'border-slate-800'} p-3 rounded-xl space-y-1">
+                <div class="bg-slate-50 dark:bg-[#0f172a] border ${isTerisi ? 'border-emerald-500/40' : 'border-slate-200 dark:border-slate-800'} p-3 rounded-xl space-y-1">
                   <div class="flex justify-between items-center">
-                    <span class="text-[10px] sm:text-[11px] font-bold ${isTerisi ? 'text-emerald-400' : 'text-slate-400'}">Sesi ${i}</span>
-                    <span class="text-[9px] sm:text-[10px] text-slate-500">${tgl}</span>
+                    <span class="text-[11px] font-bold ${isTerisi ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'}">Sesi ${i}</span>
+                    <span class="text-[10px] text-slate-400">${tgl}</span>
                   </div>
-                  <p class="text-[10px] sm:text-[11px] text-slate-300 truncate font-medium">Materi: ${mat}</p>
+                  <p class="text-[11px] text-slate-700 dark:text-slate-300 truncate font-medium">Materi: ${mat}</p>
                 </div>
               `;
             }
@@ -989,19 +1054,19 @@
             const namaFileLaporan = `Laporan Privat ${s.kegiatan} ${s.anak} dengan ${namaGuru}.pdf`;
             let lapLink = s.laporanUrl ? 
               `<div class="flex items-center gap-1.5 flex-wrap">
-                 <a href="${s.laporanUrl}" target="_blank" class="text-amber-400 font-bold underline text-xs">Sudah Upload</a>
-                 <button onclick="downloadFileSupabase('${s.laporanUrl}', '${namaFileLaporan}')" class="bg-amber-400/10 text-amber-300 hover:bg-amber-400 hover:text-slate-950 px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all">⬇️ Download File</button>
+                 <a href="${s.laporanUrl}" target="_blank" class="text-amber-600 dark:text-amber-400 font-bold underline text-xs">Sudah Upload</a>
+                 <button onclick="downloadFileSupabase('${s.laporanUrl}', '${namaFileLaporan}')" class="bg-amber-500/10 text-amber-600 dark:text-amber-300 hover:bg-amber-500 hover:text-white px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all">⬇️ Download File</button>
                </div>` : 
-              `<span class="text-red-400 font-medium text-xs">Belum Upload</span>`;
+              `<span class="text-red-500 dark:text-red-400 font-medium text-xs">Belum Upload</span>`;
 
             cardSiswaHtml += `
-              <div class="bg-[#0f172a] border border-slate-800 rounded-2xl p-4 sm:p-5 space-y-3.5 shadow-md">
-                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2.5 border-b border-slate-800 pb-3">
+              <div class="bg-slate-50 dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 rounded-2xl p-4 sm:p-5 space-y-3.5 shadow-sm">
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2.5 border-b border-slate-200 dark:border-slate-800 pb-3">
                   <div>
-                    <h4 class="font-extrabold text-white text-sm sm:text-base">👤 ${s.anak} <span class="text-xs text-amber-400 font-normal">(${s.kegiatan})</span></h4>
+                    <h4 class="font-extrabold text-slate-900 dark:text-white text-sm sm:text-base">👤 ${s.anak} <span class="text-xs text-amber-600 dark:text-amber-400 font-normal">(${s.kegiatan})</span></h4>
                   </div>
                   <div>
-                    <button onclick="bukaModalSesi('${s.id}')" class="w-full sm:w-auto bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs px-3 py-2 rounded-xl shadow transition-all flex items-center justify-center gap-1.5">
+                    <button onclick="bukaModalSesi('${s.id}')" class="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-3 py-2 rounded-xl shadow transition-all flex items-center justify-center gap-1.5">
                       ✏️ Input / Edit Sesi & Laporan
                     </button>
                   </div>
@@ -1011,11 +1076,11 @@
                   ${sesiBoxes}
                 </div>
 
-                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center text-xs gap-2 pt-1 border-t border-slate-800/80">
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center text-xs gap-2 pt-1 border-t border-slate-200 dark:border-slate-800">
                   <div>
-                    <span class="text-slate-400">Laporan:</span> ${lapLink}
+                    <span class="text-slate-500 dark:text-slate-400">Laporan:</span> ${lapLink}
                   </div>
-                  <div class="text-slate-400">Total: <b class="text-white">${s.paket}</b> | Terisi: <b class="text-emerald-400">${terisi}/${s.paket}</b></div>
+                  <div class="text-slate-500 dark:text-slate-400">Total: <b class="text-slate-900 dark:text-white">${s.paket}</b> | Terisi: <b class="text-emerald-600 dark:text-emerald-400">${terisi}/${s.paket}</b></div>
                 </div>
               </div>
             `;
@@ -1023,24 +1088,22 @@
         }
 
         container.innerHTML += `
-          <div class="glass-card rounded-2xl overflow-hidden shadow-xl border border-slate-800">
-            <!-- Header Guru (Klik untuk Dropdown) -->
-            <button onclick="toggleDropdownGuru('${guruIdKey}')" class="w-full flex items-center justify-between p-4 sm:p-5 bg-[#1e293b]/70 hover:bg-[#1e293b] transition-all text-left">
+          <div class="bg-white dark:bg-[#1e293b] rounded-2xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-800">
+            <button onclick="toggleDropdownGuru('${guruIdKey}')" class="w-full flex items-center justify-between p-4 sm:p-5 bg-slate-50/70 dark:bg-[#1e293b]/70 hover:bg-slate-100 dark:hover:bg-[#1e293b] transition-all text-left">
               <div class="flex items-center gap-3">
                 ${fotoHeaderHtml}
                 <div>
-                  <h3 class="font-extrabold text-white text-sm sm:text-base">${namaGuru}</h3>
-                  <p class="text-[11px] sm:text-xs text-slate-400">Klik untuk melihat anak didik & sesi pembelajaran</p>
+                  <h3 class="font-extrabold text-slate-900 dark:text-white text-sm sm:text-base">${namaGuru}</h3>
+                  <p class="text-xs text-slate-500 dark:text-slate-400">Klik untuk melihat anak didik & sesi pembelajaran</p>
                 </div>
               </div>
               <div class="flex items-center gap-2">
-                <span class="text-xs px-2.5 py-1 bg-slate-800 text-slate-300 rounded-full font-semibold">${siswaDihandle.length} Siswa</span>
-                <span id="dropdown-icon-${guruIdKey}" class="text-amber-400 font-bold text-lg transition-transform duration-300 inline-block">&#9662;</span>
+                <span class="text-xs px-2.5 py-1 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-full font-semibold">${siswaDihandle.length} Siswa</span>
+                <span id="dropdown-icon-${guruIdKey}" class="text-amber-500 font-bold text-lg transition-transform duration-300 inline-block">&#9662;</span>
               </div>
             </button>
 
-            <!-- Isi Konten Dropdown (Anak Bimbingan & Sesi) -->
-            <div id="dropdown-content-${guruIdKey}" class="hidden p-4 sm:p-5 space-y-4 border-t border-slate-800 bg-[#0f172a]/40">
+            <div id="dropdown-content-${guruIdKey}" class="hidden p-4 sm:p-5 space-y-4 border-t border-slate-200 dark:border-slate-800 bg-slate-100/50 dark:bg-[#0f172a]/40">
               ${cardSiswaHtml}
             </div>
           </div>
@@ -1054,26 +1117,26 @@
       tbody.innerHTML = '';
 
       if (!window.dataArsip || window.dataArsip.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-500">Belum ada file dokumen atau laporan yang diunggah di arsip.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-400">Belum ada file dokumen atau laporan yang diunggah di arsip.</td></tr>`;
         return;
       }
 
       window.dataArsip.forEach(item => {
         const jenisLabel = item.jenis === 'pendaftaran' ? '📄 Dokumen Pendaftaran' : '📊 Laporan Perkembangan';
-        const jenisBadgeClass = item.jenis === 'pendaftaran' ? 'text-amber-400' : 'text-amber-300';
+        const jenisBadgeClass = item.jenis === 'pendaftaran' ? 'text-amber-600 dark:text-amber-400' : 'text-amber-500 dark:text-amber-300';
         const namaFileDownload = item.jenis === 'pendaftaran' ? `Form_Pendaftaran_${item.anak}.pdf` : `Laporan_Privat_${item.kegiatan}_${item.anak}.pdf`;
 
         tbody.innerHTML += `
-          <tr class="hover:bg-slate-800/40 transition-colors">
-            <td class="py-3.5 font-bold text-white">${item.anak}</td>
-            <td class="py-3.5 text-slate-300">${item.guru || '-'}</td>
-            <td class="py-3.5 text-slate-400">${item.kegiatan || '-'}</td>
+          <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+            <td class="py-3.5 font-bold text-slate-900 dark:text-white">${item.anak}</td>
+            <td class="py-3.5 text-slate-600 dark:text-slate-300">${item.guru || '-'}</td>
+            <td class="py-3.5 text-slate-500 dark:text-slate-400">${item.kegiatan || '-'}</td>
             <td class="py-3.5 ${jenisBadgeClass} font-medium">${jenisLabel}</td>
-            <td class="py-3.5 text-slate-300">${item.tanggalUpload || '-'}</td>
+            <td class="py-3.5 text-slate-600 dark:text-slate-300">${item.tanggalUpload || '-'}</td>
             <td class="py-3.5 text-center space-x-1.5">
-              <a href="${item.fileUrl}" target="_blank" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all">👁️ Lihat</a>
+              <a href="${item.fileUrl}" target="_blank" class="bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all">👁️ Lihat</a>
               <button onclick="downloadFileSupabase('${item.fileUrl}', '${namaFileDownload}')" class="bg-sky-600 hover:bg-sky-500 text-white px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all">⬇️ Download</button>
-              <button onclick="hapusArsipDokumen('${item.id}', '${item.filePath || ''}')" class="bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all">🗑️ Hapus</button>
+              <button onclick="hapusArsipDokumen('${item.id}', '${item.filePath || ''}')" class="bg-red-500/10 hover:bg-red-500 text-red-500 dark:text-red-400 hover:text-white px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all">🗑️ Hapus</button>
             </td>
           </tr>
         `;
@@ -1082,14 +1145,8 @@
 
     window.hapusArsipDokumen = async function(arsipId, filePath) {
       if (confirm("Yakin ingin menghapus dokumen ini dari arsip secara permanen?")) {
-        if (filePath) {
-          await deleteFromSupabase(filePath);
-        }
-        try {
-          await remove(ref(db, `arsip/${arsipId}`));
-        } catch (err) {
-          console.error("Gagal menghapus arsip:", err);
-        }
+        if (filePath) await deleteFromSupabase(filePath);
+        try { await remove(ref(db, `arsip/${arsipId}`)); } catch (err) { console.error(err); }
       }
     };
 
@@ -1099,38 +1156,38 @@
       tbody.innerHTML = '';
 
       if (!window.dataRekapFee || window.dataRekapFee.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="10" class="text-center py-8 text-slate-500">Belum ada data rekap fee yang diarsipkan. Sesi yang habis akan otomatis masuk ke sini.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="10" class="text-center py-8 text-slate-400">Belum ada data rekap fee yang diarsipkan. Sesi yang habis akan otomatis masuk ke sini.</td></tr>`;
         return;
       }
 
       window.dataRekapFee.forEach(r => {
-        let lapText = r.laporanUrl ? `<span class="text-emerald-400 font-semibold">Sudah Upload</span>` : `<span class="text-red-400 font-semibold">Belum Upload</span>`;
+        let lapText = r.laporanUrl ? `<span class="text-emerald-600 dark:text-emerald-400 font-semibold">Sudah Upload</span>` : `<span class="text-red-500 dark:text-red-400 font-semibold">Belum Upload</span>`;
         
         let statusBadge = '';
         if (r.laporanUrl) {
-          statusBadge = `<span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full text-[10px] font-bold">Siap dicairkan</span>`;
+          statusBadge = `<span class="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full text-[10px] font-bold">Siap dicairkan</span>`;
         } else {
-          statusBadge = `<span class="bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded-full text-[10px] font-bold">Belum bisa</span>`;
+          statusBadge = `<span class="bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded-full text-[10px] font-bold">Belum bisa</span>`;
         }
 
-        let tanggalKecil = r.tanggalSelesai ? `<div class="text-[9px] sm:text-[10px] text-amber-300 font-medium mt-0.5">Selesai: ${r.tanggalSelesai}</div>` : '';
+        let tanggalKecil = r.tanggalSelesai ? `<div class="text-[10px] text-amber-600 dark:text-amber-300 font-medium mt-0.5">Selesai: ${r.tanggalSelesai}</div>` : '';
 
         tbody.innerHTML += `
-          <tr class="hover:bg-slate-800/40 transition-colors">
-            <td class="py-3.5 font-bold text-white">
+          <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+            <td class="py-3.5 font-bold text-slate-900 dark:text-white">
               ${r.anak}
               ${tanggalKecil}
             </td>
-            <td class="py-3.5 text-slate-300">${r.skemaText} - ${r.kegiatan}</td>
-            <td class="py-3.5 text-slate-300">${r.guru || '-'}</td>
-            <td class="py-3.5 text-slate-400">${r.paket} Sesi</td>
-            <td class="py-3.5 text-slate-300">${formatRupiah(r.feePerSesi)}</td>
-            <td class="py-3.5 text-slate-300">${formatRupiah(r.transportPerSesi)}</td>
-            <td class="py-3.5 font-extrabold text-amber-400">${formatRupiah(r.totalHakGuru)}</td>
+            <td class="py-3.5 text-slate-600 dark:text-slate-300">${r.skemaText} - ${r.kegiatan}</td>
+            <td class="py-3.5 text-slate-600 dark:text-slate-300">${r.guru || '-'}</td>
+            <td class="py-3.5 text-slate-500 dark:text-slate-400">${r.paket} Sesi</td>
+            <td class="py-3.5 text-slate-600 dark:text-slate-300">${formatRupiah(r.feePerSesi)}</td>
+            <td class="py-3.5 text-slate-600 dark:text-slate-300">${formatRupiah(r.transportPerSesi)}</td>
+            <td class="py-3.5 font-extrabold text-amber-600 dark:text-amber-400">${formatRupiah(r.totalHakGuru)}</td>
             <td class="py-3.5">${lapText}</td>
             <td class="py-3.5 text-center">${statusBadge}</td>
             <td class="py-3.5 text-center">
-              <button onclick="hapusRekapFee('${r.id}')" class="bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all">🗑️ Hapus</button>
+              <button onclick="hapusRekapFee('${r.id}')" class="bg-red-500/10 hover:bg-red-500 text-red-500 dark:text-red-400 hover:text-white px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all">🗑️ Hapus</button>
             </td>
           </tr>
         `;
@@ -1148,10 +1205,7 @@
       const manualFee = parseFloat(document.getElementById('inputManualFeeValue').value) || 0;
       const fileInput = document.getElementById('fileAnakInput');
 
-      if (!anak) {
-        alert("Nama anak wajib diisi!");
-        return;
-      }
+      if (!anak) { alert("Nama anak wajib diisi!"); return; }
 
       let uploadedFile = null;
       if (fileInput.files.length > 0) {
@@ -1159,14 +1213,7 @@
       }
 
       const dataBaru = {
-        anak,
-        tipeHarga,
-        wilayah,
-        kegiatan,
-        guru,
-        jarak,
-        paket,
-        manualFee,
+        anak, tipeHarga, wilayah, kegiatan, guru, jarak, paket, manualFee,
         terisi: 0,
         fileUrl: uploadedFile ? uploadedFile.url : null,
         filePath: uploadedFile ? uploadedFile.path : null,
@@ -1177,26 +1224,17 @@
 
       try {
         await push(ref(db, 'siswa'), dataBaru);
-
         if (uploadedFile) {
           await push(ref(db, 'arsip'), {
-            anak,
-            guru: 'Admin',
-            kegiatan,
-            jenis: 'pendaftaran',
-            fileUrl: uploadedFile.url,
-            filePath: uploadedFile.path,
-            tanggalUpload: uploadedFile.tanggalUpload
+            anak, guru: 'Admin', kegiatan, jenis: 'pendaftaran',
+            fileUrl: uploadedFile.url, filePath: uploadedFile.path, tanggalUpload: uploadedFile.tanggalUpload
           });
         }
-
         document.getElementById('newNamaAnak').value = '';
         document.getElementById('inputManualFeeValue').value = '';
         fileInput.value = '';
         tutupModalAnak();
-      } catch (err) {
-        console.error(err);
-      }
+      } catch (err) { console.error(err); }
     };
 
     window.simpanGuruBaru = async function() {
@@ -1206,10 +1244,7 @@
       const checkboxes = document.querySelectorAll('input[name="mapelGuruOption"]:checked');
       const mapel = Array.from(checkboxes).map(cb => cb.value);
 
-      if (!nama) {
-        alert("Nama guru wajib diisi!");
-        return;
-      }
+      if (!nama) { alert("Nama guru wajib diisi!"); return; }
 
       let uploadedFoto = null;
       if (fotoInput.files.length > 0) {
@@ -1218,21 +1253,16 @@
 
       try {
         await push(ref(db, 'guru'), { 
-          nama, 
-          hp, 
-          mapel,
+          nama, hp, mapel,
           fotoUrl: uploadedFoto ? uploadedFoto.url : null,
           fotoFilePath: uploadedFoto ? uploadedFoto.path : null
         });
-
         document.getElementById('newNamaGuru').value = '';
         document.getElementById('newHpGuru').value = '';
         fotoInput.value = '';
         checkboxes.forEach(cb => cb.checked = false);
         tutupModalGuru();
-      } catch (err) {
-        console.error(err);
-      }
+      } catch (err) { console.error(err); }
     };
 
     window.bukaModalEditGuru = function(id) {
@@ -1260,18 +1290,13 @@
       const checkboxes = document.querySelectorAll('input[name="editMapelGuruOption"]:checked');
       const mapel = Array.from(checkboxes).map(cb => cb.value);
 
-      if (!nama) {
-        alert("Nama guru wajib diisi!");
-        return;
-      }
+      if (!nama) { alert("Nama guru wajib diisi!"); return; }
 
       const guruLama = window.dataGuru.find(g => g.id === id);
       let updateData = { nama, hp, mapel };
 
       if (fotoInput.files.length > 0) {
-        if (guruLama && guruLama.fotoFilePath) {
-          await deleteFromSupabase(guruLama.fotoFilePath);
-        }
+        if (guruLama && guruLama.fotoFilePath) await deleteFromSupabase(guruLama.fotoFilePath);
         const uploadedFoto = await uploadToSupabase(fotoInput.files[0], 'foto_guru');
         if (uploadedFoto) {
           updateData.fotoUrl = uploadedFoto.url;
@@ -1282,9 +1307,7 @@
       try {
         await update(ref(db, `guru/${id}`), updateData);
         tutupModalEditGuru();
-      } catch (err) {
-        console.error(err);
-      }
+      } catch (err) { console.error(err); }
     };
 
     window.bukaModalSesi = function(id) {
@@ -1300,15 +1323,15 @@
       for(let i = 1; i <= siswa.paket; i++) {
         const detail = (siswa.sesiList && siswa.sesiList[i]) || {};
         slotInputs.innerHTML += `
-          <div class="bg-[#0f172a] p-3 rounded-2xl border border-slate-800 space-y-1.5">
-            <span class="font-extrabold text-white text-xs">Sesi ${i}</span>
+          <div class="bg-slate-100 dark:bg-[#0f172a] p-3 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-1.5">
+            <span class="font-extrabold text-slate-900 dark:text-white text-xs">Sesi ${i}</span>
             <div>
-              <label class="text-[10px] text-slate-400 font-medium">Tanggal</label>
-              <input type="date" id="tgl_sesi_${i}" value="${detail.tanggal || ''}" class="w-full bg-[#1e293b] border border-slate-700 rounded-xl p-2 text-white text-xs outline-none focus:border-amber-400">
+              <label class="text-[10px] text-slate-500 dark:text-slate-400 font-medium">Tanggal</label>
+              <input type="date" id="tgl_sesi_${i}" value="${detail.tanggal || ''}" class="w-full bg-white dark:bg-[#1e293b] border border-slate-300 dark:border-slate-700 rounded-xl p-2 text-slate-900 dark:text-white text-xs outline-none focus:border-amber-500">
             </div>
             <div>
-              <label class="text-[10px] text-slate-400 font-medium">Materi</label>
-              <input type="text" id="mat_sesi_${i}" value="${detail.materi || ''}" placeholder="Materi hari ini..." class="w-full bg-[#1e293b] border border-slate-700 rounded-xl p-2 text-white text-xs outline-none focus:border-amber-400">
+              <label class="text-[10px] text-slate-500 dark:text-slate-400 font-medium">Materi</label>
+              <input type="text" id="mat_sesi_${i}" value="${detail.materi || ''}" placeholder="Materi hari ini..." class="w-full bg-white dark:bg-[#1e293b] border border-slate-300 dark:border-slate-700 rounded-xl p-2 text-slate-900 dark:text-white text-xs outline-none focus:border-amber-500">
             </div>
           </div>
         `;
@@ -1316,9 +1339,9 @@
 
       const previewDiv = document.getElementById('laporanPreview');
       if (siswa.laporanUrl) {
-        previewDiv.innerHTML = `<a href="${siswa.laporanUrl}" target="_blank" class="text-amber-400 text-xs underline font-medium">File Laporan Saat Ini Terpasang</a>`;
+        previewDiv.innerHTML = `<a href="${siswa.laporanUrl}" target="_blank" class="text-amber-600 dark:text-amber-400 text-xs underline font-medium">File Laporan Saat Ini Terpasang</a>`;
       } else {
-        previewDiv.innerHTML = `<span class="text-slate-500 text-xs">Belum ada file laporan.</span>`;
+        previewDiv.innerHTML = `<span class="text-slate-400 text-xs">Belum ada file laporan.</span>`;
       }
 
       document.getElementById('fileLaporanInput').value = '';
@@ -1337,21 +1360,13 @@
         const tgl = document.getElementById(`tgl_sesi_${i}`).value;
         const mat = document.getElementById(`mat_sesi_${i}`).value.trim();
         const isTerisi = (tgl !== '' || mat !== '');
-        
         if (isTerisi) terisiCount++;
 
-        sesiList[i] = {
-          tanggal: tgl,
-          materi: mat,
-          terisi: isTerisi
-        };
+        sesiList[i] = { tanggal: tgl, materi: mat, terisi: isTerisi };
       }
 
       const fileInput = document.getElementById('fileLaporanInput');
-      let updateData = {
-        sesiList,
-        terisi: terisiCount
-      };
+      let updateData = { sesiList, terisi: terisiCount };
 
       if (fileInput.files.length > 0) {
         const uploaded = await uploadToSupabase(fileInput.files[0], 'laporan_anak');
@@ -1361,13 +1376,8 @@
           updateData.laporanTanggalUpload = uploaded.tanggalUpload;
 
           await push(ref(db, 'arsip'), {
-            anak: siswa.anak,
-            guru: siswa.guru || 'Pengajar',
-            kegiatan: siswa.kegiatan,
-            jenis: 'laporan',
-            fileUrl: uploaded.url,
-            filePath: uploaded.path,
-            tanggalUpload: uploaded.tanggalUpload
+            anak: siswa.anak, guru: siswa.guru || 'Pengajar', kegiatan: siswa.kegiatan,
+            jenis: 'laporan', fileUrl: uploaded.url, filePath: uploaded.path, tanggalUpload: uploaded.tanggalUpload
           });
         }
       }
@@ -1379,22 +1389,12 @@
         const calc = hitungFeeDanTransport(siswa);
         const totalHakGuru = (calc.fee + calc.transport) * siswa.paket;
         const skemaText = siswa.tipeHarga === 'lama' ? `Harga Lama (${siswa.wilayah})` : `Harga Baru`;
-
-        const indexTerakhir = siswa.paket; 
-        const tanggalPertemuanTerakhir = (sesiList[indexTerakhir] && sesiList[indexTerakhir].tanggal) ? sesiList[indexTerakhir].tanggal : new Date().toISOString().slice(0, 10);
+        const tanggalPertemuanTerakhir = (sesiList[siswa.paket] && sesiList[siswa.paket].tanggal) ? sesiList[siswa.paket].tanggal : new Date().toISOString().slice(0, 10);
 
         const riwayatOtomatis = {
-          siswaId: siswa.id,
-          anak: siswa.anak,
-          skemaText: skemaText,
-          kegiatan: siswa.kegiatan,
-          guru: siswa.guru || '-',
-          paket: siswa.paket,
-          feePerSesi: calc.fee,
-          transportPerSesi: calc.transport,
-          totalHakGuru: totalHakGuru,
-          laporanUrl: urlBaruDiupload,
-          tanggalSelesai: tanggalPertemuanTerakhir
+          siswaId: siswa.id, anak: siswa.anak, skemaText, kegiatan: siswa.kegiatan,
+          guru: siswa.guru || '-', paket: siswa.paket, feePerSesi: calc.fee,
+          transportPerSessi: calc.transport, totalHakGuru, laporanUrl: urlBaruDiupload, tanggalSelesai: tanggalPertemuanTerakhir
         };
 
         await push(ref(db, 'rekap_fee'), riwayatOtomatis);
@@ -1404,18 +1404,14 @@
       if (siswa.sudahMasukRekap || sisaBaru <= 0) {
         const targetRekap = window.dataRekapFee.find(r => r.siswaId === siswa.id);
         if (targetRekap) {
-          await update(ref(db, `rekap_fee/${targetRekap.id}`), {
-            laporanUrl: urlBaruDiupload
-          });
+          await update(ref(db, `rekap_fee/${targetRekap.id}`), { laporanUrl: urlBaruDiupload });
         }
       }
 
       try {
         await update(ref(db, `siswa/${id}`), updateData);
         tutupModalSesi();
-      } catch (err) {
-        console.log(err);
-      }
+      } catch (err) { console.log(err); }
     };
 
     window.hapusAnak = async function(id) {
@@ -1426,9 +1422,7 @@
 
     window.hapusGuru = async function(id, fotoFilePath) {
       if(confirm("Yakin ingin menghapus data guru ini?")) {
-        if (fotoFilePath) {
-          await deleteFromSupabase(fotoFilePath);
-        }
+        if (fotoFilePath) await deleteFromSupabase(fotoFilePath);
         await remove(ref(db, `guru/${id}`));
       }
     };
@@ -1439,12 +1433,7 @@
 
       if(confirm(`Perpanjang paket untuk ${siswa.anak}? Sesi akan direset untuk paket baru.`)) {
         await update(ref(db, `siswa/${id}`), {
-          terisi: 0,
-          sesiList: {},
-          laporanUrl: null,
-          laporanFilePath: null,
-          laporanTanggalUpload: null,
-          sudahMasukRekap: false
+          terisi: 0, sesiList: {}, laporanUrl: null, laporanFilePath: null, laporanTanggalUpload: null, sudahMasukRekap: false
         });
       }
     };
