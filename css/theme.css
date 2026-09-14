@@ -1,0 +1,861 @@
+
+html { color-scheme: light !important; background:#f4f6f4 !important; }
+html, html.dark { background:#f4f6f4 !important; }
+body { background:#f4f6f4 !important; color:#1f2937 !important; }
+#themeToggle, [id*="themeToggle"], button[onclick*="toggleTheme"] { display:none !important; }
+
+/* =========================================================
+   JADWAL HOME VISIT — CLEAN / NO-OVERFLOW LAYOUT
+   Visual-only refinement. Existing handlers and logic untouched.
+   ========================================================= */
+#page-jadwal{
+  min-width:0!important;
+  width:100%!important;
+  overflow:visible!important;
+}
+#page-jadwal .jadwal-hero{
+  min-width:0;
+  padding:22px 24px!important;
+  border-radius:20px!important;
+  border:1px solid rgba(64,94,90,.09)!important;
+  background:linear-gradient(110deg,#f8f3df 0%,#ffffff 62%,#f5faf8 100%)!important;
+  box-shadow:var(--ui-shadow-soft)!important;
+  position:relative;
+  overflow:hidden;
+}
+#page-jadwal .jadwal-hero::after{
+  content:"";
+  position:absolute;
+  width:190px;height:190px;
+  right:-75px;top:-105px;
+  border-radius:50%;
+  background:rgba(214,169,27,.10);
+  pointer-events:none;
+}
+#page-jadwal .jadwal-hero-copy{
+  position:relative;
+  z-index:1;
+  max-width:720px;
+}
+#page-jadwal .jadwal-eyebrow{
+  color:#9c7a12!important;
+  margin-bottom:4px;
+}
+#page-jadwal .jadwal-hero-title{
+  color:var(--ui-ink)!important;
+  font-size:24px!important;
+  line-height:1.2!important;
+  margin:0!important;
+  overflow-wrap:anywhere;
+}
+#page-jadwal .jadwal-hero-subtitle{
+  color:#7b8c89!important;
+  line-height:1.55!important;
+  max-width:620px;
+  overflow-wrap:anywhere;
+}
+#page-jadwal .jadwal-create-btn{
+  flex:0 0 auto;
+  min-height:42px;
+  white-space:nowrap;
+  position:relative;
+  z-index:2;
+}
+#page-jadwal .jadwal-stats{
+  min-width:0;
+}
+#page-jadwal .jadwal-stat-card{
+  min-width:0;
+  min-height:112px;
+  padding:16px 18px!important;
+  border-radius:18px!important;
+  border:1px solid rgba(64,94,90,.08)!important;
+  background:rgba(255,255,255,.94)!important;
+  box-shadow:var(--ui-shadow-soft)!important;
+  position:relative;
+  overflow:hidden;
+}
+#page-jadwal .jadwal-stat-card::after{
+  content:"";
+  position:absolute;
+  width:80px;height:80px;
+  right:-30px;bottom:-38px;
+  border-radius:50%;
+  background:#eef5f3;
+  pointer-events:none;
+}
+#page-jadwal .jadwal-stat-card:nth-child(3)::after{background:#f8f0d9}
+#page-jadwal .jadwal-stat-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  min-width:0;
+  position:relative;
+  z-index:1;
+}
+#page-jadwal .jadwal-stat-label{
+  min-width:0;
+  color:#7b8c89!important;
+  font-size:10px!important;
+  line-height:1.3!important;
+  font-weight:800!important;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  overflow-wrap:anywhere;
+}
+#page-jadwal .jadwal-stat-icon{
+  flex:0 0 30px;
+  width:30px;height:30px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:10px;
+  font-size:14px;
+  font-weight:800;
+}
+#page-jadwal .jadwal-icon-today{background:#eef3f2;color:#55736e}
+#page-jadwal .jadwal-icon-scheduled{background:#e7f5ef;color:#24936f}
+#page-jadwal .jadwal-icon-month{background:#f8f0d9;color:#b28a0c}
+#page-jadwal .jadwal-stat-value{
+  position:relative;
+  z-index:1;
+  color:var(--ui-ink)!important;
+  font-size:27px!important;
+  line-height:1!important;
+  font-weight:800!important;
+  margin-top:13px!important;
+}
+#page-jadwal .jadwal-value-green{color:#24936f!important}
+#page-jadwal .jadwal-value-gold{color:#b28a0c!important}
+#page-jadwal .jadwal-stat-note{
+  position:relative;
+  z-index:1;
+  color:#9aa7a4!important;
+  font-size:10px!important;
+  line-height:1.35!important;
+  margin-top:5px!important;
+}
+#page-jadwal > .bg-slate-900\/70{
+  min-width:0;
+  overflow:hidden;
+}
+#page-jadwal #jadwalBulanLabel{
+  min-width:0;
+  overflow-wrap:anywhere;
+}
+#page-jadwal #kalenderJadwal{
+  min-width:0;
+}
+/* Jadwal form — multi-day selector + mobile friendly */
+#modalJadwal{
+  padding:12px!important;
+}
+#modalJadwal > div{
+  min-width:0!important;
+}
+.jadwal-day-option{
+  display:block;
+  width:100%;
+  text-align:center;
+  padding:10px 6px;
+  border-radius:11px;
+  border:1px solid #334155;
+  background:#0f172a;
+  color:#94a3b8;
+  font-size:11px;
+  font-weight:800;
+  transition:all .18s ease;
+}
+.jadwal-day-option:hover{border-color:#64748b;color:#e2e8f0}
+input[name="jadwalHariForm"]:checked + .jadwal-day-option{
+  background:#10b981;
+  border-color:#34d399;
+  color:#052e24;
+  box-shadow:0 5px 14px rgba(16,185,129,.18);
+}
+#jadwalSyncInfo{overflow-wrap:anywhere}
+@media (max-width:767px){
+  #modalJadwal{align-items:flex-end!important;padding:8px!important}
+  #modalJadwal > div{
+    width:100%!important;
+    max-width:none!important;
+    max-height:92vh!important;
+    border-radius:24px 24px 16px 16px!important;
+    padding:16px!important;
+  }
+  #modalJadwalTitle{font-size:15px!important;line-height:1.3!important;max-width:calc(100% - 40px);}
+  .jadwal-form-grid{grid-template-columns:1fr!important}
+  .jadwal-form-grid > *{grid-column:1 / -1!important}
+  .jadwal-day-option{padding:11px 5px;font-size:11px}
+  #jadwalMingguanBox{padding:12px!important}
+  #jadwalMingguanBox .grid{gap:6px!important}
+  #jadwalCatatan{min-height:86px}
+  #page-jadwal{padding-bottom:6px!important}
+  #page-jadwal .jadwal-hero{
+    padding:16px!important;
+    border-radius:18px!important;
+    gap:12px!important;
+  }
+  #page-jadwal .jadwal-hero-copy{width:100%;}
+  #page-jadwal .jadwal-eyebrow{font-size:9px!important;letter-spacing:.08em!important}
+  #page-jadwal .jadwal-hero-title{font-size:20px!important;line-height:1.18!important}
+  #page-jadwal .jadwal-hero-subtitle{font-size:11px!important;line-height:1.45!important;margin-top:4px!important}
+  #page-jadwal .jadwal-create-btn{
+    min-height:42px!important;
+    width:100%!important;
+    font-size:12px!important;
+  }
+  #page-jadwal .jadwal-stats{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important}
+  #page-jadwal .jadwal-stat-card{
+    min-height:92px!important;
+    padding:11px 10px!important;
+    border-radius:15px!important;
+  }
+  #page-jadwal .jadwal-stat-top{gap:5px!important;align-items:flex-start!important}
+  #page-jadwal .jadwal-stat-label{font-size:8px!important;letter-spacing:.035em!important}
+  #page-jadwal .jadwal-stat-icon{width:24px!important;height:24px!important;flex-basis:24px!important;border-radius:8px!important;font-size:11px!important}
+  #page-jadwal .jadwal-stat-value{font-size:22px!important;margin-top:10px!important}
+  #page-jadwal .jadwal-stat-note{font-size:8px!important;margin-top:4px!important}
+  #page-jadwal > .bg-slate-900\/70{padding:10px!important;border-radius:18px!important}
+  #page-jadwal > .bg-slate-900\/70 > div:first-child{gap:6px!important;margin-bottom:10px!important}
+  #page-jadwal #jadwalBulanLabel{font-size:13px!important}
+  #page-jadwal #kalenderJadwal{gap:3px!important}
+  #page-jadwal #kalenderJadwal > div{min-height:66px!important;border-radius:9px!important;padding:4px!important}
+  #page-jadwal #kalenderJadwal button{padding:4px!important;border-radius:7px!important}
+  #page-jadwal #agendaJadwalList > div{padding:10px!important}
+}
+
+@media (max-width:767px){
+  #page-jadwal .jadwal-hero{
+    padding:18px!important;
+    gap:14px!important;
+  }
+  #page-jadwal .jadwal-hero-title{font-size:21px!important}
+  #page-jadwal .jadwal-hero-subtitle{font-size:12px!important}
+  #page-jadwal .jadwal-create-btn{
+    width:100%;
+    justify-content:center;
+  }
+  #page-jadwal .jadwal-stat-card{min-height:96px;padding:14px 15px!important}
+  #page-jadwal .jadwal-stat-value{font-size:24px!important;margin-top:10px!important}
+}
+@media (min-width:768px) and (max-width:1023px){
+  #page-jadwal .jadwal-hero{padding:20px!important}
+  #page-jadwal .jadwal-hero-title{font-size:22px!important}
+}
+html.dark #page-jadwal .jadwal-hero{
+  background:linear-gradient(110deg,#263a36 0%,#1c302d 68%,#203934 100%)!important;
+  border-color:#2d4743!important;
+}
+html.dark #page-jadwal .jadwal-eyebrow{color:#d9bd45!important}
+html.dark #page-jadwal .jadwal-hero-subtitle{color:#9fb0ad!important}
+html.dark #page-jadwal .jadwal-stat-card{
+  background:#1c302d!important;
+  border-color:#2d4743!important;
+}
+html.dark #page-jadwal .jadwal-stat-label{color:#9fb0ad!important}
+html.dark #page-jadwal .jadwal-stat-note{color:#819490!important}
+html.dark #page-jadwal .jadwal-stat-value{color:#edf5f3!important}
+html.dark #page-jadwal .jadwal-icon-today{background:#263b37;color:#b8cbc6}
+html.dark #page-jadwal .jadwal-icon-scheduled{background:#1e4238;color:#5ed0a7}
+html.dark #page-jadwal .jadwal-icon-month{background:#403a27;color:#e3c95c}
+
+
+/* ===== RESCHEDULE + KALENDER PADAT ===== */
+#modalRescheduleJadwal{padding:12px!important}
+#modalRescheduleJadwal > div{min-width:0!important}
+#page-jadwal #kalenderJadwal > div{min-width:0}
+/* Calendar polish — clearer multi-schedule days + Kazka Edu theme */
+#page-jadwal #kalenderJadwal{
+  display:grid!important;
+  grid-template-columns:repeat(7,minmax(0,1fr))!important;
+  gap:6px!important;
+}
+#page-jadwal #kalenderJadwal > .jadwal-weekday-head{
+  min-height:34px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border:0!important;
+  background:transparent!important;
+}
+.jadwal-day-cell{
+  min-width:0!important;
+  min-height:128px!important;
+  border:1px solid rgba(91,119,114,.20)!important;
+  border-radius:14px!important;
+  background:rgba(8,24,29,.54)!important;
+  padding:7px!important;
+  overflow:hidden!important;
+  display:flex!important;
+  flex-direction:column!important;
+}
+.jadwal-day-cell.is-today{
+  border-color:rgba(217,189,69,.65)!important;
+  background:linear-gradient(180deg,rgba(217,189,69,.09),rgba(8,24,29,.58))!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035);
+}
+.jadwal-day-head{display:flex;align-items:center;justify-content:space-between;gap:5px;min-width:0;margin-bottom:6px}
+.jadwal-day-number{font-size:11px;line-height:1;font-weight:900;color:#cbd9d6}
+.jadwal-day-cell.is-today .jadwal-day-number{color:#e5cc64}
+.jadwal-day-count{font-size:8px;line-height:1;color:#6f8984;font-weight:800;white-space:nowrap}
+.jadwal-day-events{min-width:0;display:flex;flex-direction:column;gap:4px;overflow:hidden}
+.jadwal-calendar-item{display:block;width:100%;text-align:left;border-radius:8px;padding:5px 6px;margin-bottom:4px;border:1px solid rgba(148,163,184,.10);overflow:hidden;transition:transform .15s ease,background .15s ease}
+.jadwal-calendar-item:hover{transform:translateY(-1px)}
+.jadwal-calendar-item .jci-time{font-size:8px;line-height:1.2;font-weight:800;color:#cbd5e1;white-space:nowrap}
+.jadwal-calendar-item .jci-main{display:flex;gap:4px;align-items:center;min-width:0;margin-top:2px}
+.jadwal-calendar-item .jci-name{font-size:9px;line-height:1.25;font-weight:800;color:#fff;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.jadwal-calendar-item .jci-guru{font-size:8px;line-height:1.2;color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px}
+.jadwal-calendar-item.jci-recurring{background:rgba(6,78,59,.58);border-color:rgba(52,211,153,.16)}
+.jadwal-calendar-item.jci-reschedule{background:rgba(120,53,15,.58);border-color:rgba(251,191,36,.18)}
+.jadwal-calendar-item.jci-normal{background:rgba(30,41,59,.88)}
+.jadwal-calendar-more{font-size:9px;font-weight:800;color:#fbbf24;padding:2px 4px}
+@media (min-width:768px){
+  #page-jadwal #kalenderJadwal > div{min-height:122px!important}
+}
+@media (max-width:767px){
+  #modalRescheduleJadwal{align-items:flex-end!important;padding:8px!important}
+  #modalRescheduleJadwal > div{width:100%!important;max-width:none!important;max-height:92vh!important;border-radius:24px 24px 16px 16px!important;padding:16px!important}
+  #modalRescheduleJadwal h3{font-size:15px!important}
+  #page-jadwal #kalenderJadwal > div{min-height:78px!important;padding:4px!important;border-radius:9px!important}
+  .jadwal-calendar-item{padding:4px 4px;margin-bottom:3px;border-radius:7px}
+  .jadwal-calendar-item .jci-time{font-size:7px}
+  .jadwal-calendar-item .jci-name{font-size:8px}
+  .jadwal-calendar-item .jci-guru{font-size:7px}
+}
+
+
+/* =========================================================
+   STAGE 8.1 CLEAN LIGHT — KAZKA EDU LIGHT SAAS SYSTEM
+   Reference direction: clean white SaaS dashboard with soft green
+   surfaces, Kazka gold accents, flat metadata, readable typography.
+   Visual-only. Existing features, logic and data untouched.
+   ========================================================= */
+:root{
+  --kz-light-bg:#f4f6f4;
+  --kz-light-panel:#ffffff;
+  --kz-light-panel-soft:#f8faf9;
+  --kz-light-ink:#1f2937;
+  --kz-light-ink-2:#374151;
+  --kz-light-muted:#7b8790;
+  --kz-light-line:#e7ece9;
+  --kz-light-green:#147d62;
+  --kz-light-green-dark:#0f684f;
+  --kz-light-green-soft:#eaf6f1;
+  --kz-light-gold:#c39a3b;
+  --kz-light-gold-soft:#faf4e5;
+  --kz-light-blue:#4d7898;
+  --kz-light-red:#b85b63;
+  --kz-light-shadow:0 8px 26px rgba(30,55,47,.07);
+  --kz-light-shadow-hover:0 14px 34px rgba(30,55,47,.10);
+}
+
+/* --- Global canvas: one light mode, no dark islands --- */
+html,html.dark{background:var(--kz-light-bg)!important;color-scheme:light!important}
+body,
+body.bg-slate-100,
+body[class*="dark:bg-"]{
+  background:var(--kz-light-bg)!important;
+  color:var(--kz-light-ink)!important;
+}
+body::before,body::after{display:none!important}
+
+/* --- Neutralize dark utility classes used by existing markup --- */
+[id^="page-"] [class*="bg-slate-950"],
+[id^="page-"] [class*="bg-slate-900"],
+[id^="page-"] [class*="bg-slate-800"],
+[id^="page-"] [class*="bg-slate-700"],
+[id^="page-"] [class*="bg-gray-900"],
+[id^="page-"] [class*="bg-gray-800"],
+[id^="page-"] [class*="bg-gray-700"]{
+  background:var(--kz-light-panel)!important;
+  color:var(--kz-light-ink)!important;
+  border-color:var(--kz-light-line)!important;
+}
+[id^="page-"] [class*="border-slate-800"],
+[id^="page-"] [class*="border-slate-700"],
+[id^="page-"] [class*="border-gray-800"],
+[id^="page-"] [class*="border-gray-700"]{
+  border-color:var(--kz-light-line)!important;
+}
+[id^="page-"] [class~="text-white"],
+[id^="page-"] [class*="text-slate-100"],
+[id^="page-"] [class*="text-slate-200"],
+[id^="page-"] [class*="text-slate-300"]{
+  color:var(--kz-light-ink-2)!important;
+}
+
+/* Restore white lettering where the background is intentionally colored. */
+[id^="page-"] button.bg-amber-500,
+[id^="page-"] button.bg-amber-600,
+[id^="page-"] button.bg-emerald-500,
+[id^="page-"] button.bg-emerald-600,
+[id^="page-"] button.bg-green-500,
+[id^="page-"] button.bg-green-600,
+[id^="page-"] [class*="bg-emerald-500"].text-white,
+[id^="page-"] [class*="bg-emerald-600"].text-white,
+[id^="page-"] [class*="bg-green-500"].text-white,
+[id^="page-"] [class*="bg-green-600"].text-white{
+  color:#fff!important;
+}
+
+/* --- Sidebar + top bar --- */
+body>aside,
+.sidebar,
+aside{
+  background:#fff!important;
+  color:var(--kz-light-ink)!important;
+  border-color:var(--kz-light-line)!important;
+  box-shadow:0 8px 28px rgba(30,55,47,.055)!important;
+}
+body>aside *,.sidebar *{color:inherit}
+body>aside .text-slate-600,
+body>aside .text-slate-500,
+body>aside .text-slate-400,
+body>aside .text-slate-300,
+.sidebar .text-slate-600,
+.sidebar .text-slate-500,
+.sidebar .text-slate-400,
+.sidebar .text-slate-300{color:#74817f!important}
+body>aside nav button,
+.sidebar nav button{
+  border-radius:12px!important;
+  background:transparent!important;
+  color:#687573!important;
+  box-shadow:none!important;
+}
+body>aside nav button:hover,
+.sidebar nav button:hover{background:#f2f6f4!important;color:#1f5f4f!important}
+body>aside nav button.tab-active,
+body>aside nav button.bg-amber-500,
+body>aside nav button.bg-amber-600,
+.sidebar nav button.tab-active,
+.sidebar nav button.bg-amber-500,
+.sidebar nav button.bg-amber-600{
+  background:var(--kz-light-green-soft)!important;
+  color:var(--kz-light-green-dark)!important;
+  border-left:3px solid var(--kz-light-green)!important;
+  box-shadow:none!important;
+}
+body>aside img,.sidebar img{filter:none!important}
+
+body>div.flex-1>header,
+nav.md\:hidden{
+  background:rgba(255,255,255,.94)!important;
+  color:var(--kz-light-ink)!important;
+  border-color:var(--kz-light-line)!important;
+  box-shadow:0 4px 18px rgba(30,55,47,.045)!important;
+}
+header .text-slate-900,header .text-white,header .dark\:text-white{color:var(--kz-light-ink)!important}
+
+/* --- Page rhythm and cards: soft, spacious, not boxy --- */
+[id^="page-"]{color:var(--kz-light-ink)!important}
+[id^="page-"]>div,
+[id^="page-"]>section{
+  border-color:var(--kz-light-line)!important;
+}
+[id^="page-"] .bg-white,
+[id^="page-"] [class*="dark:bg-\[\#1e293b\]"]{
+  background:var(--kz-light-panel)!important;
+  color:var(--kz-light-ink)!important;
+  border-color:var(--kz-light-line)!important;
+  box-shadow:var(--kz-light-shadow)!important;
+}
+[id^="page-"] h1,[id^="page-"] h2,[id^="page-"] h3,[id^="page-"] h4{
+  color:var(--kz-light-ink)!important;
+}
+[id^="page-"] p,[id^="page-"] label,[id^="page-"] th,[id^="page-"] td{
+  color:var(--kz-light-ink-2);
+}
+[id^="page-"] .text-slate-400,[id^="page-"] .text-slate-500,[id^="page-"] .text-slate-600,[id^="page-"] .text-gray-400{
+  color:var(--kz-light-muted)!important;
+}
+[id^="page-"] .text-slate-700,[id^="page-"] .text-slate-800,[id^="page-"] .text-slate-900{
+  color:var(--kz-light-ink-2)!important;
+}
+
+/* --- Tables: clean SaaS rows, no mini-cards around metadata --- */
+[id^="page-"] .overflow-x-auto{
+  background:transparent!important;
+  box-shadow:none!important;
+  border-color:var(--kz-light-line)!important;
+}
+[id^="page-"] table{border-collapse:separate!important;border-spacing:0!important}
+[id^="page-"] table thead th{
+  background:transparent!important;
+  color:#8a9594!important;
+  border-bottom:1px solid var(--kz-light-line)!important;
+  font-size:10px!important;
+  letter-spacing:.045em;
+  text-transform:uppercase;
+}
+[id^="page-"] table tbody tr,
+[id^="page-"] table tbody tr:hover{
+  background:transparent!important;
+  box-shadow:none!important;
+  transform:none!important;
+}
+[id^="page-"] table tbody tr+tr{border-top:1px solid #edf1ef!important}
+[id^="page-"] table td{background:transparent!important;border:0!important;vertical-align:middle!important}
+
+/* --- Inputs: crisp white fields with clear dark text --- */
+[id^="page-"] input,
+[id^="page-"] select,
+[id^="page-"] textarea,
+[id^="modal"] input,
+[id^="modal"] select,
+[id^="modal"] textarea{
+  background:#fff!important;
+  color:#25312f!important;
+  border-color:#dce4e0!important;
+  box-shadow:none!important;
+}
+[id^="page-"] input:focus,
+[id^="page-"] select:focus,
+[id^="page-"] textarea:focus,
+[id^="modal"] input:focus,
+[id^="modal"] select:focus,
+[id^="modal"] textarea:focus{
+  border-color:rgba(20,125,98,.48)!important;
+  box-shadow:0 0 0 3px rgba(20,125,98,.09)!important;
+}
+[id^="page-"] input::placeholder,[id^="page-"] textarea::placeholder,
+[id^="modal"] input::placeholder,[id^="modal"] textarea::placeholder{color:#a0aaa8!important}
+
+/* --- Primary action language: Kazka green + restrained gold --- */
+button.bg-amber-500,button.bg-amber-600,
+button.bg-yellow-500,button.bg-yellow-600{
+  background:var(--kz-light-green)!important;
+  color:#fff!important;
+  border-color:transparent!important;
+  box-shadow:0 4px 0 #0e604b,0 9px 20px rgba(20,125,98,.16)!important;
+}
+button.bg-amber-500:hover,button.bg-amber-600:hover,
+button.bg-yellow-500:hover,button.bg-yellow-600:hover{
+  background:#16896b!important;
+  box-shadow:0 6px 0 #0e604b,0 13px 25px rgba(20,125,98,.20)!important;
+}
+button.bg-emerald-500,button.bg-emerald-600,
+button.bg-green-500,button.bg-green-600{
+  color:#fff!important;
+  box-shadow:0 4px 0 #0e604b,0 9px 20px rgba(20,125,98,.15)!important;
+}
+
+/* Secondary buttons */
+button.bg-slate-200,button.bg-slate-300,
+button.bg-gray-200,button.bg-gray-300,
+button[class*="bg-slate-800"],button[class*="bg-slate-700"]{
+  background:#f6f8f7!important;
+  color:#44524f!important;
+  border-color:#dfe6e3!important;
+  box-shadow:0 3px 0 #d7dfdc,0 7px 15px rgba(30,55,47,.05)!important;
+}
+button[class*="bg-slate-800"]:hover,button[class*="bg-slate-700"]:hover{background:#eef3f1!important}
+
+/* --- Status: small, airy, readable --- */
+[id^="page-"] [class*="bg-emerald-100"],
+[id^="page-"] [class*="bg-green-100"]{
+  background:var(--kz-light-green-soft)!important;
+  color:var(--kz-light-green-dark)!important;
+  border-color:transparent!important;
+  box-shadow:none!important;
+}
+[id^="page-"] [class*="bg-amber-100"],
+[id^="page-"] [class*="bg-yellow-100"]{
+  background:var(--kz-light-gold-soft)!important;
+  color:#9a761e!important;
+  border-color:transparent!important;
+  box-shadow:none!important;
+}
+[id^="page-"] [class*="bg-red-100"]{
+  background:#fbeff0!important;color:#a94e57!important;border-color:transparent!important;box-shadow:none!important;
+}
+
+/* --- Jadwal calendar: white cells + green/gold accents, no dark blocks --- */
+#page-jadwal .bg-slate-900\/70,
+#page-jadwal [class*="bg-slate-900"]{
+  background:#fff!important;color:var(--kz-light-ink)!important;border-color:var(--kz-light-line)!important;
+}
+#page-jadwal #jadwalBulanLabel,
+#page-jadwal .font-extrabold.text-white,
+#page-jadwal h3.text-white{color:var(--kz-light-ink)!important}
+#page-jadwal .jadwal-day-option{
+  background:#f7faf8!important;border-color:#dfe7e3!important;color:#6e7b78!important;
+}
+#page-jadwal input[name="jadwalHariForm"]:checked + .jadwal-day-option{
+  background:var(--kz-light-green-soft)!important;border-color:#83c9b2!important;color:var(--kz-light-green-dark)!important;
+}
+#page-jadwal .jadwal-day-cell{
+  background:#fff!important;border-color:#e2e9e6!important;color:var(--kz-light-ink)!important;box-shadow:none!important;
+}
+#page-jadwal .jadwal-day-cell.is-today{
+  background:#fcfaf3!important;border-color:rgba(195,154,59,.48)!important;box-shadow:inset 0 1px 0 rgba(195,154,59,.08)!important;
+}
+#page-jadwal .jadwal-day-number{color:#33403d!important}
+#page-jadwal .jadwal-day-count{color:#9aa5a2!important}
+#page-jadwal .jadwal-calendar-item,
+#page-jadwal .jadwal-calendar-item.jci-normal,
+#page-jadwal .jadwal-calendar-item.jci-recurring,
+#page-jadwal .jadwal-calendar-item.jci-reschedule{
+  background:#f7faf8!important;border:1px solid #e5ebe8!important;color:#263330!important;
+}
+#page-jadwal .jadwal-calendar-item.jci-recurring{background:#edf8f3!important;border-color:#d2e9df!important}
+#page-jadwal .jadwal-calendar-item.jci-reschedule{background:#fbf6e9!important;border-color:#eee0b9!important}
+#page-jadwal .jadwal-calendar-item .jci-time{color:#7b8784!important}
+#page-jadwal .jadwal-calendar-item .jci-name{color:#25312f!important}
+#page-jadwal .jadwal-calendar-item .jci-guru{color:#7b8784!important}
+#page-jadwal .jadwal-calendar-more{color:#9b7720!important}
+
+/* --- Modals: white from top to bottom --- */
+[id^="modal"]>div,
+[role="dialog"]>div{
+  background:#fff!important;color:var(--kz-light-ink)!important;border-color:var(--kz-light-line)!important;
+  box-shadow:0 24px 70px rgba(31,49,45,.16)!important;
+}
+[id^="modal"] [class*="bg-slate-900"],
+[id^="modal"] [class*="bg-slate-800"],
+[id^="modal"] [class*="bg-slate-700"]{
+  background:#fff!important;color:var(--kz-light-ink-2)!important;border-color:var(--kz-light-line)!important;
+}
+[id^="modal"] .text-white,[id^="modal"] .text-slate-300,[id^="modal"] .text-slate-200{color:var(--kz-light-ink-2)!important}
+[id^="modal"] button.bg-amber-500,[id^="modal"] button.bg-amber-600,
+[id^="modal"] button.bg-emerald-500,[id^="modal"] button.bg-emerald-600{color:#fff!important}
+
+/* --- Do not turn informational metadata into little boxes --- */
+[id^="page-"] table td>div,
+[id^="page-"] table td>span:not(.inline-flex){
+  box-shadow:none!important;
+}
+
+/* --- Mobile: spacious, app-like, still fully light --- */
+@media(max-width:767px){
+  body{background:#f4f6f4!important}
+  body>aside{display:none!important}
+  nav.md\:hidden{background:rgba(255,255,255,.96)!important;border-top:1px solid #e7ece9!important}
+  [id^="page-"]>div,[id^="page-"]>section{border-radius:16px!important}
+  [id^="page-"] table td{padding-top:11px!important;padding-bottom:11px!important}
+  [id^="page-"] .overflow-x-auto{border-radius:0!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+
+/* =========================================================
+   STAGE 8.3 — LIGHT CONTRAST & CLEAN PAGE SURFACES
+   Final light-mode correction. Visual only; no logic/data changes.
+   ========================================================= */
+
+/* 1) Sidebar: force every navigation label to readable dark text. */
+html:not(.dark) body > aside,
+html:not(.dark) body > aside *{
+  color:#263531 !important;
+  -webkit-text-fill-color:#263531 !important;
+}
+html:not(.dark) body > aside .text-amber-500,
+html:not(.dark) body > aside .text-amber-600{
+  color:#a47c20 !important;
+  -webkit-text-fill-color:#a47c20 !important;
+}
+html:not(.dark) body > aside nav button,
+html:not(.dark) body > aside nav button span,
+html:not(.dark) body > aside nav button svg,
+html:not(.dark) body > aside nav button i{
+  color:#52625e !important;
+  -webkit-text-fill-color:#52625e !important;
+  opacity:1 !important;
+}
+html:not(.dark) body > aside nav button:hover,
+html:not(.dark) body > aside nav button:hover span,
+html:not(.dark) body > aside nav button:hover svg,
+html:not(.dark) body > aside nav button:hover i{
+  color:#116b52 !important;
+  -webkit-text-fill-color:#116b52 !important;
+}
+html:not(.dark) body > aside nav button.tab-active,
+html:not(.dark) body > aside nav button.tab-active span,
+html:not(.dark) body > aside nav button.tab-active svg,
+html:not(.dark) body > aside nav button.tab-active i,
+html:not(.dark) body > aside nav button.bg-amber-500,
+html:not(.dark) body > aside nav button.bg-amber-500 span{
+  color:#116b52 !important;
+  -webkit-text-fill-color:#116b52 !important;
+}
+html:not(.dark) body > aside .font-extrabold{
+  color:#1f2d2a !important;
+  -webkit-text-fill-color:#1f2d2a !important;
+}
+html:not(.dark) body > aside .text-\[10px\]{
+  color:#a47c20 !important;
+  -webkit-text-fill-color:#a47c20 !important;
+}
+
+/* 2) Global light text map: no white text on white surfaces. */
+html:not(.dark) [id^="page-"] .text-white,
+html:not(.dark) [id^="page-"] [class~="text-white"],
+html:not(.dark) [id^="page-"] .dark\:text-white,
+html:not(.dark) [id^="page-"] [class*="text-slate-100"],
+html:not(.dark) [id^="page-"] [class*="text-slate-200"],
+html:not(.dark) [id^="page-"] [class*="text-slate-300"]{
+  color:#34423f !important;
+  -webkit-text-fill-color:#34423f !important;
+}
+html:not(.dark) [id^="page-"] .text-slate-900,
+html:not(.dark) [id^="page-"] .text-gray-900{
+  color:#1f2927 !important;
+  -webkit-text-fill-color:#1f2927 !important;
+}
+html:not(.dark) [id^="page-"] .text-slate-800,
+html:not(.dark) [id^="page-"] .text-slate-700,
+html:not(.dark) [id^="page-"] .text-gray-800,
+html:not(.dark) [id^="page-"] .text-gray-700{
+  color:#34423f !important;
+  -webkit-text-fill-color:#34423f !important;
+}
+html:not(.dark) [id^="page-"] .text-slate-600,
+html:not(.dark) [id^="page-"] .text-slate-500,
+html:not(.dark) [id^="page-"] .text-gray-600,
+html:not(.dark) [id^="page-"] .text-gray-500{
+  color:#667571 !important;
+  -webkit-text-fill-color:#667571 !important;
+}
+html:not(.dark) [id^="page-"] .text-slate-400,
+html:not(.dark) [id^="page-"] .text-gray-400{
+  color:#7b8985 !important;
+  -webkit-text-fill-color:#7b8985 !important;
+}
+
+/* 3) Data Anak: readable names, teacher, schedule, fee and session values. */
+html:not(.dark) #page-anak table td,
+html:not(.dark) #page-anak table td *{
+  color:#34423f !important;
+  -webkit-text-fill-color:#34423f !important;
+}
+html:not(.dark) #page-anak table td:first-child,
+html:not(.dark) #page-anak table td:first-child *{
+  color:#1f2927 !important;
+  -webkit-text-fill-color:#1f2927 !important;
+  font-weight:700 !important;
+}
+html:not(.dark) #page-anak table td:nth-child(5),
+html:not(.dark) #page-anak table td:nth-child(6),
+html:not(.dark) #page-anak table td:nth-child(7){
+  color:#52625e !important;
+  -webkit-text-fill-color:#52625e !important;
+}
+html:not(.dark) #page-anak table td:nth-child(8),
+html:not(.dark) #page-anak table td:nth-child(8) *{
+  color:#147d62 !important;
+  -webkit-text-fill-color:#147d62 !important;
+}
+html:not(.dark) #page-anak table td .text-red-500,
+html:not(.dark) #page-anak table td .text-red-400{
+  color:#b5525c !important;
+  -webkit-text-fill-color:#b5525c !important;
+}
+
+/* 4) Guru: remove every dark card surface left by Stage 6.6. */
+html:not(.dark) #page-guru #gridGuru > div{
+  background:#ffffff !important;
+  background-image:none !important;
+  border:1px solid #e2e9e6 !important;
+  color:#263531 !important;
+  box-shadow:0 8px 24px rgba(31,55,48,.065) !important;
+}
+html:not(.dark) #page-guru #gridGuru > div::before{
+  background:#dcebe5 !important;
+  opacity:1 !important;
+}
+html:not(.dark) #page-guru #gridGuru h3,
+html:not(.dark) #page-guru #gridGuru h3 *{
+  color:#1f2927 !important;
+  -webkit-text-fill-color:#1f2927 !important;
+}
+html:not(.dark) #page-guru #gridGuru p,
+html:not(.dark) #page-guru #gridGuru .text-slate-500,
+html:not(.dark) #page-guru #gridGuru .text-slate-400{
+  color:#71807c !important;
+  -webkit-text-fill-color:#71807c !important;
+}
+html:not(.dark) #page-guru #gridGuru .bg-slate-100,
+html:not(.dark) #page-guru #gridGuru .bg-slate-50{
+  background:#f5f8f7 !important;
+  color:#465550 !important;
+}
+html:not(.dark) #page-guru #gridGuru .bg-slate-800,
+html:not(.dark) #page-guru #gridGuru .bg-slate-900,
+html:not(.dark) #page-guru #gridGuru [class*="dark:bg-"]{
+  background:#ffffff !important;
+  color:#34423f !important;
+}
+
+/* 5) Every page surface must stay genuinely light. */
+html:not(.dark) [id^="page-"] [class*="bg-slate-950"],
+html:not(.dark) [id^="page-"] [class*="bg-slate-900"],
+html:not(.dark) [id^="page-"] [class*="bg-slate-800"],
+html:not(.dark) [id^="page-"] [class*="bg-slate-700"],
+html:not(.dark) [id^="page-"] [class*="bg-gray-900"],
+html:not(.dark) [id^="page-"] [class*="bg-gray-800"]{
+  background:#ffffff !important;
+  background-image:none !important;
+  color:#34423f !important;
+  border-color:#e2e9e6 !important;
+}
+
+/* But preserve deliberately colored status/action surfaces. */
+html:not(.dark) [id^="page-"] .bg-emerald-500,
+html:not(.dark) [id^="page-"] .bg-emerald-600,
+html:not(.dark) [id^="page-"] .bg-green-500,
+html:not(.dark) [id^="page-"] .bg-green-600,
+html:not(.dark) [id^="page-"] .bg-amber-500,
+html:not(.dark) [id^="page-"] .bg-amber-600{
+  color:#ffffff !important;
+  -webkit-text-fill-color:#ffffff !important;
+}
+
+/* 6) Clean headers and page titles. */
+html:not(.dark) [id^="page-"] > div:first-child,
+html:not(.dark) [id^="page-"] > section:first-child{
+  color:#1f2927 !important;
+}
+html:not(.dark) [id^="page-"] > div:first-child h1,
+html:not(.dark) [id^="page-"] > div:first-child h2,
+html:not(.dark) [id^="page-"] > div:first-child h3,
+html:not(.dark) [id^="page-"] > section:first-child h1{
+  color:#1f2927 !important;
+  -webkit-text-fill-color:#1f2927 !important;
+}
+
+/* 7) Light sidebar layout: active page is a soft green selection, others stay visible. */
+html:not(.dark) body > aside nav button{
+  background:transparent !important;
+  border-left:3px solid transparent !important;
+  box-shadow:none !important;
+}
+html:not(.dark) body > aside nav button.tab-active{
+  background:#eaf6f1 !important;
+  border-left-color:#147d62 !important;
+}
+
+/* 8) No accidental white text on white generic buttons/controls. */
+html:not(.dark) [id^="page-"] button:not(.bg-amber-500):not(.bg-amber-600):not(.bg-emerald-500):not(.bg-emerald-600):not(.bg-green-500):not(.bg-green-600):not(.bg-red-500):not(.bg-red-600),
+html:not(.dark) [id^="page-"] button:not(.bg-amber-500):not(.bg-amber-600):not(.bg-emerald-500):not(.bg-emerald-600):not(.bg-green-500):not(.bg-green-600):not(.bg-red-500):not(.bg-red-600) *{
+  color:#45534f !important;
+  -webkit-text-fill-color:#45534f !important;
+}
+
+@media(max-width:767px){
+  html:not(.dark) body > nav.md\:hidden button,
+  html:not(.dark) body > nav.md\:hidden button span,
+  html:not(.dark) body > nav.md\:hidden button svg{
+    color:#5a6965 !important;
+    -webkit-text-fill-color:#5a6965 !important;
+  }
+  html:not(.dark) body > nav.md\:hidden button.tab-active,
+  html:not(.dark) body > nav.md\:hidden button.tab-active span,
+  html:not(.dark) body > nav.md\:hidden button.tab-active svg{
+    color:#116b52 !important;
+    -webkit-text-fill-color:#116b52 !important;
+  }
+}

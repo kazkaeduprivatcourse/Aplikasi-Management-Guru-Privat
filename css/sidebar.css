@@ -1,0 +1,41 @@
+/* KAZKA EDU — LIGHT SIDEBAR */
+html:not(.dark) body>aside,
+html:not(.dark) .sidebar{
+  background:#ffffff!important;
+  color:#25312f!important;
+  border-color:#e5ebe8!important;
+  box-shadow:0 8px 30px rgba(31,55,48,.06)!important;
+}
+html:not(.dark) body>aside *,
+html:not(.dark) .sidebar *{color:inherit;}
+html:not(.dark) body>aside .text-slate-600,
+html:not(.dark) body>aside .text-slate-500,
+html:not(.dark) body>aside .text-slate-400,
+html:not(.dark) .sidebar .text-slate-600,
+html:not(.dark) .sidebar .text-slate-500,
+html:not(.dark) .sidebar .text-slate-400{color:#71807c!important;}
+html:not(.dark) body>aside nav button,
+html:not(.dark) .sidebar nav button{
+  color:#667571!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+html:not(.dark) body>aside nav button:hover,
+html:not(.dark) .sidebar nav button:hover{
+  background:#f3f7f5!important;
+  color:#155d4b!important;
+}
+html:not(.dark) body>aside nav button.tab-active,
+html:not(.dark) body>aside nav button.bg-amber-500,
+html:not(.dark) body>aside nav button.bg-amber-600,
+html:not(.dark) .sidebar nav button.tab-active{
+  background:#eaf6f1!important;
+  color:#116b52!important;
+  border-left:3px solid #147d62!important;
+  box-shadow:none!important;
+}
+html:not(.dark) body>aside nav button.tab-active svg,
+html:not(.dark) body>aside nav button.tab-active i{color:#147d62!important;}
+html:not(.dark) body>aside img,
+html:not(.dark) .sidebar img{filter:none!important;}

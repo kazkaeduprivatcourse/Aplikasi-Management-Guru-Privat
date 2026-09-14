@@ -1,0 +1,2887 @@
+
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* CSS Tambahan untuk Animasi Perpindahan Halaman */
+    .page-transition {
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+      pointer-events: none;
+      position: absolute;
+      width: 100%;
+      display: none;
+    }
+    .page-transition.active {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+      position: relative;
+      display: block;
+    }
+  
+/* =========================================================
+   KAZKA EDU — PREMIUM DASHBOARD SKIN
+   Visual layer only: no data, Firebase, Supabase or handler
+   logic is changed.
+   ========================================================= */
+:root{
+  --ui-bg:#e4f1ef;
+  --ui-surface:#ffffff;
+  --ui-surface-2:#f7fbfa;
+  --ui-ink:#263c3a;
+  --ui-muted:#7b8c89;
+  --ui-line:#dfeae8;
+  --ui-teal:#405e5a;
+  --ui-teal-2:#55736e;
+  --ui-gold:#d6a91b;
+  --ui-gold-soft:#f4e8bd;
+  --ui-green:#24a681;
+  --ui-shadow:0 18px 45px rgba(47,76,72,.10);
+  --ui-shadow-soft:0 8px 24px rgba(47,76,72,.08);
+}
+
+html,body{min-height:100%}
+body{
+  background:var(--ui-bg)!important;
+  color:var(--ui-ink)!important;
+  position:relative;
+  overflow-x:hidden;
+}
+body::before{
+  content:"";
+  position:fixed;
+  width:330px;height:330px;
+  left:-165px;top:-155px;
+  border-radius:50%;
+  background:var(--ui-gold);
+  z-index:-2;
+  opacity:.98;
+}
+body::after{
+  content:"";
+  position:fixed;
+  width:520px;height:520px;
+  left:-270px;bottom:-280px;
+  border-radius:50%;
+  border:1px solid rgba(64,94,90,.08);
+  background:rgba(255,255,255,.15);
+  z-index:-3;
+}
+
+/* Desktop shell */
+@media (min-width:768px){
+  body{padding-bottom:0!important}
+  body > aside{
+    width:218px!important;
+    min-width:218px!important;
+    height:calc(100vh - 48px)!important;
+    margin:24px 0 24px 24px!important;
+    padding:0!important;
+    border:0!important;
+    border-radius:22px!important;
+    background:var(--ui-teal)!important;
+    box-shadow:0 20px 42px rgba(44,72,68,.18)!important;
+    position:sticky!important;
+    top:24px!important;
+    overflow:hidden!important;
+    color:#fff!important;
+  }
+  body > aside > div:first-child{
+    width:100%;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    gap:0!important;
+  }
+  body > aside > div:first-child > div:first-child{
+    padding:28px 24px 22px!important;
+    margin:0!important;
+    background:rgba(255,255,255,.035);
+  }
+  body > aside img{
+    width:48px!important;height:48px!important;
+    border-radius:50%;
+    padding:5px;
+    background:#fff;
+    box-shadow:0 4px 14px rgba(0,0,0,.12);
+  }
+  body > aside .font-extrabold{
+    color:#fff!important;
+    font-size:14px!important;
+  }
+  body > aside .text-\[10px\]{
+    color:#e7d58d!important;
+    font-size:8px!important;
+  }
+  body > aside nav{
+    padding:12px 10px 16px!important;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  }
+  body > aside nav button{
+    min-height:42px!important;
+    padding:0 14px!important;
+    border-radius:12px!important;
+    background:transparent!important;
+    color:rgba(255,255,255,.72)!important;
+    box-shadow:none!important;
+    font-size:11px!important;
+    letter-spacing:.01em;
+    border:0!important;
+    position:relative;
+  }
+  body > aside nav button:hover{
+    background:rgba(255,255,255,.08)!important;
+    color:#fff!important;
+    transform:translateX(2px);
+  }
+  body > aside nav button.bg-amber-500,
+  body > aside nav button.tab-active{
+    background:#fff!important;
+    color:var(--ui-teal)!important;
+    box-shadow:0 8px 20px rgba(18,43,40,.12)!important;
+  }
+  body > aside nav button span{
+    font-size:14px!important;
+    filter:none;
+  }
+  
+  .mob-jadwal{
+    width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;
+    border-radius:7px;position:relative;
+  }
+  .mob-jadwal::before{content:"◫";font-size:15px;font-weight:700;color:#d9bd45;}
+
+  /* Replace the old emoji-heavy desktop nav with clean pictograms. */
+  #tab-ringkasan::before{content:"⌂"}
+  #tab-anak::before{content:"◇"}
+  #tab-guru::before{content:"♙"}
+  #tab-pertemuan::before{content:"◷"}
+  #tab-jadwal::before{content:"◫"}
+  #tab-dokumen::before{content:"▱"}
+  #tab-rekap::before{content:"▥"}
+  body > aside nav button::before{
+    display:inline-flex;
+    width:22px;height:22px;
+    align-items:center;justify-content:center;
+    margin-right:10px;
+    border-radius:7px;
+    font-size:15px;
+    color:#d9bd45;
+    font-weight:700;
+    flex:0 0 22px;
+  }
+  body > aside nav button.bg-amber-500::before,
+  body > aside nav button.tab-active::before{color:var(--ui-gold)}
+  body > aside nav button span{display:none}
+  #tab-jadwal span{display:inline!important;font-size:inherit!important;font-weight:inherit!important;line-height:inherit!important}
+
+  body > div.flex-1{
+    min-width:0;
+  }
+}
+
+/* Header */
+body > div.flex-1 > header{
+  background:rgba(228,241,239,.72)!important;
+  border:0!important;
+  box-shadow:none!important;
+  backdrop-filter:blur(16px)!important;
+  padding:18px 28px 10px!important;
+}
+#currentTopTitle{
+  color:var(--ui-ink)!important;
+  font-size:18px!important;
+  font-weight:800!important;
+}
+#themeIcon{font-size:13px}
+body > div.flex-1 > header button{
+  background:rgba(255,255,255,.72)!important;
+  border:1px solid rgba(64,94,90,.10)!important;
+  color:var(--ui-teal)!important;
+  border-radius:11px!important;
+  box-shadow:0 5px 15px rgba(47,76,72,.05);
+}
+body > div.flex-1 > header .bg-emerald-500\/10{
+  background:rgba(36,166,129,.10)!important;
+  border-color:rgba(36,166,129,.18)!important;
+  color:#198667!important;
+}
+
+/* Main canvas */
+body > div.flex-1 > main{
+  padding:10px 28px 36px!important;
+  overflow:visible!important;
+}
+.page-transition{
+  transition:opacity .24s ease,transform .24s ease!important;
+}
+
+/* Page headings */
+[id^="page-"] > div:first-child{
+  border-radius:20px!important;
+  border:1px solid rgba(64,94,90,.08)!important;
+  background:rgba(255,255,255,.88)!important;
+  box-shadow:var(--ui-shadow-soft)!important;
+}
+[id^="page-"] > div:first-child h1{
+  color:var(--ui-ink)!important;
+  letter-spacing:-.025em;
+}
+[id^="page-"] > div:first-child .text-amber-600,
+[id^="page-"] > div:first-child .text-amber-500{
+  color:#b28a0c!important;
+}
+
+/* Dashboard hero */
+#page-ringkasan > div:first-child{
+  min-height:118px;
+  padding:24px 26px!important;
+  background:linear-gradient(105deg,#f7f2df 0%,#fff 58%,rgba(255,255,255,.86) 100%)!important;
+  border-color:rgba(214,169,27,.20)!important;
+  position:relative;
+  overflow:hidden;
+}
+#page-ringkasan > div:first-child::after{
+  content:"";
+  position:absolute;
+  width:180px;height:180px;
+  right:-65px;top:-90px;
+  border-radius:50%;
+  background:rgba(214,169,27,.13);
+}
+#page-ringkasan > div:first-child > div{position:relative;z-index:1}
+#page-ringkasan > div:first-child h1{
+  font-size:25px!important;
+}
+#page-ringkasan > div:first-child .rounded-full{
+  background:var(--ui-gold-soft)!important;
+  color:#9b780b!important;
+}
+#page-ringkasan > div:first-child button{
+  border-radius:12px!important;
+  min-height:40px;
+  position:relative;
+  z-index:2;
+}
+#page-ringkasan > div:first-child button:first-child{
+  background:var(--ui-teal)!important;
+  box-shadow:0 8px 18px rgba(64,94,90,.18)!important;
+}
+#page-ringkasan > div:first-child button:last-child{
+  background:#fff!important;
+  border-color:var(--ui-line)!important;
+  color:var(--ui-teal)!important;
+}
+
+/* KPI cards */
+#page-ringkasan .grid.grid-cols-2.lg\:grid-cols-4 > div{
+  background:var(--ui-surface)!important;
+  border:1px solid rgba(64,94,90,.07)!important;
+  border-radius:18px!important;
+  padding:19px 20px!important;
+  box-shadow:var(--ui-shadow-soft)!important;
+  position:relative;
+  overflow:hidden;
+  transition:transform .18s ease,box-shadow .18s ease;
+}
+#page-ringkasan .grid.grid-cols-2.lg\:grid-cols-4 > div:hover{
+  transform:translateY(-3px);
+  box-shadow:0 16px 32px rgba(47,76,72,.12)!important;
+}
+#page-ringkasan .grid.grid-cols-2.lg\:grid-cols-4 > div::after{
+  content:"";
+  position:absolute;
+  width:52px;height:52px;
+  right:-17px;bottom:-17px;
+  border-radius:50%;
+  background:var(--ui-gold-soft);
+  opacity:.8;
+}
+#page-ringkasan .grid.grid-cols-2.lg\:grid-cols-4 > div:nth-child(2)::after{background:#dfece9}
+#page-ringkasan .grid.grid-cols-2.lg\:grid-cols-4 > div:nth-child(3)::after{background:#d8f0e8}
+#page-ringkasan .grid.grid-cols-2.lg\:grid-cols-4 > div:nth-child(4)::after{background:#f7e7bd}
+#page-ringkasan .grid.grid-cols-2.lg\:grid-cols-4 > div > *{position:relative;z-index:1}
+#page-ringkasan .grid.grid-cols-2.lg\:grid-cols-4 p:first-child{
+  color:var(--ui-muted)!important;
+  font-size:10px!important;
+  font-weight:700!important;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+}
+#page-ringkasan .grid.grid-cols-2.lg\:grid-cols-4 p:nth-child(2){
+  color:var(--ui-ink)!important;
+  font-size:27px!important;
+  line-height:1.1;
+  margin-top:8px!important;
+}
+#page-ringkasan .grid.grid-cols-2.lg\:grid-cols-4 p:last-child{
+  color:#92a09d!important;
+  margin-top:7px!important;
+}
+
+/* Every content card */
+.bg-white.dark\:bg-\[\#1e293b\],
+.bg-white.dark\:bg-\[\#1e293b\]\/95{
+  background:var(--ui-surface)!important;
+  color:var(--ui-ink)!important;
+  border-color:var(--ui-line)!important;
+  box-shadow:var(--ui-shadow-soft)!important;
+}
+.rounded-2xl{border-radius:18px!important}
+.rounded-3xl{border-radius:22px!important}
+
+/* Summary/table cards */
+#page-ringkasan .overflow-x-auto,
+#page-anak .overflow-x-auto,
+#page-dokumen .overflow-x-auto,
+#page-rekap .overflow-x-auto{
+  background:var(--ui-surface)!important;
+  border:1px solid rgba(64,94,90,.07)!important;
+  border-radius:20px!important;
+  box-shadow:var(--ui-shadow-soft)!important;
+  padding:20px!important;
+}
+table thead{
+  color:#8a9996!important;
+}
+table th{
+  font-size:10px!important;
+  letter-spacing:.07em!important;
+  text-transform:uppercase;
+  font-weight:800!important;
+}
+table tbody tr{
+  transition:background .15s ease,transform .15s ease;
+}
+table tbody tr:hover{
+  background:#f6faf9!important;
+}
+table td{
+  border-color:#edf2f1!important;
+}
+table td.py-3, table td.py-3\.5{
+  padding-top:13px!important;
+  padding-bottom:13px!important;
+}
+
+/* Section cards generated by render functions */
+#containerPertemuanPerGuru > div,
+#gridGuru > div{
+  border-radius:18px!important;
+  border:1px solid rgba(64,94,90,.07)!important;
+  box-shadow:var(--ui-shadow-soft)!important;
+}
+
+/* Inputs */
+input,select,textarea{
+  border-radius:11px!important;
+  border-color:#dce8e5!important;
+  background:#fbfdfd!important;
+  color:var(--ui-ink)!important;
+  box-shadow:none!important;
+  transition:border-color .16s ease,box-shadow .16s ease,background .16s ease;
+}
+input:focus,select:focus,textarea:focus{
+  border-color:#bda13d!important;
+  box-shadow:0 0 0 3px rgba(214,169,27,.12)!important;
+  outline:none!important;
+  background:#fff!important;
+}
+
+/* Buttons — make the whole app feel like one design system */
+button{
+  font-family:'Plus Jakarta Sans',sans-serif!important;
+}
+button.bg-amber-500,
+button[class*="bg-amber-500"]{
+  background:var(--ui-gold)!important;
+  color:#fff!important;
+  box-shadow:0 8px 18px rgba(181,142,20,.18)!important;
+}
+button.bg-amber-500:hover,
+button[class*="bg-amber-500"]:hover{
+  background:#c59b12!important;
+}
+button[class*="bg-sky-500"]{
+  background:var(--ui-teal-2)!important;
+}
+button[class*="bg-emerald-500"]{
+  background:var(--ui-green)!important;
+}
+
+/* Alerts / info strips */
+.bg-amber-500\/10{background:#fbf5df!important}
+.border-amber-500\/30{border-color:#eadcae!important}
+.bg-sky-500\/10{background:#eaf3f2!important}
+.border-sky-500\/30{border-color:#cfe1de!important}
+
+/* Modals */
+.fixed.inset-0[class*="bg-slate-950"]{
+  background:rgba(36,56,54,.62)!important;
+  backdrop-filter:blur(10px)!important;
+}
+.fixed.inset-0 > div{
+  box-shadow:0 28px 70px rgba(30,53,50,.22)!important;
+}
+
+/* Mobile */
+@media (max-width:767px){
+  body{
+    background:#e8f3f1!important;
+    padding-bottom:72px!important;
+  }
+  body::before{
+    width:210px;height:210px;left:-100px;top:-105px;
+  }
+  body::after{
+    width:280px;height:280px;left:-150px;bottom:-150px;
+  }
+  body > div.flex-1 > header{
+    padding:12px 14px 8px!important;
+    background:rgba(232,243,241,.86)!important;
+  }
+  body > div.flex-1 > main{
+    padding:8px 12px 24px!important;
+  }
+  body > div.flex-1 > header .flex.items-center.gap-2{
+    gap:5px!important;
+  }
+  body > div.flex-1 > header button{
+    padding:8px!important;
+  }
+  #page-ringkasan > div:first-child{
+    padding:20px!important;
+    min-height:auto;
+  }
+  #page-ringkasan > div:first-child h1{
+    font-size:21px!important;
+  }
+  #page-ringkasan > div:first-child > div:last-child{
+    width:100%;
+  }
+  #page-ringkasan > div:first-child button{
+    flex:1;
+  }
+  #page-ringkasan .grid.grid-cols-2.lg\:grid-cols-4{
+    gap:9px!important;
+  }
+  #page-ringkasan .grid.grid-cols-2.lg\:grid-cols-4 > div{
+    padding:15px!important;
+    border-radius:15px!important;
+  }
+  #page-ringkasan .grid.grid-cols-2.lg\:grid-cols-4 p:nth-child(2){
+    font-size:22px!important;
+  }
+  #page-anak .overflow-x-auto,
+  #page-dokumen .overflow-x-auto,
+  #page-rekap .overflow-x-auto{
+    padding:13px!important;
+    border-radius:16px!important;
+  }
+  /* Bottom nav: floating, pill-like, closer to modern product UI */
+  body > nav.md\:hidden{
+    left:10px!important;
+    right:10px!important;
+    bottom:10px!important;
+    border:1px solid rgba(64,94,90,.10)!important;
+    border-radius:18px!important;
+    background:rgba(255,255,255,.94)!important;
+    box-shadow:0 16px 35px rgba(47,76,72,.16)!important;
+    padding:7px 4px!important;
+  }
+  body > nav.md\:hidden button{
+    min-width:45px;
+    border-radius:12px!important;
+    color:#83918f!important;
+  }
+  body > nav.md\:hidden button.text-amber-500,
+  body > nav.md\:hidden button.font-bold{
+    background:#f4ecd1!important;
+    color:#9d7b0e!important;
+  }
+  body > nav.md\:hidden button span:first-child{
+    font-size:16px!important;
+  }
+  body > nav.md\:hidden button span:last-child{
+    font-size:9px!important;
+    font-weight:700!important;
+  }
+}
+
+/* Dark mode: retain the app's existing toggle, but give it a premium dark palette */
+html.dark body{
+  --ui-bg:#132422;
+  --ui-surface:#1c302d;
+  --ui-surface-2:#213a36;
+  --ui-ink:#edf5f3;
+  --ui-muted:#9fb0ad;
+  --ui-line:#2d4743;
+  --ui-teal:#203a36;
+  background:#132422!important;
+  color:#edf5f3!important;
+}
+html.dark body::before{opacity:.75}
+html.dark body > div.flex-1 > header{
+  background:rgba(19,36,34,.82)!important;
+}
+html.dark #currentTopTitle{color:#edf5f3!important}
+html.dark [id^="page-"] > div:first-child{
+  background:rgba(28,48,45,.92)!important;
+  border-color:#2d4743!important;
+}
+html.dark #page-ringkasan > div:first-child{
+  background:linear-gradient(105deg,#2d3429 0%,#1c302d 65%)!important;
+}
+html.dark #page-ringkasan .grid.grid-cols-2.lg\:grid-cols-4 > div,
+html.dark #page-ringkasan .overflow-x-auto,
+html.dark #page-anak .overflow-x-auto,
+html.dark #page-dokumen .overflow-x-auto,
+html.dark #page-rekap .overflow-x-auto,
+html.dark .bg-white.dark\:bg-\[\#1e293b\],
+html.dark .bg-white.dark\:bg-\[\#1e293b\]\/95{
+  background:var(--ui-surface)!important;
+  border-color:var(--ui-line)!important;
+}
+html.dark table tbody tr:hover{background:#223a36!important}
+html.dark input,html.dark select,html.dark textarea{
+  background:#172925!important;
+  color:#edf5f3!important;
+  border-color:#34514c!important;
+}
+html.dark input:focus,html.dark select:focus,html.dark textarea:focus{background:#1b302c!important}
+html.dark body > div.flex-1 > header button{
+  background:#1c302d!important;
+  color:#e7d58d!important;
+  border-color:#2d4743!important;
+}
+
+  
+
+/* LIGHT MODE NAV FIX
+   Visual-only CSS. */
+@media (min-width: 768px) {
+  body > aside {
+    background: #385957 !important;
+    color: #ffffff !important;
+  }
+
+  body > aside nav button {
+    color: #e9f1ef !important;
+    -webkit-text-fill-color: #e9f1ef !important;
+    font-weight: 600 !important;
+    background: transparent !important;
+  }
+
+  body > aside nav button:hover {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    background: rgba(255,255,255,.10) !important;
+  }
+
+  body > aside nav button.tab-active,
+  body > aside nav button.bg-amber-500 {
+    color: #385957 !important;
+    -webkit-text-fill-color: #385957 !important;
+    background: #ffffff !important;
+    font-weight: 700 !important;
+  }
+}
+
+html:not(.dark) body > aside {
+  background: #385957 !important;
+  color: #ffffff !important;
+}
+
+
+
+/* MOBILE BRAND + NAV ICONS
+   Match the desktop visual language: clean pictograms, gold accent, no emoji. */
+@media (max-width:767px){
+  body > div.flex-1 > header{
+    min-height:64px!important;
+  }
+
+  body > div.flex-1 > header .flex.md\:hidden{
+    min-width:0;
+  }
+
+  body > div.flex-1 > header .flex.md\:hidden img{
+    width:36px!important;
+    height:36px!important;
+  }
+
+  body > div.flex-1 > header .flex.md\:hidden > div:last-child{
+    display:flex!important;
+    flex-direction:column!important;
+    justify-content:center!important;
+  }
+
+  body > nav.md\:hidden{
+    height:68px!important;
+    padding:7px 5px!important;
+    gap:2px!important;
+  }
+
+  body > nav.md\:hidden button{
+    flex:1 1 0!important;
+    min-width:0!important;
+    height:54px!important;
+    padding:5px 2px!important;
+    border-radius:14px!important;
+    color:#718784!important;
+    font-weight:600!important;
+    transition:background .18s ease, color .18s ease, transform .18s ease!important;
+  }
+
+  body > nav.md\:hidden button:hover{
+    transform:none!important;
+    color:#385957!important;
+  }
+
+  body > nav.md\:hidden button.tab-active,
+  body > nav.md\:hidden button.text-amber-500{
+    color:#385957!important;
+    background:#edf5f3!important;
+  }
+
+  body > nav.md\:hidden .mob-icon{
+    width:23px!important;
+    height:23px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    position:relative!important;
+    margin:0 auto 2px!important;
+    color:currentColor!important;
+  }
+
+  /* Same compact pictogram feel as desktop sidebar. */
+  body > nav.md\:hidden .mob-icon::before{
+    font-size:19px!important;
+    line-height:1!important;
+    font-weight:700!important;
+    color:#c7a934!important;
+  }
+
+  body > nav.md\:hidden button.tab-active .mob-icon::before,
+  body > nav.md\:hidden button.text-amber-500 .mob-icon::before{
+    color:#c7a934!important;
+  }
+
+  .mob-home::before{content:"⌂";}
+  .mob-anak::before{content:"◇";}
+  .mob-jadwal{position:relative;border:1.7px solid currentColor;border-radius:6px;width:19px;height:18px;margin-top:1px;}
+.mob-jadwal::before{content:"";position:absolute;left:3px;right:3px;top:5px;border-top:1.5px solid currentColor;}
+.mob-jadwal::after{content:"";position:absolute;left:4px;top:8px;width:3px;height:3px;border-radius:1px;background:currentColor;box-shadow:5px 0 currentColor,10px 0 currentColor,0 5px currentColor,5px 5px currentColor,10px 5px currentColor;}
+.mob-guru::before{content:"♙";}
+  .mob-pertemuan::before{content:"◷";}
+  .mob-dokumen::before{content:"▱";}
+  .mob-rekap::before{content:"▥";}
+
+  body > nav.md\:hidden button > span:last-child{
+    font-size:9px!important;
+    line-height:1!important;
+    margin-top:1px!important;
+    white-space:nowrap!important;
+  }
+}
+
+
+
+/* EXACT DESKTOP-STYLE BRAND MARK ON MOBILE */
+@media (max-width:767px){
+  body > div.flex-1 > header .flex.md\:hidden > div:first-child{
+    width:48px!important;
+    height:48px!important;
+    border-radius:50%!important;
+    background:#fff!important;
+    padding:5px!important;
+    box-shadow:0 4px 14px rgba(0,0,0,.12)!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    flex:0 0 48px!important;
+  }
+
+  body > div.flex-1 > header .flex.md\:hidden > div:first-child img{
+    width:38px!important;
+    height:38px!important;
+    padding:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+    border-radius:50%!important;
+    object-fit:contain!important;
+  }
+
+  body > div.flex-1 > header .flex.md\:hidden > div:last-child span:first-child{
+    font-size:14px!important;
+    line-height:1.15!important;
+  }
+
+  body > div.flex-1 > header .flex.md\:hidden > div:last-child span:last-child{
+    font-size:8px!important;
+    line-height:1.15!important;
+    color:#e7d58d!important;
+  }
+
+  /* Ensure all six mobile menu icons use the same gold pictogram style. */
+  body > nav.md\:hidden .mob-icon::before{
+    color:#d6a91b!important;
+    font-size:18px!important;
+    font-weight:700!important;
+  }
+}
+
+
+
+/* HIGH-CONTRAST LIGHT MODE
+   Only visual overrides; application logic remains unchanged. */
+html:not(.dark) body{
+  color:#172b29!important;
+  background:#f4f8f7!important;
+}
+
+html:not(.dark) #currentTopTitle,
+html:not(.dark) [id^="page-"] h1,
+html:not(.dark) [id^="page-"] h2,
+html:not(.dark) [id^="page-"] h3{
+  color:#16312e!important;
+}
+
+html:not(.dark) [id^="page-"] p,
+html:not(.dark) [id^="page-"] label,
+html:not(.dark) [id^="page-"] span,
+html:not(.dark) [id^="page-"] th,
+html:not(.dark) [id^="page-"] td{
+  color:#263d3a;
+}
+
+html:not(.dark) [id^="page-"] .text-slate-500,
+html:not(.dark) [id^="page-"] .text-slate-400{
+  color:#526966!important;
+}
+
+html:not(.dark) [id^="page-"] .text-slate-600{
+  color:#344d49!important;
+}
+
+html:not(.dark) [id^="page-"] .text-slate-700{
+  color:#263e3a!important;
+}
+
+html:not(.dark) [id^="page-"] .text-slate-800,
+html:not(.dark) [id^="page-"] .text-slate-900{
+  color:#142e2a!important;
+}
+
+html:not(.dark) [id^="page-"] input,
+html:not(.dark) [id^="page-"] select,
+html:not(.dark) [id^="page-"] textarea{
+  color:#172b29!important;
+  background:#ffffff!important;
+  border-color:#c8d8d5!important;
+}
+
+html:not(.dark) [id^="page-"] input::placeholder,
+html:not(.dark) [id^="page-"] textarea::placeholder{
+  color:#728783!important;
+  opacity:1!important;
+}
+
+html:not(.dark) [id^="page-"] table thead th{
+  color:#29433f!important;
+  background:#edf4f2!important;
+  font-weight:800!important;
+}
+
+html:not(.dark) [id^="page-"] table tbody td{
+  color:#29403d!important;
+}
+
+html:not(.dark) [id^="page-"] .bg-white{
+  border-color:#d4e0de!important;
+  box-shadow:0 8px 24px rgba(28,57,53,.06)!important;
+}
+
+html:not(.dark) body > div.flex-1 > header{
+  background:rgba(255,255,255,.94)!important;
+  border-bottom-color:#d5e0de!important;
+}
+
+html:not(.dark) body > div.flex-1 > header button{
+  color:#29433f!important;
+  background:#edf3f1!important;
+}
+
+html:not(.dark) body > nav.md\:hidden{
+  background:rgba(255,255,255,.97)!important;
+  border-top-color:#d5e0de!important;
+}
+
+html:not(.dark) body > nav.md\:hidden button{
+  color:#526966!important;
+}
+
+html:not(.dark) body > nav.md\:hidden button.tab-active,
+html:not(.dark) body > nav.md\:hidden button.text-amber-500{
+  color:#173a35!important;
+  background:#e5efec!important;
+}
+
+
+/* FINAL LIGHT MODE SIDEBAR CONTRAST FIX */
+html:not(.dark) body > aside{
+  background:#385957!important;
+  color:#ffffff!important;
+}
+html:not(.dark) body > aside .font-extrabold,
+html:not(.dark) body > aside .font-extrabold.text-slate-900,
+html:not(.dark) body > aside span{
+  color:#ffffff!important;
+  -webkit-text-fill-color:#ffffff!important;
+}
+html:not(.dark) body > aside .text-\[10px\],
+html:not(.dark) body > aside .text-amber-500{
+  color:#e7d58d!important;
+  -webkit-text-fill-color:#e7d58d!important;
+}
+html:not(.dark) body > aside nav button{
+  color:#f3f8f7!important;
+  -webkit-text-fill-color:#f3f8f7!important;
+  opacity:1!important;
+}
+html:not(.dark) body > aside nav button:hover{
+  color:#ffffff!important;
+  -webkit-text-fill-color:#ffffff!important;
+}
+html:not(.dark) body > aside nav button.tab-active,
+html:not(.dark) body > aside nav button.bg-amber-500{
+  color:#385957!important;
+  -webkit-text-fill-color:#385957!important;
+  background:#ffffff!important;
+}
+html:not(.dark) body > aside nav button.tab-active span,
+html:not(.dark) body > aside nav button.bg-amber-500 span{
+  color:#385957!important;
+  -webkit-text-fill-color:#385957!important;
+}
+
+
+.jadwal-calendar-item{position:relative!important;margin:0!important;padding:6px 7px!important;border-radius:10px!important;min-width:0!important;box-shadow:none!important}
+.jadwal-calendar-item:hover{transform:translateY(-1px)!important;filter:brightness(1.06)}
+.jadwal-calendar-item .jci-top{display:flex;align-items:center;justify-content:space-between;gap:5px;min-width:0}
+.jadwal-calendar-item .jci-time{font-size:8px!important;line-height:1.2!important;font-weight:900!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.jadwal-calendar-item .jci-badge{flex:0 0 auto;min-width:16px;height:16px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:8px;font-weight:900;background:rgba(255,255,255,.12);color:#d9e6e3}
+.jadwal-calendar-item .jci-name{display:block!important;font-size:9px!important;line-height:1.25!important;font-weight:900!important;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.jadwal-calendar-item .jci-guru{display:flex!important;align-items:center;gap:4px;font-size:8px!important;line-height:1.2!important;margin-top:3px!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.jadwal-calendar-item .jci-guru-dot{width:5px;height:5px;border-radius:50%;background:#d9bd45;flex:0 0 5px}
+.jadwal-calendar-item.jci-recurring{background:rgba(19,86,71,.72)!important;border-color:rgba(66,205,163,.28)!important}
+.jadwal-calendar-item.jci-reschedule{background:rgba(104,82,30,.72)!important;border-color:rgba(217,189,69,.34)!important}
+.jadwal-calendar-item.jci-normal{background:rgba(30,50,57,.88)!important;border-color:rgba(125,160,153,.18)!important}
+.jadwal-calendar-more{font-size:8px!important;font-weight:900!important;color:#d9bd45!important;padding:2px 4px!important;text-align:center}
+.reschedule-info-card{
+  border:1px solid rgba(64,205,163,.22);
+  background:linear-gradient(135deg,rgba(20,71,62,.72),rgba(17,42,45,.82));
+  border-radius:14px;padding:11px 12px;color:#d9e7e4;overflow:hidden;
+}
+.reschedule-info-card b{color:#f1f7f5!important;font-size:12px!important}
+.reschedule-info-card span{color:#a7bbb6!important;font-size:10px!important}
+.reschedule-info-card .text-amber-300{color:#d9bd45!important}
+.reschedule-help-card{
+  display:flex;align-items:flex-start;gap:9px;
+  border:1px solid rgba(64,205,163,.20);
+  background:rgba(26,67,61,.34);
+  border-radius:13px;padding:10px 11px;
+  color:#a9beb9;font-size:10px;line-height:1.55;
+}
+.reschedule-help-card strong{display:block;color:#d9e9e5;font-size:10px;letter-spacing:.02em;margin-bottom:2px}
+.reschedule-help-card p{margin:0;color:#9db3ae}
+.reschedule-help-icon{width:19px;height:19px;flex:0 0 19px;border-radius:7px;display:inline-flex;align-items:center;justify-content:center;background:rgba(64,205,163,.16);color:#5ed0a7;font-size:11px;font-weight:900}
+@media(max-width:767px){
+  #page-jadwal #kalenderJadwal{grid-template-columns:repeat(7,minmax(0,1fr))!important;gap:3px!important}
+  #page-jadwal #kalenderJadwal > div:not(.jadwal-day-cell){min-height:30px!important}
+  .jadwal-day-cell{min-height:92px!important;padding:4px!important;border-radius:9px!important}
+  .jadwal-day-head{margin-bottom:4px!important}
+  .jadwal-day-number{font-size:10px!important}
+  .jadwal-day-count{display:none!important}
+  .jadwal-calendar-item{padding:5px!important;border-radius:8px!important}
+  .jadwal-calendar-item .jci-time{font-size:7px!important}
+  .jadwal-calendar-item .jci-name{font-size:8px!important}
+  .jadwal-calendar-item .jci-guru{font-size:7px!important}
+  .jadwal-calendar-item .jci-badge{min-width:14px;height:14px;font-size:7px}
+}
+
+/* =========================================================
+   STAGE 6.1 — MOBILE-FIRST UI POLISH
+   Visual-only layer. No feature, Firebase, Supabase, database,
+   handler, or business logic changes.
+   ========================================================= */
+:root{
+  --s61-bg:#0b1413;
+  --s61-surface:#111e1c;
+  --s61-surface-2:#152522;
+  --s61-line:rgba(148,163,184,.13);
+  --s61-line-strong:rgba(148,163,184,.19);
+  --s61-text:#edf5f2;
+  --s61-muted:#8ea39e;
+  --s61-gold:#d8b53a;
+  --s61-green:#2db889;
+  --s61-radius:18px;
+}
+
+/* Global dark dashboard surface */
+body{background:var(--s61-bg)!important;color:var(--s61-text)!important}
+body > div.flex-1{min-width:0!important}
+body > div.flex-1 > header{
+  min-height:68px!important;
+  background:rgba(11,20,19,.88)!important;
+  border-bottom:1px solid var(--s61-line)!important;
+  box-shadow:0 10px 30px rgba(0,0,0,.12)!important;
+}
+body > div.flex-1 > main{
+  max-width:1680px!important;
+  width:100%!important;
+  margin:0 auto!important;
+  padding:24px 28px 36px!important;
+}
+
+/* Consistent page cards */
+[id^="page-"] > .bg-white,
+[id^="page-"] > div.bg-white,
+[id^="page-"] > .bg-gradient-to-r,
+[id^="page-"] > .bg-slate-900\/70{
+  border-color:var(--s61-line)!important;
+  border-radius:var(--s61-radius)!important;
+  box-shadow:0 12px 34px rgba(0,0,0,.10)!important;
+}
+[id^="page-"] .text-slate-900,[id^="page-"] .text-white{color:#edf5f2!important}
+[id^="page-"] .text-slate-500{color:#829792!important}
+[id^="page-"] .text-slate-400{color:#94a8a3!important}
+
+/* Buttons: cleaner, less cramped */
+button{
+  -webkit-tap-highlight-color:transparent;
+}
+button:not([disabled]):active{transform:translateY(1px)}
+[id^="page-"] button{
+  min-height:40px;
+}
+
+/* Inputs / selects / textareas */
+[id^="page-"] input,
+[id^="page-"] select,
+[id^="page-"] textarea{
+  min-height:42px!important;
+  border-radius:12px!important;
+  background:#0e1a18!important;
+  border-color:var(--s61-line-strong)!important;
+  color:#edf5f2!important;
+  outline:none!important;
+}
+[id^="page-"] input:focus,
+[id^="page-"] select:focus,
+[id^="page-"] textarea:focus{
+  border-color:rgba(216,181,58,.62)!important;
+  box-shadow:0 0 0 3px rgba(216,181,58,.09)!important;
+}
+[id^="page-"] input::placeholder,
+[id^="page-"] textarea::placeholder{color:#71857f!important}
+
+/* Tables remain functional but become easier to read/scroll */
+[id^="page-"] .overflow-x-auto{
+  scrollbar-width:thin;
+  scrollbar-color:#38524c transparent;
+}
+[id^="page-"] table thead th{
+  color:#8fa39e!important;
+  font-weight:800!important;
+  letter-spacing:.045em!important;
+}
+[id^="page-"] table tbody tr{
+  transition:background .18s ease;
+}
+[id^="page-"] table tbody tr:hover{background:rgba(255,255,255,.025)!important}
+
+/* Modal polish without touching modal logic */
+.fixed.inset-0.z-50 > div,
+.fixed.inset-0.z-50 > form{
+  border-color:var(--s61-line-strong)!important;
+  box-shadow:0 30px 90px rgba(0,0,0,.42)!important;
+}
+
+/* Desktop sidebar refinement */
+@media (min-width:768px){
+  body > aside{
+    width:232px!important;
+    min-width:232px!important;
+    margin:20px 0 20px 20px!important;
+    height:calc(100vh - 40px)!important;
+    border-radius:24px!important;
+  }
+  body > aside > div:first-child > div:first-child{
+    padding:26px 22px 20px!important;
+  }
+  body > aside nav{padding:10px 9px 14px!important;gap:3px!important}
+  body > aside nav button{
+    min-height:44px!important;
+    padding:0 13px!important;
+    border-radius:13px!important;
+    font-size:11.5px!important;
+  }
+  body > aside nav button::before{margin-right:9px!important}
+}
+
+/* Mobile: app-like header and bottom navigation */
+@media (max-width:767px){
+  body{
+    padding-bottom:70px!important;
+  }
+  body > div.flex-1 > header{
+    min-height:64px!important;
+    padding:9px 12px!important;
+  }
+  body > div.flex-1 > main{
+    padding:14px 12px 24px!important;
+    width:100%!important;
+  }
+  body > div.flex-1 > header .flex.md\:hidden{
+    gap:9px!important;
+  }
+  body > div.flex-1 > header .flex.md\:hidden > div:first-child{
+    width:42px!important;height:42px!important;flex-basis:42px!important;
+    padding:4px!important;
+  }
+  body > div.flex-1 > header .flex.md\:hidden > div:first-child img{
+    width:34px!important;height:34px!important;
+  }
+  body > div.flex-1 > header .flex.md\:hidden > div:last-child span:first-child{
+    font-size:13px!important;
+  }
+  body > div.flex-1 > header .flex.md\:hidden > div:last-child span:last-child{
+    font-size:7px!important;
+    letter-spacing:.08em!important;
+  }
+  body > div.flex-1 > header .inline-flex{
+    min-height:28px!important;
+    padding:0 8px!important;
+    font-size:9px!important;
+  }
+
+  body > nav.md\:hidden{
+    height:66px!important;
+    padding:5px 4px 6px!important;
+    background:rgba(12,23,21,.96)!important;
+    border-top:1px solid rgba(148,163,184,.16)!important;
+    box-shadow:0 -14px 35px rgba(0,0,0,.24)!important;
+    backdrop-filter:blur(18px)!important;
+    -webkit-backdrop-filter:blur(18px)!important;
+  }
+  body > nav.md\:hidden button{
+    min-width:0!important;
+    min-height:54px!important;
+    flex:1 1 0!important;
+    border-radius:12px!important;
+    padding:4px 1px!important;
+    gap:0!important;
+  }
+  body > nav.md\:hidden button.tab-active,
+  body > nav.md\:hidden button.text-amber-500{
+    background:rgba(216,181,58,.10)!important;
+    color:#f1d56e!important;
+  }
+  body > nav.md\:hidden button > span:last-child{
+    font-size:8px!important;
+    font-weight:700!important;
+    letter-spacing:.01em!important;
+    color:inherit!important;
+  }
+  body > nav.md\:hidden .mob-icon::before{
+    font-size:17px!important;
+  }
+
+  /* Page headers */
+  [id^="page-"] > .flex.flex-col.sm\:flex-row,
+  [id^="page-"] > .bg-white:first-child,
+  [id^="page-"] > .bg-gradient-to-r{
+    padding:15px!important;
+    border-radius:16px!important;
+  }
+  [id^="page-"] h1{font-size:18px!important;line-height:1.25!important}
+  [id^="page-"] h2{font-size:16px!important}
+  [id^="page-"] h3{font-size:14px!important}
+
+  /* Make action buttons comfortable for thumbs */
+  [id^="page-"] button.bg-amber-500,
+  [id^="page-"] button.bg-emerald-600,
+  [id^="page-"] button.bg-sky-600{
+    min-height:42px!important;
+    padding-left:13px!important;padding-right:13px!important;
+  }
+
+  /* Prevent horizontal page drift from long content */
+  [id^="page-"]{min-width:0!important;max-width:100%!important}
+  [id^="page-"] .grid{min-width:0!important}
+  [id^="page-"] .overflow-x-auto{max-width:100%!important}
+
+  /* Dashboard cards */
+  #page-ringkasan .grid > div,
+  #page-guru #gridGuru > div{
+    border-radius:16px!important;
+  }
+
+  /* Jadwal mobile */
+  #page-jadwal .jadwal-hero{
+    padding:16px!important;
+    border-radius:17px!important;
+  }
+  #page-jadwal .jadwal-hero-title{font-size:20px!important}
+  #page-jadwal .jadwal-create-btn{width:100%!important;justify-content:center!important}
+  #page-jadwal .jadwal-stat-card{min-height:92px!important;padding:13px!important}
+  #page-jadwal .jadwal-stat-value{font-size:23px!important;margin-top:10px!important}
+  #page-jadwal > .bg-slate-900\/70{padding:11px!important;border-radius:16px!important}
+  #page-jadwal #filterJadwalGuru,
+  #page-jadwal #filterJadwalSiswa,
+  #page-jadwal #filterJadwalStatus{min-height:40px!important}
+
+  /* Give modal content safe phone margins */
+  .fixed.inset-0.z-50{padding:10px!important}
+  .fixed.inset-0.z-50 > div,
+  .fixed.inset-0.z-50 > form{
+    max-width:100%!important;
+    max-height:calc(100vh - 20px)!important;
+    overflow-y:auto!important;
+    border-radius:20px!important;
+  }
+}
+
+@media (max-width:380px){
+  body > div.flex-1 > main{padding-left:9px!important;padding-right:9px!important}
+  body > nav.md\:hidden button > span:last-child{font-size:7px!important}
+  body > nav.md\:hidden .mob-icon::before{font-size:16px!important}
+  #page-jadwal .jadwal-stat-card{padding:10px!important}
+  #page-jadwal .jadwal-stat-label{font-size:8px!important}
+}
+
+/* =========================================================
+   STAGE 6.2 — PAGE-BY-PAGE UI POLISH
+   Visual-only overrides. No application logic/data changes.
+   ========================================================= */
+
+/* Shared page rhythm */
+[id^="page-"]{scroll-margin-top:18px}
+[id^="page-"] > div:first-child{
+  position:relative;
+  overflow:hidden;
+}
+[id^="page-"] > div:first-child::after{
+  content:"";
+  position:absolute;
+  width:110px;height:110px;
+  right:-54px;top:-58px;
+  border-radius:50%;
+  background:rgba(214,169,27,.055);
+  pointer-events:none;
+}
+[id^="page-"] > div:first-child > *{position:relative;z-index:1}
+
+/* Data Anak */
+#page-anak > div:first-child,
+#page-guru > div:first-child,
+#page-rekap > div:first-child{
+  min-height:88px;
+  display:flex;
+}
+#page-anak > div:first-child button,
+#page-guru > div:first-child button,
+#page-rekap > div:first-child button{
+  min-height:42px;
+  border-radius:13px!important;
+  padding-left:17px!important;
+  padding-right:17px!important;
+}
+#page-anak .overflow-x-auto,
+#page-dokumen .overflow-x-auto,
+#page-rekap .overflow-x-auto{
+  overflow:auto;
+  scrollbar-width:thin;
+}
+#page-anak table tbody tr:hover,
+#page-dokumen table tbody tr:hover,
+#page-rekap table tbody tr:hover{
+  transform:none!important;
+}
+
+/* Guru cards */
+#gridGuru{align-items:stretch}
+#gridGuru > div{
+  min-height:150px;
+  transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease!important;
+}
+#gridGuru > div:hover{
+  transform:translateY(-3px);
+  border-color:rgba(214,169,27,.24)!important;
+  box-shadow:0 18px 38px rgba(47,76,72,.12)!important;
+}
+
+/* Pertemuan */
+#page-pertemuan > div:first-child{
+  min-height:88px;
+}
+#page-pertemuan > .bg-amber-500\/10,
+#page-dokumen > .bg-sky-500\/10{
+  border-radius:16px!important;
+  box-shadow:0 7px 20px rgba(47,76,72,.045)!important;
+}
+#containerPertemuanPerGuru > div{
+  transition:border-color .18s ease,box-shadow .18s ease!important;
+}
+#containerPertemuanPerGuru > div:hover{
+  border-color:rgba(214,169,27,.20)!important;
+}
+
+/* Archive & fee tables get clearer hierarchy */
+#page-dokumen table td,
+#page-rekap table td,
+#page-anak table td{
+  vertical-align:middle;
+}
+#page-dokumen table tbody tr,
+#page-rekap table tbody tr,
+#page-anak table tbody tr{
+  min-height:48px;
+}
+#page-dokumen table td button,
+#page-rekap table td button,
+#page-anak table td button{
+  border-radius:9px!important;
+}
+
+/* Mobile page headers */
+@media(max-width:767px){
+  body > div.flex-1 > main{gap:0!important}
+  [id^="page-"]{gap:14px!important}
+  [id^="page-"] > div:first-child{
+    min-height:auto!important;
+    padding:15px!important;
+    border-radius:17px!important;
+  }
+  [id^="page-"] > div:first-child h1{
+    font-size:19px!important;
+    line-height:1.25!important;
+  }
+  [id^="page-"] > div:first-child .text-xs{
+    font-size:9px!important;
+    letter-spacing:.075em!important;
+  }
+
+  #page-anak > div:first-child,
+  #page-guru > div:first-child,
+  #page-rekap > div:first-child{
+    display:flex;
+    align-items:flex-start;
+    gap:12px!important;
+  }
+  #page-anak > div:first-child > button,
+  #page-guru > div:first-child > button,
+  #page-rekap > div:first-child > button{
+    width:auto!important;
+    flex:0 0 auto;
+    min-height:40px;
+    font-size:10px!important;
+  }
+  #page-rekap > div:first-child > button{
+    max-width:48%;
+    white-space:normal;
+    line-height:1.25!important;
+  }
+
+  #page-anak .overflow-x-auto,
+  #page-dokumen .overflow-x-auto,
+  #page-rekap .overflow-x-auto{
+    padding:11px!important;
+    border-radius:15px!important;
+  }
+  #page-anak table,
+  #page-dokumen table,
+  #page-rekap table{
+    min-width:720px;
+  }
+  #page-anak table th,
+  #page-dokumen table th,
+  #page-rekap table th{
+    font-size:9px!important;
+  }
+  #page-anak table td,
+  #page-dokumen table td,
+  #page-rekap table td{
+    font-size:11px!important;
+  }
+
+  #gridGuru{gap:10px!important}
+  #gridGuru > div{min-height:138px}
+
+  #page-pertemuan > .bg-amber-500\/10,
+  #page-dokumen > .bg-sky-500\/10{
+    padding:11px!important;
+    font-size:10px!important;
+    line-height:1.5!important;
+  }
+
+  /* Prevent long action rows from making mobile cards wider */
+  #page-anak button,
+  #page-dokumen button,
+  #page-rekap button,
+  #page-pertemuan button{
+    max-width:100%;
+  }
+}
+
+@media(max-width:380px){
+  [id^="page-"] > div:first-child{padding:13px!important}
+  [id^="page-"] > div:first-child h1{font-size:18px!important}
+  #page-anak > div:first-child > button,
+  #page-guru > div:first-child > button,
+  #page-rekap > div:first-child > button{font-size:9px!important;padding-left:12px!important;padding-right:12px!important}
+}
+
+/* Dark palette alignment for the new polish layer */
+html.dark [id^="page-"] > div:first-child::after{background:rgba(214,169,27,.08)}
+html.dark #gridGuru > div:hover{border-color:rgba(214,169,27,.30)!important;box-shadow:0 18px 38px rgba(0,0,0,.22)!important}
+html.dark #containerPertemuanPerGuru > div:hover{border-color:rgba(214,169,27,.26)!important}
+html.dark #page-anak table td,
+html.dark #page-dokumen table td,
+html.dark #page-rekap table td{border-color:#2d4743!important}
+
+/* ===== STAGE 6.4 — Dashboard visual transformation ===== */
+#page-ringkasan > div:first-child {
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(circle at 100% 0%, rgba(245,158,11,.16), transparent 38%), linear-gradient(135deg, rgba(245,158,11,.11), rgba(15,23,42,.18));
+  border-color: rgba(245,158,11,.24);
+}
+#page-ringkasan > div:first-child::after {
+  content: '';
+  position: absolute; width: 180px; height: 180px; right: -70px; top: -90px;
+  border: 1px solid rgba(245,158,11,.16); border-radius: 999px; pointer-events:none;
+}
+#page-ringkasan > div:nth-child(2) > div {
+  position: relative; overflow: hidden; min-height: 118px;
+  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+#page-ringkasan > div:nth-child(2) > div:hover {
+  transform: translateY(-2px); border-color: rgba(245,158,11,.28); box-shadow: 0 12px 30px rgba(2,6,23,.18);
+}
+#page-ringkasan > div:nth-child(2) > div::before {
+  content: ''; position:absolute; left:0; top:0; bottom:0; width:3px;
+  background: rgba(245,158,11,.55); border-radius: 8px;
+}
+#page-ringkasan > div:nth-child(2) > div:nth-child(3)::before { background: rgba(16,185,129,.7); }
+#page-ringkasan > div:nth-child(2) > div:nth-child(4)::before { background: rgba(245,158,11,.9); }
+#page-ringkasan > div:nth-child(3) {
+  box-shadow: 0 12px 34px rgba(2,6,23,.14);
+}
+#page-ringkasan #ringkasanTable tr { transition: background-color .18s ease; }
+#page-ringkasan #ringkasanTable td { vertical-align: middle; }
+@media (max-width: 640px) {
+  #page-ringkasan > div:first-child { padding: 18px 16px; border-radius: 18px; }
+  #page-ringkasan > div:nth-child(2) { gap: 10px; }
+  #page-ringkasan > div:nth-child(2) > div { min-height: 104px; padding: 14px; border-radius: 16px; }
+  #page-ringkasan > div:nth-child(2) > div p.text-xl { font-size: 1.45rem; line-height: 1.8rem; }
+}
+
+/* =========================================================
+   STAGE 6.5 — DATA ANAK TRANSFORMATION
+   Visual-only layer. Existing handlers, data and business logic untouched.
+   ========================================================= */
+
+/* Page header becomes a stronger operational control surface. */
+#page-anak > div:first-child{
+  background:
+    radial-gradient(circle at 88% 20%, rgba(214,169,27,.10), transparent 34%),
+    linear-gradient(135deg, rgba(30,41,59,.98), rgba(15,23,42,.96)) !important;
+  border-color:rgba(214,169,27,.16)!important;
+  box-shadow:0 14px 34px rgba(0,0,0,.14)!important;
+}
+#page-anak > div:first-child > div:first-child:before{
+  content:'👤';
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:34px;height:34px;
+  margin-bottom:8px;
+  border-radius:11px;
+  background:rgba(214,169,27,.12);
+  border:1px solid rgba(214,169,27,.20);
+  font-size:15px;
+}
+#page-anak > div:first-child h1{
+  letter-spacing:-.025em;
+}
+#page-anak > div:first-child button{
+  box-shadow:0 10px 24px rgba(214,169,27,.16)!important;
+  transform:translateY(0);
+}
+#page-anak > div:first-child button:hover{
+  transform:translateY(-2px);
+  box-shadow:0 14px 28px rgba(214,169,27,.22)!important;
+}
+
+/* Table becomes a premium data panel. */
+#page-anak .overflow-x-auto{
+  position:relative;
+  padding:18px 20px!important;
+  background:linear-gradient(180deg,rgba(30,41,59,.96),rgba(15,23,42,.92))!important;
+  border-color:#263d3a!important;
+  box-shadow:0 14px 34px rgba(0,0,0,.12)!important;
+}
+#page-anak .overflow-x-auto:before{
+  content:'Daftar siswa & paket aktif';
+  display:block;
+  margin:0 0 13px;
+  color:#f8fafc;
+  font-size:13px;
+  font-weight:800;
+  letter-spacing:-.01em;
+}
+#page-anak table{
+  border-collapse:separate!important;
+  border-spacing:0 5px!important;
+}
+#page-anak table thead th{
+  padding:9px 10px!important;
+  color:#7faaa3!important;
+  font-size:9px!important;
+  letter-spacing:.11em!important;
+  border-bottom:1px solid #29433f!important;
+}
+#page-anak table tbody tr{
+  background:rgba(15,23,42,.62);
+  box-shadow:inset 0 0 0 1px rgba(48,73,67,.55);
+  transition:transform .16s ease,box-shadow .16s ease,background-color .16s ease!important;
+}
+#page-anak table tbody tr:hover{
+  background:rgba(24,42,45,.92)!important;
+  transform:translateY(-1px)!important;
+  box-shadow:inset 0 0 0 1px rgba(214,169,27,.16),0 8px 18px rgba(0,0,0,.14)!important;
+}
+#page-anak table td{
+  padding:12px 10px!important;
+  border:0!important;
+}
+#page-anak table td:first-child{
+  border-radius:11px 0 0 11px;
+}
+#page-anak table td:last-child{
+  border-radius:0 11px 11px 0;
+}
+#page-anak table td:first-child{
+  color:#f8fafc!important;
+  font-weight:800!important;
+}
+#page-anak table td:nth-child(2){color:#a8c0bb!important}
+#page-anak table td:nth-child(3){color:#8fa9a4!important}
+#page-anak table td:nth-child(4){color:#b8cbc7!important}
+
+/* Schedule and session columns get visual emphasis without changing content. */
+#page-anak table td:nth-child(5){
+  color:#cbdad7!important;
+  font-weight:600!important;
+}
+#page-anak table td:nth-child(8){
+  font-size:12px!important;
+}
+#page-anak table td:nth-child(8) .text-emerald-600,
+#page-anak table td:nth-child(8) .text-emerald-400{font-weight:900!important}
+
+/* Action group reads as a compact control cluster. */
+#page-anak table td:last-child{
+  min-width:170px;
+}
+#page-anak table td:last-child button{
+  min-height:34px!important;
+  padding:7px 10px!important;
+  font-size:10px!important;
+  border:1px solid rgba(255,255,255,.05)!important;
+}
+#page-anak table td:last-child button:hover{
+  transform:translateY(-1px);
+}
+#page-anak table td:last-child button:first-child{
+  box-shadow:0 5px 14px rgba(16,185,129,.10);
+}
+
+/* Document action gets a calmer pill treatment. */
+#page-anak table td:nth-child(9) a{
+  text-decoration:none!important;
+  padding:5px 8px;
+  border-radius:8px;
+  background:rgba(214,169,27,.08);
+  border:1px solid rgba(214,169,27,.12);
+}
+#page-anak table td:nth-child(9) button{
+  border-radius:8px!important;
+}
+
+/* Mobile: preserve the rich table but make its container feel intentional. */
+@media(max-width:767px){
+  #page-anak > div:first-child{
+    padding:16px!important;
+  }
+  #page-anak > div:first-child > div:first-child:before{
+    width:31px;height:31px;
+    margin-bottom:7px;
+  }
+  #page-anak > div:first-child button{
+    min-height:42px!important;
+    padding-left:14px!important;
+    padding-right:14px!important;
+  }
+  #page-anak .overflow-x-auto{
+    padding:13px!important;
+    border-radius:17px!important;
+  }
+  #page-anak .overflow-x-auto:before{
+    margin-bottom:10px;
+    font-size:12px;
+  }
+  #page-anak table{
+    min-width:880px!important;
+    border-spacing:0 4px!important;
+  }
+  #page-anak table th{padding:8px!important}
+  #page-anak table td{padding:11px 8px!important}
+}
+
+@media(max-width:380px){
+  #page-anak > div:first-child{padding:13px!important}
+  #page-anak .overflow-x-auto{padding:11px!important}
+}
+
+/* ===== STAGE 6.6 — GURU PRIVAT TRANSFORMATION ===== */
+#page-guru > div:first-child{
+  position:relative;
+  overflow:hidden;
+  padding:18px 20px!important;
+  border-radius:18px;
+  border-color:rgba(245,158,11,.18)!important;
+  background:radial-gradient(circle at 100% 0%,rgba(245,158,11,.10),transparent 36%),linear-gradient(135deg,rgba(15,23,42,.94),rgba(17,24,39,.78))!important;
+  box-shadow:0 14px 38px rgba(0,0,0,.15)!important;
+}
+#page-guru > div:first-child::after{
+  content:'';position:absolute;right:-55px;top:-75px;width:155px;height:155px;
+  border:1px solid rgba(245,158,11,.12);border-radius:999px;pointer-events:none;
+}
+#page-guru > div:first-child h1{letter-spacing:-.03em}
+#page-guru > div:first-child button{
+  position:relative;z-index:1;border-radius:11px!important;
+  box-shadow:0 9px 24px rgba(245,158,11,.14)!important;
+}
+#gridGuru{align-items:stretch}
+#gridGuru > div{
+  position:relative!important;
+  overflow:hidden!important;
+  border:1px solid rgba(148,163,184,.12)!important;
+  border-radius:18px!important;
+  background:linear-gradient(145deg,rgba(30,41,59,.94),rgba(15,23,42,.82))!important;
+  box-shadow:0 10px 28px rgba(0,0,0,.13)!important;
+  transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease!important;
+}
+#gridGuru > div::before{
+  content:'';position:absolute;left:0;right:0;top:0;height:2px;
+  background:linear-gradient(90deg,rgba(20,184,166,.8),rgba(245,158,11,.72));
+  opacity:.7;
+}
+#gridGuru > div:hover{
+  transform:translateY(-3px)!important;
+  border-color:rgba(20,184,166,.26)!important;
+  box-shadow:0 18px 40px rgba(0,0,0,.23)!important;
+}
+#gridGuru > div > div:first-child{border-color:rgba(148,163,184,.10)!important}
+#gridGuru button{border-radius:9px!important;min-height:36px;transition:transform .15s ease,filter .15s ease,background-color .15s ease}
+#gridGuru button:hover{transform:translateY(-1px);filter:brightness(1.06)}
+#gridGuru .text-lg,#gridGuru .text-xl{letter-spacing:-.02em}
+#gridGuru .text-xs{line-height:1.45}
+@media(max-width:767px){
+  #page-guru > div:first-child{padding:15px!important;border-radius:15px;margin-bottom:12px}
+  #page-guru > div:first-child h1{font-size:1.05rem!important}
+  #page-guru > div:first-child button{width:100%;min-height:42px!important}
+  #gridGuru{gap:10px!important}
+  #gridGuru > div{border-radius:15px!important}
+  #gridGuru button{min-height:40px!important}
+}
+
+/* =========================================================
+   STAGE 6.7 — PERTEMUAN & PERKEMBANGAN TRANSFORMATION
+   Visual-only layer. Existing features/logic/data untouched.
+   ========================================================= */
+
+#page-pertemuan {
+  --pmt-surface: rgba(15,23,42,.72);
+  --pmt-border: rgba(148,163,184,.14);
+}
+
+#page-pertemuan > * {
+  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+
+#page-pertemuan .bg-white,
+#page-pertemuan [class*="bg-slate-800"],
+#page-pertemuan [class*="bg-slate-900"] {
+  border-color: var(--pmt-border);
+}
+
+/* Stronger page hierarchy without changing markup or behavior. */
+#page-pertemuan h1,
+#page-pertemuan h2,
+#page-pertemuan h3 {
+  letter-spacing: -.018em;
+}
+
+/* Make session-entry areas feel like a focused workspace. */
+#page-pertemuan input,
+#page-pertemuan select,
+#page-pertemuan textarea {
+  min-height: 42px;
+}
+
+#page-pertemuan textarea {
+  line-height: 1.55;
+}
+
+#page-pertemuan button {
+  min-height: 40px;
+}
+
+/* Keep long student/teacher names readable on compact screens. */
+#page-pertemuan .truncate {
+  min-width: 0;
+}
+
+@media (min-width: 768px) {
+  #page-pertemuan > .space-y-4 > *,
+  #page-pertemuan > .space-y-5 > * {
+    border-radius: 18px;
+  }
+}
+
+@media (max-width: 767px) {
+  #page-pertemuan {
+    gap: 14px;
+  }
+
+  #page-pertemuan input,
+  #page-pertemuan select,
+  #page-pertemuan textarea,
+  #page-pertemuan button {
+    font-size: 13px;
+  }
+
+  #page-pertemuan .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+}
+
+/* =========================================================
+   STAGE 6.8 — ARSIP DOKUMEN & LAPORAN TRANSFORMATION
+   Visual-only layer. Existing features/logic/data untouched.
+   ========================================================= */
+#page-dokumen > div:first-child{
+  position:relative;
+  overflow:hidden;
+  padding:18px 20px!important;
+  border-radius:18px;
+  border-color:rgba(20,184,166,.18)!important;
+  background:radial-gradient(circle at 100% 0%,rgba(20,184,166,.10),transparent 36%),linear-gradient(135deg,rgba(15,23,42,.94),rgba(17,24,39,.78))!important;
+  box-shadow:0 14px 38px rgba(0,0,0,.15)!important;
+}
+#page-dokumen > div:first-child::after{
+  content:'';position:absolute;right:-55px;top:-75px;width:155px;height:155px;
+  border:1px solid rgba(20,184,166,.12);border-radius:999px;pointer-events:none;
+}
+#page-dokumen > div:first-child h1{letter-spacing:-.03em}
+#page-dokumen > div:first-child button{position:relative;z-index:1;border-radius:11px!important;min-height:40px;box-shadow:0 9px 24px rgba(20,184,166,.12)!important}
+#page-dokumen .overflow-x-auto{
+  border-radius:18px!important;
+  border-color:rgba(148,163,184,.12)!important;
+  background:linear-gradient(145deg,rgba(30,41,59,.94),rgba(15,23,42,.82))!important;
+  box-shadow:0 12px 32px rgba(0,0,0,.14)!important;
+  padding:8px!important;
+}
+#page-dokumen table{border-collapse:separate!important;border-spacing:0 4px!important}
+#page-dokumen table thead th{
+  background:rgba(15,23,42,.96)!important;
+  color:#94a3b8!important;
+  border:0!important;
+  font-size:10px!important;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+#page-dokumen table tbody tr{
+  background:rgba(15,23,42,.62);
+  transition:background-color .18s ease,transform .18s ease,box-shadow .18s ease;
+}
+#page-dokumen table tbody tr:hover{
+  background:rgba(24,42,45,.92)!important;
+  box-shadow:inset 0 0 0 1px rgba(20,184,166,.16),0 8px 22px rgba(0,0,0,.10);
+}
+#page-dokumen table td{padding:12px 10px!important;border:0!important;vertical-align:middle}
+#page-dokumen table td:first-child{border-radius:11px 0 0 11px}
+#page-dokumen table td:last-child{border-radius:0 11px 11px 0}
+#page-dokumen table td:last-child button{min-height:34px!important;border-radius:9px!important;padding:7px 10px!important}
+#page-dokumen table a{border-radius:8px;transition:filter .15s ease,transform .15s ease}
+#page-dokumen table a:hover{filter:brightness(1.08);transform:translateY(-1px)}
+#page-dokumen input,#page-dokumen select,#page-dokumen textarea{min-height:42px}
+#page-dokumen button{transition:transform .15s ease,filter .15s ease,background-color .15s ease}
+#page-dokumen button:hover{filter:brightness(1.05)}
+@media(max-width:767px){
+  #page-dokumen > div:first-child{padding:15px!important;border-radius:15px;margin-bottom:12px}
+  #page-dokumen > div:first-child h1{font-size:1.05rem!important}
+  #page-dokumen > div:first-child button{width:100%;min-height:42px!important}
+  #page-dokumen .overflow-x-auto{padding:6px!important;border-radius:15px!important;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+  #page-dokumen table{min-width:760px}
+  #page-dokumen table td{padding:11px 9px!important}
+  #page-dokumen button{min-height:40px!important}
+}
+
+/* =========================================================
+   STAGE 6.8 REFINED — CLEAN INFORMATION TABLE
+   Remove boxed treatment from document metadata; keep actions usable.
+   ========================================================= */
+#page-dokumen .overflow-x-auto{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  padding:0!important;
+}
+#page-dokumen table{
+  border-collapse:collapse!important;
+  border-spacing:0!important;
+}
+#page-dokumen table thead th{
+  background:transparent!important;
+  border-bottom:1px solid rgba(148,163,184,.12)!important;
+  padding:10px 10px 12px!important;
+}
+#page-dokumen table tbody tr,
+#page-dokumen table tbody tr:hover{
+  background:transparent!important;
+  box-shadow:none!important;
+  transform:none!important;
+}
+#page-dokumen table td{
+  background:transparent!important;
+  border:0!important;
+  border-bottom:1px solid rgba(148,163,184,.08)!important;
+  border-radius:0!important;
+  padding:14px 10px!important;
+}
+#page-dokumen table tbody tr:last-child td{border-bottom:0!important}
+#page-dokumen table tbody tr:hover td{color:#f1f5f9!important}
+#page-dokumen table td:first-child{font-weight:700!important}
+#page-dokumen table td:nth-child(2),
+#page-dokumen table td:nth-child(3),
+#page-dokumen table td:nth-child(5){color:#94a3b8!important}
+#page-dokumen table td:nth-child(4){font-weight:600!important}
+#page-dokumen table a,
+#page-dokumen table button{border-radius:8px!important}
+@media(max-width:767px){
+  #page-dokumen .overflow-x-auto{padding:0!important;border-radius:0!important}
+  #page-dokumen table td{padding:12px 9px!important}
+}
+
+
+/* ===== STAGE 6.10 — GLOBAL VISUAL CONSISTENCY ===== */
+:root{--kz-flat-border:rgba(148,163,184,.13)}
+#page-jadwal .bg-white,#page-dokumen .bg-white,#page-rekap .bg-white,#page-pertemuan .bg-white{border-color:var(--kz-flat-border)!important}
+#page-jadwal .text-xs,#page-dokumen .text-xs,#page-rekap .text-xs,#page-pertemuan .text-xs{line-height:1.5;box-shadow:none!important}
+#page-jadwal table tbody tr,#page-dokumen table tbody tr,#page-rekap table tbody tr{background:transparent!important;box-shadow:none!important}
+#page-jadwal table tbody tr+tr,#page-dokumen table tbody tr+tr,#page-rekap table tbody tr+tr{border-top:1px solid rgba(148,163,184,.08)}
+#page-jadwal table td,#page-dokumen table td,#page-rekap table td{border:0!important;vertical-align:middle}
+#page-jadwal button,#page-dokumen button,#page-rekap button,#page-pertemuan button{transition:transform .16s ease,filter .16s ease,background-color .16s ease,border-color .16s ease}
+#page-jadwal button:hover,#page-dokumen button:hover,#page-rekap button:hover,#page-pertemuan button:hover{filter:brightness(1.05)}
+@media(max-width:767px){#page-jadwal table td,#page-dokumen table td,#page-rekap table td{padding-top:11px!important;padding-bottom:11px!important}}
+
+/* =========================================================
+   STAGE 7.1 — KAZKA EDU MODERN INTERACTION SYSTEM
+   Visual-only layer. Existing features, data and business logic untouched.
+   ========================================================= */
+:root{
+  --kz-primary:#d6a91b;
+  --kz-primary-hi:#f3d76a;
+  --kz-primary-deep:#a97f08;
+  --kz-bg:#07100f;
+  --kz-surface:#0d1917;
+  --kz-surface-2:#12211f;
+  --kz-border:rgba(214,169,27,.16);
+  --kz-text:#f3f6f5;
+  --kz-muted:#94a5a1;
+}
+body{background:radial-gradient(circle at 80% -10%,rgba(214,169,27,.055),transparent 30%),linear-gradient(145deg,#07100f 0%,#0a1212 48%,#07100f 100%)!important;color:var(--kz-text)!important;}
+button,.btn{position:relative;overflow:hidden;transform:translateY(0);transition:transform .16s cubic-bezier(.2,.8,.2,1),box-shadow .16s ease,filter .16s ease,background-color .16s ease,border-color .16s ease!important;box-shadow:0 4px 0 rgba(0,0,0,.24),0 8px 18px rgba(0,0,0,.16)!important;}
+button::after,.btn::after{content:"";position:absolute;inset:-80% -35%;background:linear-gradient(115deg,transparent 42%,rgba(255,255,255,.16) 50%,transparent 58%);transform:translateX(-65%) rotate(8deg);transition:transform .55s ease;pointer-events:none;}
+button:hover,.btn:hover{transform:translateY(-2px)!important;filter:brightness(1.06)!important;box-shadow:0 6px 0 rgba(0,0,0,.24),0 12px 24px rgba(0,0,0,.20),0 0 20px rgba(214,169,27,.07)!important;}
+button:hover::after,.btn:hover::after{transform:translateX(65%) rotate(8deg);}
+button:active,.btn:active{transform:translateY(2px) scale(.985)!important;box-shadow:0 1px 0 rgba(0,0,0,.28),0 4px 10px rgba(0,0,0,.18)!important;filter:brightness(.98)!important;}
+button:focus-visible,.btn:focus-visible{outline:2px solid rgba(243,215,106,.72)!important;outline-offset:2px!important;}
+input,select,textarea{background:rgba(13,25,23,.86)!important;border-color:rgba(148,163,184,.14)!important;color:var(--kz-text)!important;transition:border-color .18s ease,box-shadow .18s ease,background-color .18s ease,transform .18s ease!important;}
+input:focus,select:focus,textarea:focus{border-color:rgba(214,169,27,.5)!important;box-shadow:0 0 0 3px rgba(214,169,27,.08),0 8px 20px rgba(0,0,0,.12)!important;background:rgba(16,31,28,.98)!important;}
+#page-ringkasan>*,#page-anak>*,#page-guru>*,#page-jadwal>*,#page-pertemuan>*,#page-dokumen>*,#page-rekap>*{transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease!important;}
+#page-ringkasan .bg-white,#page-anak .bg-white,#page-guru .bg-white,#page-jadwal .bg-white,#page-pertemuan .bg-white,#page-dokumen .bg-white,#page-rekap .bg-white{border-color:var(--kz-border)!important;}
+#page-ringkasan .rounded-xl,#page-anak .rounded-xl,#page-guru .rounded-xl,#page-jadwal .rounded-xl,#page-pertemuan .rounded-xl,#page-dokumen .rounded-xl,#page-rekap .rounded-xl{box-shadow:0 10px 28px rgba(0,0,0,.10)!important;}
+/* Subtle entrance for visible page content */
+.page-enter{animation:kzFadeUp .32s ease both;}
+@keyframes kzFadeUp{from{opacity:.01;transform:translateY(7px)}to{opacity:1;transform:none}}
+@media(max-width:767px){
+ button,.btn{min-height:42px!important;box-shadow:0 3px 0 rgba(0,0,0,.24),0 7px 16px rgba(0,0,0,.14)!important;}
+ button:hover,.btn:hover{transform:translateY(-1px)!important;}
+ button:active,.btn:active{transform:translateY(2px) scale(.985)!important;}
+ input,select,textarea{min-height:42px!important;}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important;}}
+
+/* =========================================================
+   STAGE 7.2 — PREMIUM BUTTON DEPTH & MICRO INTERACTIONS
+   Visual-only. Existing handlers, data and business logic untouched.
+   ========================================================= */
+:root{
+  --kz-accent:#d6a91b;
+  --kz-accent-hi:#f4cf5a;
+  --kz-accent-deep:#9f7810;
+  --kz-btn-shadow:rgba(0,0,0,.34);
+  --kz-btn-glow:rgba(214,169,27,.22);
+}
+button,.btn,[role="button"]{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  transform:translateY(0);
+  box-shadow:0 5px 0 rgba(0,0,0,.20),0 10px 22px var(--kz-btn-shadow);
+  transition:transform .16s cubic-bezier(.2,.8,.2,1),box-shadow .16s ease,filter .18s ease,border-color .18s ease;
+}
+button::after,.btn::after,[role="button"]::after{
+  content:"";
+  position:absolute;
+  inset:-70% -35%;
+  background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.20) 48%,rgba(255,255,255,.04) 55%,transparent 64%);
+  transform:translateX(-65%) rotate(8deg);
+  opacity:0;
+  pointer-events:none;
+  transition:transform .55s ease,opacity .25s ease;
+  z-index:1;
+}
+button:hover,.btn:hover,[role="button"]:hover{
+  transform:translateY(-2px);
+  box-shadow:0 7px 0 rgba(0,0,0,.20),0 14px 28px var(--kz-btn-shadow),0 0 0 1px rgba(214,169,27,.08);
+  filter:brightness(1.045);
+}
+button:hover::after,.btn:hover::after,[role="button"]:hover::after{
+  opacity:1;
+  transform:translateX(65%) rotate(8deg);
+}
+button:active,.btn:active,[role="button"]:active{
+  transform:translateY(3px) scale(.985);
+  box-shadow:0 2px 0 rgba(0,0,0,.22),0 5px 12px var(--kz-btn-shadow);
+  filter:brightness(.98);
+  transition-duration:.07s;
+}
+button:focus-visible,.btn:focus-visible,[role="button"]:focus-visible{
+  outline:2px solid rgba(244,207,90,.72);
+  outline-offset:2px;
+}
+button.bg-amber-500,button.bg-amber-600,button.bg-yellow-500,button.bg-yellow-600,
+.bg-amber-500,.bg-amber-600,.bg-yellow-500,.bg-yellow-600{
+  box-shadow:0 5px 0 var(--kz-accent-deep),0 11px 24px var(--kz-btn-glow);
+}
+button.bg-amber-500:hover,button.bg-amber-600:hover,button.bg-yellow-500:hover,button.bg-yellow-600:hover,
+.bg-amber-500:hover,.bg-amber-600:hover,.bg-yellow-500:hover,.bg-yellow-600:hover{
+  box-shadow:0 7px 0 var(--kz-accent-deep),0 16px 30px rgba(214,169,27,.25),0 0 22px rgba(214,169,27,.10);
+}
+button.bg-amber-500:active,button.bg-amber-600:active,button.bg-yellow-500:active,button.bg-yellow-600:active,
+.bg-amber-500:active,.bg-amber-600:active,.bg-yellow-500:active,.bg-yellow-600:active{
+  box-shadow:0 2px 0 var(--kz-accent-deep),0 6px 12px rgba(214,169,27,.16);
+}
+/* Keep compact icon controls from becoming visually oversized. */
+button.w-8,button.w-9,button.w-10,button.h-8,button.h-9,button.h-10{box-shadow:0 3px 0 rgba(0,0,0,.20),0 7px 16px rgba(0,0,0,.22)}
+/* Respect reduced-motion preferences. */
+@media (prefers-reduced-motion:reduce){
+  button,.btn,[role="button"],button::after,.btn::after,[role="button"]::after{transition:none!important}
+}
+
+/* =========================================================
+   STAGE 7.3 — UNIFIED KAZKA EDU COLOR SYSTEM
+   STAGE 7.4 — MOTION SYSTEM
+   STAGE 7.5 — PREMIUM FINAL POLISH
+   Visual-only layer. Existing features, data and business logic untouched.
+   ========================================================= */
+:root{
+  --kz-gold:#d6a91b;
+  --kz-gold-hi:#f3d76a;
+  --kz-gold-deep:#a97f08;
+  --kz-emerald:#3fc6a5;
+  --kz-bg:#07100f;
+  --kz-surface:#0d1917;
+  --kz-surface-2:#12211f;
+  --kz-line:rgba(148,163,184,.13);
+  --kz-text:#f3f6f5;
+  --kz-muted:#94a5a1;
+}
+/* 7.3 — unified accents and semantic colors */
+body{color:var(--kz-text)!important;background-color:var(--kz-bg)!important}
+.text-yellow-400,.text-yellow-500,.text-amber-400,.text-amber-500{color:var(--kz-gold-hi)!important}
+.bg-yellow-500,.bg-amber-500{background-color:var(--kz-gold)!important}
+.border-yellow-500,.border-amber-500{border-color:rgba(214,169,27,.42)!important}
+.text-green-400,.text-emerald-400{color:#62d8bb!important}
+.text-red-400,.text-red-500{color:#ff8b8b!important}
+.text-slate-400,.text-gray-400{color:var(--kz-muted)!important}
+/* avoid boxed metadata: keep labels/information flat */
+#page-ringkasan .text-xs,#page-anak .text-xs,#page-guru .text-xs,#page-jadwal .text-xs,#page-pertemuan .text-xs,#page-dokumen .text-xs,#page-rekap .text-xs{box-shadow:none!important}
+/* 7.4 — shared motion */
+@keyframes kzSoftIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+@keyframes kzGlowPulse{0%,100%{box-shadow:0 0 0 rgba(214,169,27,0)}50%{box-shadow:0 0 22px rgba(214,169,27,.10)}}
+.page-enter{animation:kzSoftIn .28s cubic-bezier(.2,.8,.2,1) both}
+#page-ringkasan>*,#page-anak>*,#page-guru>*,#page-jadwal>*,#page-pertemuan>*,#page-dokumen>*,#page-rekap>*{animation:kzSoftIn .24s ease both}
+button,.btn,input,select,textarea,a{transition-duration:.18s!important;transition-timing-function:cubic-bezier(.2,.8,.2,1)!important}
+/* 7.5 — final premium surfaces */
+#page-ringkasan>*,#page-anak>*,#page-guru>*,#page-jadwal>*,#page-pertemuan>*,#page-dokumen>*,#page-rekap>*{border-color:var(--kz-line)}
+#page-ringkasan h1,#page-anak h1,#page-guru h1,#page-jadwal h1,#page-pertemuan h1,#page-dokumen h1,#page-rekap h1{letter-spacing:-.022em}
+button[disabled],.btn[disabled]{opacity:.52!important;filter:saturate(.55)!important;transform:none!important;box-shadow:0 2px 0 rgba(0,0,0,.16)!important;cursor:not-allowed!important}
+button[aria-busy="true"],.btn[aria-busy="true"]{animation:kzGlowPulse 1.2s ease-in-out infinite}
+input:hover,select:hover,textarea:hover{border-color:rgba(214,169,27,.24)!important}
+input::placeholder,textarea::placeholder{color:rgba(148,163,184,.62)!important}
+@media(max-width:767px){
+  button,.btn{min-height:42px!important}
+  #page-ringkasan>*,#page-anak>*,#page-guru>*,#page-jadwal>*,#page-pertemuan>*,#page-dokumen>*,#page-rekap>*{animation-duration:.2s}
+}
+@media(prefers-reduced-motion:reduce){
+  #page-ringkasan>*,#page-anak>*,#page-guru>*,#page-jadwal>*,#page-pertemuan>*,#page-dokumen>*,#page-rekap>*{animation:none!important}
+}
+
+/* =========================================================
+   STAGE 8.2 — TRUE LIGHT UI / PAGE-BY-PAGE REFINEMENT
+   Clean SaaS light mode. Visual only; no feature or data logic changes.
+   ========================================================= */
+:root{
+  --kz-l-bg:#f5f7f6;
+  --kz-l-surface:#ffffff;
+  --kz-l-surface-2:#fbfcfb;
+  --kz-l-ink:#1f2927;
+  --kz-l-ink-2:#34423f;
+  --kz-l-muted:#788681;
+  --kz-l-line:#e5ebe8;
+  --kz-l-green:#147d62;
+  --kz-l-green-dark:#0f684f;
+  --kz-l-green-soft:#eaf6f1;
+  --kz-l-gold:#b58a22;
+  --kz-l-gold-soft:#faf5e7;
+  --kz-l-danger:#b5525c;
+  --kz-l-danger-soft:#fbeff0;
+  --kz-l-shadow:0 8px 28px rgba(31,55,48,.065);
+}
+
+html,html.dark{background:var(--kz-l-bg)!important;color-scheme:light!important;}
+body{background:var(--kz-l-bg)!important;color:var(--kz-l-ink)!important;}
+body::before{background:transparent!important;opacity:0!important;}
+
+/* Hard-coded dark utility classes from the original app are translated to light surfaces. */
+[id^="page-"] [class*="bg-slate-950"],
+[id^="page-"] [class*="bg-slate-900"],
+[id^="page-"] [class*="bg-slate-800"],
+[id^="page-"] [class*="bg-slate-700"],
+[id^="page-"] [class*="bg-gray-900"],
+[id^="page-"] [class*="bg-gray-800"]{
+  background:var(--kz-l-surface)!important;
+  border-color:var(--kz-l-line)!important;
+}
+[id^="page-"] [class*="text-white"]{color:var(--kz-l-ink)!important;}
+[id^="page-"] .text-slate-200,
+[id^="page-"] .text-slate-300{color:var(--kz-l-ink-2)!important;}
+[id^="page-"] .text-slate-400,
+[id^="page-"] .text-slate-500{color:var(--kz-l-muted)!important;}
+[id^="page-"] .text-slate-600,
+[id^="page-"] .text-slate-700,
+[id^="page-"] .text-slate-800,
+[id^="page-"] .text-slate-900{color:var(--kz-l-ink-2)!important;}
+
+/* Do not turn colored action buttons into dark text. */
+[id^="page-"] button.bg-amber-500,
+[id^="page-"] button.bg-amber-600,
+[id^="page-"] button.bg-emerald-500,
+[id^="page-"] button.bg-emerald-600,
+[id^="page-"] button.bg-green-500,
+[id^="page-"] button.bg-green-600{color:#fff!important;}
+
+/* Global page rhythm */
+[id^="page-"]{color:var(--kz-l-ink)!important;}
+[id^="page-"] h1,[id^="page-"] h2,[id^="page-"] h3,[id^="page-"] h4{color:var(--kz-l-ink)!important;}
+[id^="page-"] p,[id^="page-"] label{color:var(--kz-l-ink-2);}
+[id^="page-"] .text-xs{line-height:1.5;}
+[id^="page-"]>div{border-color:var(--kz-l-line)!important;}
+
+/* Shared surfaces: fewer boxes, softer hierarchy. */
+[id^="page-"] .bg-white{
+  background:var(--kz-l-surface)!important;
+  color:var(--kz-l-ink)!important;
+  border-color:var(--kz-l-line)!important;
+  box-shadow:var(--kz-l-shadow)!important;
+}
+[id^="page-"] .shadow-sm,
+[id^="page-"] .shadow-lg,
+[id^="page-"] .shadow-xl,
+[id^="page-"] .shadow-2xl{box-shadow:var(--kz-l-shadow)!important;}
+
+/* Forms: white fields + dark readable typography */
+[id^="page-"] input,
+[id^="page-"] select,
+[id^="page-"] textarea{
+  background:#fff!important;
+  color:#273531!important;
+  border-color:#dce5e1!important;
+  box-shadow:none!important;
+}
+[id^="page-"] input:focus,
+[id^="page-"] select:focus,
+[id^="page-"] textarea:focus{
+  border-color:rgba(20,125,98,.55)!important;
+  box-shadow:0 0 0 3px rgba(20,125,98,.09)!important;
+}
+[id^="page-"] input::placeholder,[id^="page-"] textarea::placeholder{color:#a0aaa7!important;}
+
+/* Tables: modern flat information, no mini-cards */
+[id^="page-"] .overflow-x-auto{background:transparent!important;box-shadow:none!important;}
+[id^="page-"] table{border-collapse:collapse!important;border-spacing:0!important;}
+[id^="page-"] table thead th{
+  background:transparent!important;
+  color:#899692!important;
+  border-bottom:1px solid var(--kz-l-line)!important;
+  text-transform:uppercase;
+  letter-spacing:.045em;
+  font-size:10px!important;
+}
+[id^="page-"] table tbody tr,
+[id^="page-"] table tbody tr:hover{
+  background:transparent!important;
+  box-shadow:none!important;
+  transform:none!important;
+}
+[id^="page-"] table tbody tr+tr{border-top:1px solid #edf1ef!important;}
+[id^="page-"] table td{background:transparent!important;border:0!important;color:var(--kz-l-ink-2);vertical-align:middle!important;}
+[id^="page-"] table td:first-child{color:var(--kz-l-ink)!important;font-weight:650!important;}
+[id^="page-"] table td>div,[id^="page-"] table td>span:not(.inline-flex){box-shadow:none!important;}
+
+/* Statuses: airy text/pills only, never heavy colored blocks. */
+[id^="page-"] [class*="bg-emerald-100"],
+[id^="page-"] [class*="bg-green-100"]{
+  background:#eef8f3!important;color:#167457!important;border-color:transparent!important;box-shadow:none!important;
+}
+[id^="page-"] [class*="bg-amber-100"],
+[id^="page-"] [class*="bg-yellow-100"]{
+  background:#fbf7ea!important;color:#9a761d!important;border-color:transparent!important;box-shadow:none!important;
+}
+[id^="page-"] [class*="bg-red-100"]{
+  background:#fbf0f1!important;color:#aa4f58!important;border-color:transparent!important;box-shadow:none!important;
+}
+
+/* ===== RINGKASAN ===== */
+#page-ringkasan{gap:14px!important;}
+#page-ringkasan>div:first-child{
+  background:linear-gradient(135deg,#ffffff 0%,#fbfdfc 72%,#f2f8f5 100%)!important;
+  border-color:#e3ebe7!important;
+  box-shadow:0 10px 30px rgba(31,55,48,.06)!important;
+}
+#page-ringkasan>div:first-child .text-amber-500,
+#page-ringkasan>div:first-child .text-amber-600{color:var(--kz-l-green)!important;}
+#page-ringkasan>div:nth-child(2)>div{background:#fff!important;border-color:#e6ece9!important;box-shadow:0 7px 22px rgba(31,55,48,.055)!important;}
+#page-ringkasan>div:nth-child(2)>div:nth-child(3) p:first-of-type{color:#167457!important;}
+#page-ringkasan>div:nth-child(2)>div:nth-child(4) p:first-of-type{color:#a27b1f!important;}
+#page-ringkasan table tbody tr:hover{background:#f8fbf9!important;}
+
+/* ===== DATA ANAK ===== */
+#page-anak{gap:14px!important;}
+#page-anak>div:first-child{
+  background:linear-gradient(135deg,#ffffff,#f8fbfa)!important;
+  border-color:#e2ebe7!important;
+}
+#page-anak>div:first-child button{background:var(--kz-l-green)!important;color:#fff!important;border-color:transparent!important;}
+#page-anak .overflow-x-auto{background:#fff!important;border-color:#e6ece9!important;border-radius:16px!important;box-shadow:0 8px 26px rgba(31,55,48,.055)!important;}
+#page-anak table tbody tr:hover{background:#f7faf8!important;}
+
+/* ===== DATA GURU ===== */
+#page-guru{gap:14px!important;}
+#page-guru .bg-white{box-shadow:0 7px 22px rgba(31,55,48,.055)!important;}
+#page-guru .bg-emerald-50,#page-guru .bg-emerald-100{background:#eef8f3!important;color:#167457!important;}
+#page-guru button.bg-amber-500,#page-guru button.bg-amber-600{background:var(--kz-l-green)!important;color:#fff!important;}
+
+/* ===== JADWAL ===== */
+#page-jadwal{gap:14px!important;}
+#page-jadwal .bg-slate-900\/70,
+#page-jadwal [class*="bg-slate-900"]{background:#fff!important;color:var(--kz-l-ink)!important;border-color:#e3ebe7!important;}
+#page-jadwal .jadwal-hero{background:linear-gradient(110deg,#f8fbfa,#ffffff 70%,#fbf7ea)!important;border-color:#e2ebe7!important;box-shadow:0 10px 30px rgba(31,55,48,.06)!important;}
+#page-jadwal .jadwal-eyebrow{color:#a17b1e!important;}
+#page-jadwal .jadwal-hero-title,#page-jadwal #jadwalBulanLabel{color:var(--kz-l-ink)!important;}
+#page-jadwal .jadwal-hero-subtitle,#page-jadwal .jadwal-stat-label,#page-jadwal .jadwal-stat-note{color:#7b8985!important;}
+#page-jadwal .jadwal-stat-card{background:#fff!important;border-color:#e5ece9!important;box-shadow:0 7px 20px rgba(31,55,48,.05)!important;}
+#page-jadwal .jadwal-icon-scheduled{background:#eaf6f1!important;color:#147d62!important;}
+#page-jadwal .jadwal-icon-today{background:#f0f4f2!important;color:#55736e!important;}
+#page-jadwal .jadwal-icon-month{background:#faf5e7!important;color:#a27b1f!important;}
+#page-jadwal .jadwal-day-option{background:#f8faf9!important;border-color:#dfe7e3!important;color:#65736f!important;}
+#page-jadwal input[name="jadwalHariForm"]:checked + .jadwal-day-option{background:#eaf6f1!important;border-color:#83c9b2!important;color:#126a51!important;box-shadow:none!important;}
+#page-jadwal .jadwal-day-cell{background:#fff!important;border-color:#e3eae7!important;color:#283531!important;box-shadow:none!important;}
+#page-jadwal .jadwal-day-cell.is-today{background:#fffaf0!important;border-color:#e4ce8e!important;}
+#page-jadwal .jadwal-calendar-item{background:#f7faf8!important;border:1px solid #e4ebe8!important;color:#293733!important;box-shadow:none!important;}
+#page-jadwal .jadwal-calendar-item.jci-recurring{background:#edf8f3!important;border-color:#d2e9df!important;}
+#page-jadwal .jadwal-calendar-item.jci-reschedule{background:#fbf7ea!important;border-color:#eee0b9!important;}
+#page-jadwal .jadwal-calendar-item .jci-time,#page-jadwal .jadwal-calendar-item .jci-guru{color:#7b8784!important;}
+#page-jadwal .jadwal-calendar-item .jci-name{color:#25312f!important;}
+#page-jadwal .jadwal-calendar-more{color:#9b7720!important;}
+
+/* ===== PERTEMUAN ===== */
+#page-pertemuan{gap:14px!important;}
+#page-pertemuan .bg-slate-900,#page-pertemuan .bg-slate-800{background:#fff!important;color:var(--kz-l-ink)!important;border-color:#e4ebe8!important;}
+#page-pertemuan .bg-slate-100{background:#f7faf8!important;color:var(--kz-l-ink-2)!important;}
+#page-pertemuan table tbody tr:hover{background:#f8fbf9!important;}
+#page-pertemuan button.bg-amber-500,#page-pertemuan button.bg-amber-600{background:var(--kz-l-green)!important;color:#fff!important;}
+
+/* ===== ARSIP ===== */
+#page-dokumen{gap:14px!important;}
+#page-dokumen>div:first-child{background:linear-gradient(135deg,#fff,#f7fbf9)!important;border-color:#e3ebe7!important;}
+#page-dokumen table tbody tr:hover{background:#f8fbf9!important;}
+#page-dokumen table td:nth-child(2),#page-dokumen table td:nth-child(3),#page-dokumen table td:nth-child(5){color:#7b8985!important;}
+#page-dokumen table td:nth-child(4){color:#34423f!important;}
+
+/* ===== REKAP FEE ===== */
+#page-rekap{gap:14px!important;}
+#page-rekap>div:first-child{background:linear-gradient(135deg,#fff,#fbf8ed)!important;border-color:#e8e2ce!important;box-shadow:0 9px 28px rgba(74,62,25,.055)!important;}
+#page-rekap table tbody tr:hover{background:#fbfcfb!important;}
+#page-rekap table td:nth-child(n+2){color:#64736f!important;}
+#page-rekap table td:first-child{color:#273531!important;}
+
+/* Modals must be light from the outer shell to inner content. */
+[id^="modal"]>div,
+[role="dialog"]>div{
+  background:#fff!important;
+  color:var(--kz-l-ink)!important;
+  border-color:#dfe7e3!important;
+  box-shadow:0 24px 70px rgba(31,55,48,.16)!important;
+}
+[id^="modal"] [class*="bg-slate-950"],
+[id^="modal"] [class*="bg-slate-900"],
+[id^="modal"] [class*="bg-slate-800"],
+[id^="modal"] [class*="bg-slate-700"]{background:#fff!important;color:var(--kz-l-ink-2)!important;border-color:#e0e7e4!important;}
+[id^="modal"] .text-white,[id^="modal"] .text-slate-200,[id^="modal"] .text-slate-300{color:var(--kz-l-ink-2)!important;}
+[id^="modal"] .text-slate-400,[id^="modal"] .text-slate-500{color:#7b8985!important;}
+[id^="modal"] input,[id^="modal"] select,[id^="modal"] textarea{background:#fff!important;color:#273531!important;border-color:#dce5e1!important;}
+[id^="modal"] button.bg-amber-500,[id^="modal"] button.bg-amber-600,
+[id^="modal"] button.bg-emerald-500,[id^="modal"] button.bg-emerald-600{color:#fff!important;}
+
+/* Bottom navigation + header */
+nav.md\:hidden{background:rgba(255,255,255,.97)!important;border-color:#e3ebe7!important;box-shadow:0 -8px 24px rgba(31,55,48,.06)!important;}
+header{background:rgba(255,255,255,.94)!important;border-color:#e5ebe8!important;color:var(--kz-l-ink)!important;}
+header .text-white,header .dark\:text-white,header .text-slate-900{color:var(--kz-l-ink)!important;}
+
+/* Keep compact controls compact while primary actions use Kazka green. */
+button.bg-amber-500,button.bg-amber-600,button.bg-yellow-500,button.bg-yellow-600{
+  background:var(--kz-l-green)!important;color:#fff!important;border-color:transparent!important;
+  box-shadow:0 4px 0 #0f604b,0 9px 20px rgba(20,125,98,.15)!important;
+}
+button.bg-amber-500:hover,button.bg-amber-600:hover,button.bg-yellow-500:hover,button.bg-yellow-600:hover{background:#16886a!important;}
+button.bg-slate-200,button.bg-slate-300,button[class*="bg-slate-800"],button[class*="bg-slate-700"]{
+  background:#f4f7f6!important;color:#45534f!important;border-color:#dfe6e3!important;
+}
+
+@media(max-width:767px){
+  body{background:#f5f7f6!important;}
+  header{box-shadow:0 4px 18px rgba(31,55,48,.045)!important;}
+  [id^="page-"]{gap:12px!important;}
+  [id^="page-"]>div{border-radius:16px!important;}
+  [id^="page-"] table td{padding-top:11px!important;padding-bottom:11px!important;}
+  #page-ringkasan>div:nth-child(2){gap:8px!important;}
+  #page-jadwal .jadwal-hero{border-radius:17px!important;}
+  #page-rekap>div:first-child,#page-dokumen>div:first-child{border-radius:16px!important;}
+}
+
+/* =========================================================
+   STAGE 8.4 — LIGHT SOFT BACKGROUND + GURU CLEANUP
+   Visual-only. Features, data and business logic untouched.
+   ========================================================= */
+html:not(.dark) body{
+  background:#edf2f0!important;
+  color:#263532!important;
+}
+html:not(.dark) body > div,
+html:not(.dark) body > div.flex-1{
+  background:#edf2f0!important;
+}
+
+/* Keep the app light, but avoid the harsh full-white canvas. */
+html:not(.dark) main,
+html:not(.dark) .flex-1 main{
+  background:transparent!important;
+}
+html:not(.dark) header{
+  background:rgba(255,255,255,.96)!important;
+}
+
+/* DATA GURU — remove every leftover dark surface from the old theme. */
+html:not(.dark) #page-guru > div:first-child{
+  background:linear-gradient(135deg,#ffffff 0%,#f7faf8 100%)!important;
+  color:#1f302d!important;
+  border:1px solid #dfe8e4!important;
+  box-shadow:0 10px 28px rgba(38,53,48,.07)!important;
+}
+html:not(.dark) #page-guru > div:first-child h1,
+html:not(.dark) #page-guru > div:first-child h2,
+html:not(.dark) #page-guru > div:first-child p,
+html:not(.dark) #page-guru > div:first-child span{
+  color:#263a36!important;
+  -webkit-text-fill-color:#263a36!important;
+}
+html:not(.dark) #page-guru > div:first-child h1{
+  color:#172b27!important;
+  -webkit-text-fill-color:#172b27!important;
+}
+html:not(.dark) #page-guru > div:first-child::after{border-color:rgba(20,125,98,.10)!important;}
+
+/* Teacher cards: white, airy, not dark blocks. */
+html:not(.dark) #gridGuru > div{
+  background:#ffffff!important;
+  color:#293a36!important;
+  border:1px solid #dfe8e4!important;
+  box-shadow:0 8px 24px rgba(38,53,48,.065)!important;
+}
+html:not(.dark) #gridGuru > div:hover{
+  background:#ffffff!important;
+  border-color:#b9d8cc!important;
+  box-shadow:0 14px 32px rgba(38,53,48,.10)!important;
+}
+html:not(.dark) #gridGuru > div > div:first-child{
+  border-color:#e7eeeb!important;
+}
+html:not(.dark) #gridGuru .text-white,
+html:not(.dark) #gridGuru .text-slate-100,
+html:not(.dark) #gridGuru .text-slate-200,
+html:not(.dark) #gridGuru .text-slate-300{
+  color:#263a36!important;
+  -webkit-text-fill-color:#263a36!important;
+}
+html:not(.dark) #gridGuru .text-slate-400,
+html:not(.dark) #gridGuru .text-slate-500,
+html:not(.dark) #gridGuru .text-slate-600{
+  color:#71817c!important;
+  -webkit-text-fill-color:#71817c!important;
+}
+html:not(.dark) #gridGuru .bg-slate-800,
+html:not(.dark) #gridGuru .bg-slate-900,
+html:not(.dark) #gridGuru .bg-slate-700,
+html:not(.dark) #gridGuru .bg-slate-100,
+html:not(.dark) #gridGuru .bg-slate-200{
+  background:#f4f7f6!important;
+  color:#40514c!important;
+}
+html:not(.dark) #gridGuru .border-slate-700,
+html:not(.dark) #gridGuru .border-slate-800,
+html:not(.dark) #gridGuru .border-slate-600{
+  border-color:#dfe8e4!important;
+}
+
+/* Page title and supporting copy across Guru page. */
+html:not(.dark) #page-guru h1,
+html:not(.dark) #page-guru h2,
+html:not(.dark) #page-guru h3{color:#172b27!important;-webkit-text-fill-color:#172b27!important;}
+html:not(.dark) #page-guru p,
+html:not(.dark) #page-guru label{color:#5e706b!important;-webkit-text-fill-color:#5e706b!important;}
+
+/* Light canvas on every page: slightly gray, never glaring white. */
+html:not(.dark) [id^="page-"]{color:#293a36!important;}
+html:not(.dark) [id^="page-"] > div:not(.overflow-x-auto){
+  border-color:#dfe8e4!important;
+}
+
+@media(max-width:767px){
+  html:not(.dark) body,
+  html:not(.dark) body > div,
+  html:not(.dark) body > div.flex-1{background:#edf2f0!important;}
+  html:not(.dark) #page-guru > div:first-child{background:#fff!important;}
+  html:not(.dark) #gridGuru > div{background:#fff!important;}
+}
+
+/* =========================================================
+   STAGE 8.5 — LIGHT PREMIUM LAYOUT POLISH
+   Visual-only refinement. Existing features, logic, data,
+   Firebase and Supabase behavior remain untouched.
+   ========================================================= */
+:root{
+  --kz-light-canvas:#edf2f0;
+  --kz-light-surface:#ffffff;
+  --kz-light-surface-soft:#f7faf9;
+  --kz-light-text:#20332f;
+  --kz-light-text-2:#50635e;
+  --kz-light-muted:#71827d;
+  --kz-light-line:#dce6e2;
+  --kz-light-green:#147d62;
+  --kz-light-green-soft:#e7f3ef;
+  --kz-light-gold:#c49a18;
+}
+
+html:not(.dark){
+  color-scheme:light!important;
+  background:var(--kz-light-canvas)!important;
+}
+html:not(.dark) body{
+  background:var(--kz-light-canvas)!important;
+  color:var(--kz-light-text)!important;
+}
+html:not(.dark) body > div,
+html:not(.dark) body > div.flex-1{
+  background:var(--kz-light-canvas)!important;
+}
+
+/* Desktop sidebar: calm white navigation, clear text, one active state. */
+@media(min-width:768px){
+  html:not(.dark) body > aside{
+    background:#ffffff!important;
+    border-right:1px solid var(--kz-light-line)!important;
+    box-shadow:8px 0 28px rgba(39,67,60,.035)!important;
+  }
+  html:not(.dark) body > aside nav button,
+  html:not(.dark) body > aside nav a{
+    color:#50635e!important;
+    -webkit-text-fill-color:#50635e!important;
+    background:transparent!important;
+    border:0!important;
+  }
+  html:not(.dark) body > aside nav button:hover,
+  html:not(.dark) body > aside nav a:hover{
+    color:#173f35!important;
+    -webkit-text-fill-color:#173f35!important;
+    background:#f2f7f5!important;
+  }
+  html:not(.dark) body > aside nav button.tab-active,
+  html:not(.dark) body > aside nav button.bg-amber-500,
+  html:not(.dark) body > aside nav button[aria-current="page"]{
+    color:#126c55!important;
+    -webkit-text-fill-color:#126c55!important;
+    background:#e8f4ef!important;
+    box-shadow:inset 3px 0 0 #147d62!important;
+  }
+  html:not(.dark) body > aside nav button.tab-active span,
+  html:not(.dark) body > aside nav button.bg-amber-500 span,
+  html:not(.dark) body > aside nav button[aria-current="page"] span{
+    color:#126c55!important;
+    -webkit-text-fill-color:#126c55!important;
+  }
+  html:not(.dark) body > aside > div:first-child > div:first-child span,
+  html:not(.dark) body > aside > div:first-child > div:first-child p{
+    color:#20332f!important;
+    -webkit-text-fill-color:#20332f!important;
+  }
+}
+
+/* Shared page rhythm. */
+html:not(.dark) [id^="page-"]{
+  color:var(--kz-light-text)!important;
+}
+html:not(.dark) [id^="page-"] h1,
+html:not(.dark) [id^="page-"] h2,
+html:not(.dark) [id^="page-"] h3,
+html:not(.dark) [id^="page-"] strong{
+  color:#20332f!important;
+  -webkit-text-fill-color:#20332f!important;
+}
+html:not(.dark) [id^="page-"] p,
+html:not(.dark) [id^="page-"] label{
+  color:var(--kz-light-text-2)!important;
+  -webkit-text-fill-color:var(--kz-light-text-2)!important;
+}
+html:not(.dark) [id^="page-"] .text-slate-400,
+html:not(.dark) [id^="page-"] .text-slate-500{
+  color:var(--kz-light-muted)!important;
+  -webkit-text-fill-color:var(--kz-light-muted)!important;
+}
+html:not(.dark) [id^="page-"] .text-white,
+html:not(.dark) [id^="page-"] .text-slate-100,
+html:not(.dark) [id^="page-"] .text-slate-200,
+html:not(.dark) [id^="page-"] .text-slate-300{
+  color:#314741!important;
+  -webkit-text-fill-color:#314741!important;
+}
+
+/* Cards: white and soft, never dark blocks. */
+html:not(.dark) [id^="page-"] .bg-slate-900,
+html:not(.dark) [id^="page-"] .bg-slate-800,
+html:not(.dark) [id^="page-"] .bg-slate-700{
+  background:#ffffff!important;
+  color:#293b36!important;
+}
+html:not(.dark) [id^="page-"] .border-slate-800,
+html:not(.dark) [id^="page-"] .border-slate-700,
+html:not(.dark) [id^="page-"] .border-slate-600{
+  border-color:var(--kz-light-line)!important;
+}
+
+/* Forms. */
+html:not(.dark) [id^="page-"] input,
+html:not(.dark) [id^="page-"] select,
+html:not(.dark) [id^="page-"] textarea{
+  background:#ffffff!important;
+  color:#20332f!important;
+  -webkit-text-fill-color:#20332f!important;
+  border-color:#cedbd7!important;
+}
+html:not(.dark) [id^="page-"] input:focus,
+html:not(.dark) [id^="page-"] select:focus,
+html:not(.dark) [id^="page-"] textarea:focus{
+  border-color:rgba(20,125,98,.48)!important;
+  box-shadow:0 0 0 3px rgba(20,125,98,.09)!important;
+}
+
+/* Tables: clean information hierarchy, not boxed cells. */
+html:not(.dark) [id^="page-"] table thead th{
+  background:transparent!important;
+  color:#60726d!important;
+  -webkit-text-fill-color:#60726d!important;
+  border-bottom:1px solid var(--kz-light-line)!important;
+}
+html:not(.dark) [id^="page-"] table tbody tr,
+html:not(.dark) [id^="page-"] table tbody tr:hover{
+  background:transparent!important;
+  box-shadow:none!important;
+}
+html:not(.dark) [id^="page-"] table tbody td{
+  color:#30443e!important;
+  -webkit-text-fill-color:#30443e!important;
+  border-bottom:1px solid #e8efec!important;
+}
+html:not(.dark) [id^="page-"] table tbody tr:last-child td{border-bottom:0!important}
+
+/* Status chips: only status remains pill-shaped; metadata stays flat. */
+html:not(.dark) [id^="page-"] .inline-flex[class*="rounded-full"]{
+  box-shadow:none!important;
+}
+
+/* Dashboard cards and page headers get a consistent quiet elevation. */
+html:not(.dark) #page-ringkasan > div,
+html:not(.dark) #page-anak > div,
+html:not(.dark) #page-guru > div,
+html:not(.dark) #page-jadwal > div,
+html:not(.dark) #page-pertemuan > div,
+html:not(.dark) #page-dokumen > div,
+html:not(.dark) #page-rekap > div{
+  box-shadow:0 7px 24px rgba(38,61,54,.055)!important;
+}
+
+/* Guru: remove any remaining dark/overly heavy surfaces. */
+html:not(.dark) #gridGuru > div,
+html:not(.dark) #gridGuru > div *{
+  text-shadow:none!important;
+}
+html:not(.dark) #gridGuru > div{
+  background:#ffffff!important;
+  color:#293b36!important;
+  border-color:#dce7e3!important;
+}
+html:not(.dark) #gridGuru > div:hover{
+  border-color:#bdd9cf!important;
+  box-shadow:0 15px 34px rgba(38,61,54,.10)!important;
+}
+html:not(.dark) #gridGuru .bg-slate-800,
+html:not(.dark) #gridGuru .bg-slate-900,
+html:not(.dark) #gridGuru .bg-slate-700{
+  background:#f5f8f7!important;
+}
+
+/* Data Anak: name and core information get strongest contrast. */
+html:not(.dark) #page-anak table td:first-child,
+html:not(.dark) #page-anak table td:nth-child(2){
+  color:#1f342f!important;
+  -webkit-text-fill-color:#1f342f!important;
+  font-weight:650!important;
+}
+html:not(.dark) #page-anak table td:nth-child(3),
+html:not(.dark) #page-anak table td:nth-child(4),
+html:not(.dark) #page-anak table td:nth-child(5){
+  color:#435851!important;
+  -webkit-text-fill-color:#435851!important;
+}
+
+/* Jadwal / calendar: soft gray canvas and green activity accent. */
+html:not(.dark) #page-jadwal #kalenderJadwal,
+html:not(.dark) #page-jadwal .jadwal-calendar,
+html:not(.dark) #page-jadwal [class*="calendar"]{
+  color:#30443e!important;
+}
+html:not(.dark) #page-jadwal .jadwal-day-cell{
+  background:#ffffff!important;
+  border-color:#e0e9e6!important;
+}
+html:not(.dark) #page-jadwal .jadwal-day-cell:hover{
+  background:#f7fbf9!important;
+}
+
+/* Mobile: preserve airy app-like layout without pure-white glare. */
+@media(max-width:767px){
+  html:not(.dark) body,
+  html:not(.dark) body > div,
+  html:not(.dark) body > div.flex-1{
+    background:#edf2f0!important;
+  }
+  html:not(.dark) body > header,
+  html:not(.dark) body > div > header{
+    background:#ffffff!important;
+    border-bottom:1px solid var(--kz-light-line)!important;
+  }
+  html:not(.dark) body > nav.md\:hidden{
+    background:rgba(255,255,255,.96)!important;
+    border-top:1px solid var(--kz-light-line)!important;
+    box-shadow:0 -8px 22px rgba(38,61,54,.06)!important;
+  }
+  html:not(.dark) body > nav.md\:hidden button,
+  html:not(.dark) body > nav.md\:hidden a{
+    color:#667872!important;
+    -webkit-text-fill-color:#667872!important;
+  }
+}
+
+/* Accessibility: keep motion but respect reduced-motion preference. */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important}
+}
+
+
+/* STAGE 8.6 CORRECT — REMOVE TOP PAGE TITLE BAR VISUAL ONLY */
+@media (min-width:768px){
+  body > header{
+    background:transparent!important;
+    border-bottom:0!important;
+    box-shadow:none!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+    padding-top:10px!important;
+    padding-bottom:10px!important;
+  }
+}
+
+/* STAGE 8.6 — REMOVE TOP HEADER WHITE BOX ONLY */
+header.bg-white\/80{
+  background:transparent!important;
+  border-bottom-color:transparent!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+}
+
+/* STAGE 8.6 FINAL — TOP HEADER BOX FULLY FLAT */
+@media (min-width: 768px){
+  body > div.flex-1 > header[class*="bg-white/80"]{
+    background:transparent!important;
+    background-color:transparent!important;
+    border:0!important;
+    border-top:0!important;
+    border-right:0!important;
+    border-bottom:0!important;
+    border-left:0!important;
+    box-shadow:none!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+    min-height:0!important;
+    padding-top:6px!important;
+    padding-bottom:6px!important;
+  }
+}
+
+/* STAGE 8.6 FINAL2 — REMOVE DESKTOP TOP HEADER ENTIRELY
+   Keep the Ringkasan Operasional page title card inside main content. */
+@media (min-width:768px){
+  body > div.flex-1 > header{
+    display:none!important;
+  }
+}
+
+/* =========================================================
+   STAGE 8.7 — PAGE HEADER ALIGNMENT
+   Keep the top header removed, but align every page's own title
+   section to the exact same starting position as Ringkasan.
+   Visual-only. Existing features, data and logic untouched.
+   ========================================================= */
+@media (min-width:768px){
+  main.p-3.sm\:p-8{
+    padding-top:32px!important;
+  }
+  #page-ringkasan,
+  #page-anak,
+  #page-guru,
+  #page-jadwal,
+  #page-pertemuan,
+  #page-dokumen,
+  #page-rekap{
+    margin-top:0!important;
+  }
+  #page-ringkasan > :first-child,
+  #page-anak > :first-child,
+  #page-guru > :first-child,
+  #page-jadwal > :first-child,
+  #page-pertemuan > :first-child,
+  #page-dokumen > :first-child,
+  #page-rekap > :first-child{
+    margin-top:0!important;
+  }
+}
+
+@media (max-width:767px){
+  main.p-3.sm\:p-8{
+    padding-top:12px!important;
+  }
+  #page-ringkasan,
+  #page-anak,
+  #page-guru,
+  #page-jadwal,
+  #page-pertemuan,
+  #page-dokumen,
+  #page-rekap{
+    margin-top:0!important;
+  }
+}
+
+/* STAGE 8.9 — PAGE HEADER CARDS: SOLID WHITE ONLY */
+#page-ringkasan > div:first-child,
+#page-anak > div:first-child,
+#page-guru > div:first-child,
+#page-jadwal > div:first-child,
+#page-pertemuan > div:first-child,
+#page-dokumen > div:first-child,
+#page-rekap > div:first-child{
+  background:#ffffff!important;
+  background-image:none!important;
+}
+
+/* =========================================================
+   STAGE 8.10 — LIGHT PREMIUM: DEEPER CANVAS
+   Visual-only change. White page header cards and content
+   surfaces remain intact; only the outer light canvas is darker.
+   ========================================================= */
+:root{
+  --kz-light-canvas-deep:#d9e2df;
+}
+html:not(.dark),
+html:not(.dark) body,
+html:not(.dark) body > div,
+html:not(.dark) body > div.flex-1,
+html:not(.dark) body > div.flex-1 > main{
+  background:#d9e2df!important;
+}
+@media(max-width:767px){
+  html:not(.dark) body,
+  html:not(.dark) body > div,
+  html:not(.dark) body > div.flex-1,
+  html:not(.dark) body > div.flex-1 > main{
+    background:#d9e2df!important;
+  }
+}
+
+
+/* STAGE 8.13 — LIGHT PREMIUM DEEP CANVAS
+   Visual-only. Darker light-mode canvas; white surfaces remain white. */
+:root{--kz-light-canvas-deep:#aebbb7;}
+html:not(.dark) body,
+html:not(.dark) body > div,
+html:not(.dark) body > div.flex-1,
+html:not(.dark) body > div.flex-1 > main{
+  background:#aebbb7!important;
+}
+@media(max-width:767px){
+  html:not(.dark) body,
+  html:not(.dark) body > div,
+  html:not(.dark) body > div.flex-1,
+  html:not(.dark) body > div.flex-1 > main{background:#aebbb7!important;}
+}
+
+/* =========================================================
+   STAGE 9.0 — PREMIUM UI FINAL POLISH
+   Visual-only layer. Existing features, data and business logic untouched.
+   ========================================================= */
+:root{
+  --kz-canvas:#aebbb7;
+  --kz-surface:#ffffff;
+  --kz-surface-soft:#f7faf9;
+  --kz-ink:#172521;
+  --kz-ink-soft:#53645f;
+  --kz-muted:#71817c;
+  --kz-line:rgba(44,72,65,.12);
+  --kz-green:#176b5b;
+  --kz-green-soft:rgba(23,107,91,.08);
+  --kz-gold:#b98b12;
+  --kz-shadow:0 12px 30px rgba(27,48,43,.10);
+  --kz-shadow-hover:0 16px 34px rgba(27,48,43,.14);
+}
+
+/* Canvas: deep light, never a dark theme */
+html:not(.dark),html:not(.dark) body{background:var(--kz-canvas)!important;color:var(--kz-ink)!important;}
+
+/* Shared typography */
+#page-ringkasan h1,#page-ringkasan h2,#page-ringkasan h3,
+#page-anak h1,#page-anak h2,#page-anak h3,
+#page-guru h1,#page-guru h2,#page-guru h3,
+#page-jadwal h1,#page-jadwal h2,#page-jadwal h3,
+#page-pertemuan h1,#page-pertemuan h2,#page-pertemuan h3,
+#page-dokumen h1,#page-dokumen h2,#page-dokumen h3,
+#page-rekap h1,#page-rekap h2,#page-rekap h3{
+  color:var(--kz-ink)!important;
+  letter-spacing:-.025em;
+}
+
+#page-ringkasan p,#page-anak p,#page-guru p,#page-jadwal p,
+#page-pertemuan p,#page-dokumen p,#page-rekap p{
+  color:var(--kz-ink-soft);
+}
+
+/* Page header cards: white, clean, no gradient */
+#page-ringkasan > div:first-child,#page-anak > div:first-child,
+#page-guru > div:first-child,#page-jadwal > div:first-child,
+#page-pertemuan > div:first-child,#page-dokumen > div:first-child,
+#page-rekap > div:first-child{
+  background:#fff!important;
+  background-image:none!important;
+  border:1px solid rgba(44,72,65,.10)!important;
+  box-shadow:var(--kz-shadow)!important;
+  border-radius:20px!important;
+}
+
+/* Content surfaces: premium white without turning every piece of metadata into a box */
+#page-ringkasan .bg-white,#page-anak .bg-white,#page-guru .bg-white,
+#page-jadwal .bg-white,#page-pertemuan .bg-white,#page-dokumen .bg-white,
+#page-rekap .bg-white{
+  color:var(--kz-ink)!important;
+  border-color:var(--kz-line)!important;
+}
+
+/* Remove decorative gradients from common content surfaces */
+#page-ringkasan .bg-white,#page-anak .bg-white,#page-guru .bg-white,
+#page-jadwal .bg-white,#page-pertemuan .bg-white,#page-dokumen .bg-white,
+#page-rekap .bg-white{
+  background-image:none!important;
+}
+
+/* Tables: editorial hierarchy, no row cards */
+#page-anak table,#page-jadwal table,#page-dokumen table,#page-rekap table{
+  color:var(--kz-ink)!important;
+}
+#page-anak table tbody tr,#page-jadwal table tbody tr,
+#page-dokumen table tbody tr,#page-rekap table tbody tr{
+  background:transparent!important;
+  box-shadow:none!important;
+  transform:none!important;
+}
+#page-anak table td,#page-jadwal table td,#page-dokumen table td,#page-rekap table td{
+  color:var(--kz-ink-soft)!important;
+  border-bottom:1px solid rgba(44,72,65,.08)!important;
+}
+#page-anak table td:first-child,#page-jadwal table td:first-child,
+#page-dokumen table td:first-child,#page-rekap table td:first-child{
+  color:var(--kz-ink)!important;
+  font-weight:650!important;
+}
+#page-anak table thead th,#page-jadwal table thead th,
+#page-dokumen table thead th,#page-rekap table thead th{
+  color:#63736e!important;
+  background:transparent!important;
+  border-bottom:1px solid rgba(44,72,65,.13)!important;
+  text-transform:uppercase;
+  letter-spacing:.055em;
+}
+#page-anak table tbody tr:hover,#page-jadwal table tbody tr:hover,
+#page-dokumen table tbody tr:hover,#page-rekap table tbody tr:hover{
+  background:rgba(23,107,91,.035)!important;
+}
+
+/* Forms: clean white fields with green focus, no heavy blocks */
+#page-ringkasan input,#page-ringkasan select,#page-ringkasan textarea,
+#page-anak input,#page-anak select,#page-anak textarea,
+#page-guru input,#page-guru select,#page-guru textarea,
+#page-jadwal input,#page-jadwal select,#page-jadwal textarea,
+#page-pertemuan input,#page-pertemuan select,#page-pertemuan textarea,
+#page-dokumen input,#page-dokumen select,#page-dokumen textarea,
+#page-rekap input,#page-rekap select,#page-rekap textarea{
+  background:#fff!important;
+  color:var(--kz-ink)!important;
+  border-color:rgba(44,72,65,.16)!important;
+  box-shadow:0 2px 8px rgba(27,48,43,.035)!important;
+}
+#page-ringkasan input:focus,#page-ringkasan select:focus,#page-ringkasan textarea:focus,
+#page-anak input:focus,#page-anak select:focus,#page-anak textarea:focus,
+#page-guru input:focus,#page-guru select:focus,#page-guru textarea:focus,
+#page-jadwal input:focus,#page-jadwal select:focus,#page-jadwal textarea:focus,
+#page-pertemuan input:focus,#page-pertemuan select:focus,#page-pertemuan textarea:focus,
+#page-dokumen input:focus,#page-dokumen select:focus,#page-dokumen textarea:focus,
+#page-rekap input:focus,#page-rekap select:focus,#page-rekap textarea:focus{
+  border-color:rgba(23,107,91,.42)!important;
+  box-shadow:0 0 0 3px rgba(23,107,91,.08)!important;
+}
+
+/* Status: subtle text/chip treatment */
+#page-anak .inline-flex,#page-jadwal .inline-flex,#page-rekap .inline-flex{
+  box-shadow:none!important;
+}
+#page-anak [class*="bg-green-"],#page-jadwal [class*="bg-green-"],#page-rekap [class*="bg-green-"]{
+  box-shadow:none!important;
+}
+
+/* Guru cards: light, calm and consistent */
+#page-guru .bg-slate-800,#page-guru .bg-slate-900,
+#page-guru [class*="bg-gradient"]{
+  background:#fff!important;
+  background-image:none!important;
+  color:var(--kz-ink)!important;
+  border-color:var(--kz-line)!important;
+  box-shadow:var(--kz-shadow)!important;
+}
+#page-guru .bg-slate-800:hover,#page-guru .bg-slate-900:hover{
+  transform:translateY(-2px)!important;
+  box-shadow:var(--kz-shadow-hover)!important;
+}
+
+/* Buttons: elevated but restrained */
+button,.btn,[role="button"]{
+  border-radius:10px!important;
+  font-weight:650;
+  transition:transform .16s ease,box-shadow .18s ease,filter .18s ease,background-color .18s ease!important;
+}
+button:hover,.btn:hover,[role="button"]:hover{
+  filter:brightness(1.025)!important;
+}
+button:active,.btn:active,[role="button"]:active{
+  transform:translateY(2px) scale(.99)!important;
+}
+
+/* Keep primary green/gold actions visually connected */
+button.bg-amber-500,button.bg-amber-600,
+button.bg-yellow-500,button.bg-yellow-600{
+  box-shadow:0 4px 0 rgba(137,102,10,.75),0 9px 20px rgba(185,139,18,.18)!important;
+}
+button.bg-green-500,button.bg-green-600,button.bg-emerald-500,button.bg-emerald-600{
+  box-shadow:0 4px 0 rgba(13,82,68,.65),0 9px 20px rgba(23,107,91,.15)!important;
+}
+
+/* Modal: cleaner, less dated */
+.fixed.inset-0 > div,
+[class*="fixed inset-0"] > div{
+  border-radius:20px!important;
+}
+
+/* Mobile */
+@media(max-width:767px){
+  html:not(.dark),html:not(.dark) body{background:#aebbb7!important;}
+  #page-ringkasan > div:first-child,#page-anak > div:first-child,
+  #page-guru > div:first-child,#page-jadwal > div:first-child,
+  #page-pertemuan > div:first-child,#page-dokumen > div:first-child,
+  #page-rekap > div:first-child{border-radius:16px!important;box-shadow:0 8px 22px rgba(27,48,43,.09)!important;}
+  button,.btn,[role="button"]{min-height:42px;}
+  #page-anak table,#page-jadwal table,#page-dokumen table,#page-rekap table{font-size:12px!important;}
+}
+
+@media(prefers-reduced-motion:reduce){
+  button,.btn,[role="button"],#page-guru .bg-slate-800,#page-guru .bg-slate-900{transition:none!important;}
+}
