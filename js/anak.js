@@ -29,6 +29,8 @@
       document.getElementById('newGuruAnak').value = '';
       document.getElementById('newJarak').value = 'kurang_7';
       document.getElementById('newPaketAnak').value = '4';
+      const jadwalAktif = document.getElementById('newJadwalAktif');
+      if (jadwalAktif) jadwalAktif.checked = true;
       document.getElementById('inputManualFeeValue').value = '';
       document.getElementById('newJamMulaiAnak').value = '16:00';
       document.getElementById('newJamSelesaiAnak').value = '17:30';
@@ -67,6 +69,8 @@
       if (guruValue && guruSelect.value !== guruValue) guruSelect.value = s.guru || '';
       document.getElementById('newJarak').value = s.jarak || 'kurang_7';
       document.getElementById('newPaketAnak').value = s.paket || 4;
+      const jadwalAktif = document.getElementById('newJadwalAktif');
+      if (jadwalAktif) jadwalAktif.checked = s.jadwalAktif !== false;
       document.getElementById('inputManualFeeValue').value = s.manualFee || '';
 
       const aturan = Array.isArray(s.jadwalMingguan) ? s.jadwalMingguan : [];
@@ -150,6 +154,7 @@
       if (jamSelesaiMingguan <= jamMulaiMingguan) { alert('Jam selesai jadwal mingguan harus lebih besar dari jam mulai.'); return; }
       const paket = parseInt(document.getElementById('newPaketAnak').value) || 4;
       const manualFee = parseFloat(document.getElementById('inputManualFeeValue').value) || 0;
+      const jadwalAktif = document.getElementById('newJadwalAktif')?.checked !== false;
       const fileInput = document.getElementById('fileAnakInput');
 
       if (!anak) { alert('Nama anak wajib diisi!'); return; }
@@ -175,7 +180,7 @@
       try {
         if (editId) {
           const siswaLama = window.dataSiswa.find(x => x.id === editId) || {};
-          const updateData = { anak, tipeHarga, wilayah, kegiatan, guru, guruId, jarak, paket, manualFee, jadwalMingguan };
+          const updateData = { anak, tipeHarga, wilayah, kegiatan, guru, guruId, jarak, paket, manualFee, jadwalMingguan, jadwalAktif };
           if (uploadedFile) {
             updateData.fileUrl = uploadedFile.url;
             updateData.filePath = uploadedFile.path;
@@ -187,6 +192,7 @@
           const dataBaru = {
             anak, tipeHarga, wilayah, kegiatan, guru, guruId, jarak, paket, manualFee,
             jadwalMingguan,
+            jadwalAktif,
             terisi: 0,
             fileUrl: uploadedFile ? uploadedFile.url : null,
             filePath: uploadedFile ? uploadedFile.path : null,

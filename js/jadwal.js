@@ -59,6 +59,9 @@ document.addEventListener('DOMContentLoaded', function () {
       const bulanSelesai = new Date(y,m+1,0);
 
       (window.dataSiswa||[]).forEach(s=>{
+        // Jadwal dari pengajuan Guru harus diaktifkan Admin terlebih dahulu.
+        // Data lama yang belum memiliki flag tetap dianggap aktif agar kompatibel.
+        if(s.jadwalAktif === false) return;
         const aturan = normalizeJadwalMingguan(s.jadwalMingguan);
         const paket = Math.max(0, Number(s.paket) || 0);
         const terisi = Math.max(0, Number(s.terisi) || 0);

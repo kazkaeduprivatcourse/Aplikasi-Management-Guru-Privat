@@ -2885,3 +2885,29 @@ button.bg-green-500,button.bg-green-600,button.bg-emerald-500,button.bg-emerald-
 @media(prefers-reduced-motion:reduce){
   button,.btn,[role="button"],#page-guru .bg-slate-800,#page-guru .bg-slate-900{transition:none!important;}
 }
+
+/* Stage 10 — profile-based access */
+body.teacher-mode aside,
+body.teacher-mode #mobileNav { display: none !important; }
+body.teacher-mode #page-guru-dashboard { display: block !important; }
+body.teacher-mode #page-ringkasan,
+body.teacher-mode #page-anak,
+body.teacher-mode #page-guru,
+body.teacher-mode #page-jadwal,
+body.teacher-mode #page-pertemuan,
+body.teacher-mode #page-dokumen,
+body.teacher-mode #page-rekap { display: none !important; }
+body.teacher-mode main { padding-top: 1rem; }
+#roleGate button, #guruPicker button { -webkit-tap-highlight-color: transparent; }
+
+
+/* Stage 10.16 — clean Data Anak header area */
+body > div.flex-1 > header{
+  display:none!important;
+}
+body > div.flex-1 > main{
+  padding-top:28px!important;
+}
+#page-anak .overflow-x-auto:before{
+  color:#334155!important;
+}

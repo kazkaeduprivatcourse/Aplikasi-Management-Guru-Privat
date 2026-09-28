@@ -47,8 +47,326 @@
   observer.observe(document.documentElement,{attributes:true,attributeFilter:['class']});
 })();
 </script>
+
+<style>
+  /* Kazka Edu responsive polish — laptop, tablet and phone */
+  html { scroll-behavior: smooth; }
+  body { overflow-x: hidden; }
+  #roleGate, #guruPicker { padding-top: max(1rem, env(safe-area-inset-top)); padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
+  #roleGate > div { max-height: calc(100dvh - 2rem); overflow-y: auto; }
+  #roleGate button, #guruPicker button { -webkit-tap-highlight-color: transparent; }
+  @media (min-width: 768px) {
+    main { min-width: 0; }
+    main > .max-w-7xl, main > .max-w-6xl { width: min(100%, 1500px); margin-inline: auto; }
+  }
+  @media (max-width: 767px) {
+    #roleGate .role-choice-panel {
+      padding:16px;
+      border-radius:28px;
+    }
+    #roleGate .role-choice-panel .grid { gap:14px; }
+    body { min-height: 100dvh; }
+    main { width: 100%; min-width: 0; padding-bottom: calc(5.25rem + env(safe-area-inset-bottom)); }
+    #roleGate .grid { grid-template-columns: 1fr; }
+    #roleGate > div { max-width: 30rem; }
+    #roleGate button { min-height: 142px; }
+    #guruPicker > div { max-height: calc(100dvh - 2rem); display: flex; flex-direction: column; }
+    #guruPickerList { flex: 1 1 auto; min-height: 0; }
+    #activeProfilePill { max-width: 52vw; }
+    #activeProfileName { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  }
+  @media (min-width: 768px) and (max-width: 1100px) {
+    aside { width: 15rem !important; padding: 1.15rem !important; }
+    aside .text-xs { font-size: .7rem; }
+  }
+  @media (min-width: 1280px) {
+    aside { width: 17rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+  }
+
+  /* ===== STAGE 10.4 — Access screens + archive readability ===== */
+  #roleGate {
+    background: linear-gradient(135deg, #fffaf0 0%, #f7faf8 55%, #eef8f4 100%) !important;
+    color: #20352f;
+  }
+  #roleGate > div > .text-center > p:first-of-type { color:#b45309 !important; }
+  #roleGate > div > .text-center h1 { color:#20352f !important; }
+  #roleGate > div > .text-center p:last-child { color:#66756f !important; }
+  #roleGate .role-choice-panel {
+    width:100%;
+    padding:28px;
+    border-radius:34px;
+    background:rgba(255,255,255,.72);
+    border:1px solid rgba(203,220,213,.95);
+    box-shadow:0 20px 55px rgba(31,55,48,.09);
+    backdrop-filter:blur(10px);
+  }
+  #roleGate .role-choice-panel .grid { width:100%; }
+  #roleGate .grid > button {
+    position:relative;
+    overflow:hidden;
+    min-height:210px;
+    background:#ffffff !important;
+    border:1px solid #dce8e2 !important;
+    box-shadow:0 12px 30px rgba(31,55,48,.07) !important;
+  }
+  #roleGate .grid > button:first-child {
+    border-top:4px solid #f59e0b !important;
+  }
+  #roleGate .grid > button:last-child {
+    border-top:4px solid #16a37f !important;
+  }
+  #roleGate .grid > button:first-child:hover {
+    border-color:#f59e0b !important;
+    background:#fffdf7 !important;
+  }
+  #roleGate .grid > button:last-child:hover {
+    border-color:#16a37f !important;
+    background:#f8fffc !important;
+  }
+  #roleGate .grid > button h2 { color:#20352f !important; }
+  #roleGate .grid > button p { color:#5f706a !important; }
+  #roleGate .grid > button:first-child span { color:#b45309 !important; }
+  #roleGate .grid > button:last-child span { color:#087f62 !important; }
+  #roleGate .grid > button:first-child > div {
+    background:#fff4d6 !important; border-color:#f7d78a !important;
+  }
+  #roleGate .grid > button:last-child > div {
+    background:#e5f8f1 !important; border-color:#b8e7d8 !important;
+  }
+
+  #guruPicker {
+    background:linear-gradient(135deg,#f4faf7 0%,#eef8f4 100%) !important;
+  }
+  #guruPicker > div {
+    background:#ffffff !important;
+    border:1px solid #d9e8e1 !important;
+    box-shadow:0 20px 55px rgba(31,55,48,.13) !important;
+    padding:clamp(1.1rem,3vw,1.5rem) !important;
+  }
+  #guruPicker button[onclick="kembaliKeRoleGate()"] {
+    color:#5d7069 !important;
+    background:#f4f7f6 !important;
+    border:1px solid #e1ebe7 !important;
+    padding:.55rem .8rem !important;
+    border-radius:12px !important;
+  }
+  #guruPicker button[onclick="kembaliKeRoleGate()"]:hover {
+    color:#20352f !important; background:#e9f2ee !important;
+  }
+  #guruPicker .text-emerald-500 { color:#087f62 !important; }
+  #guruPicker h2 { color:#20352f !important; }
+  #guruPicker .mb-4 p:last-child { color:#66756f !important; }
+  #guruPickerSearch {
+    background:#f8fbfa !important;
+    color:#20352f !important;
+    border-color:#d9e7e1 !important;
+    box-shadow:inset 0 1px 2px rgba(31,55,48,.03) !important;
+  }
+  #guruPickerSearch::placeholder { color:#899892 !important; opacity:1 !important; }
+  #guruPickerSearch:focus {
+    border-color:#16a37f !important;
+    box-shadow:0 0 0 3px rgba(22,163,127,.12) !important;
+    background:#fff !important;
+  }
+  #guruPickerList { padding-right:2px; }
+  #guruPickerList > button {
+    background:#ffffff !important;
+    border-color:#e0ebe6 !important;
+    color:#20352f !important;
+    min-height:66px;
+    box-shadow:0 2px 7px rgba(31,55,48,.03) !important;
+  }
+  #guruPickerList > button:hover {
+    background:#f3fbf8 !important;
+    border-color:#72cdb5 !important;
+    transform:translateY(-1px);
+    box-shadow:0 7px 16px rgba(22,163,127,.08) !important;
+  }
+  #guruPickerList > button strong { color:#20352f !important; }
+  #guruPickerList > button span.text-slate-500 { color:#687a73 !important; }
+  #guruPickerList > button > span:last-child { color:#087f62 !important; }
+
+  /* Arsip: table dibuat putih dan kontras seperti kartu/tabel utama lainnya. */
+  #page-dokumen > div:last-child {
+    background:#ffffff !important;
+    border-color:#dfe9e5 !important;
+  }
+  #page-dokumen table { background:#ffffff !important; color:#30443e !important; }
+  #page-dokumen table thead th {
+    background:#f7faf9 !important;
+    color:#53655f !important;
+    -webkit-text-fill-color:#53655f !important;
+    border-bottom:1px solid #dfe9e5 !important;
+  }
+  #page-dokumen table tbody tr,
+  #page-dokumen table tbody tr:hover {
+    background:#ffffff !important;
+  }
+  #page-dokumen table tbody tr:hover td {
+    background:#f7fbf9 !important;
+    color:#30443e !important;
+    -webkit-text-fill-color:#30443e !important;
+  }
+  #page-dokumen table td {
+    background:#ffffff !important;
+    color:#53655f !important;
+    -webkit-text-fill-color:#53655f !important;
+    border-bottom:1px solid #e7efec !important;
+  }
+  #page-dokumen table td:first-child {
+    color:#20352f !important;
+    -webkit-text-fill-color:#20352f !important;
+  }
+  #page-dokumen table td:nth-child(4) { color:#a16207 !important; -webkit-text-fill-color:#a16207 !important; }
+  #page-dokumen table td .text-slate-500,
+  #page-dokumen table td .text-slate-600 { color:#53655f !important; }
+  #page-dokumen table a.bg-slate-200 {
+    background:#edf3f1 !important; color:#40544d !important;
+  }
+  #page-dokumen table a.bg-slate-200:hover { background:#dfeae6 !important; }
+
+  @media (max-width:767px) {
+    #roleGate .grid > button { min-height:175px; }
+    #guruPicker > div { width:min(100%, 30rem); }
+    #guruPickerList > button { min-height:64px; }
+  }
+
+</style>
+
+
+<style id="stage10-17-pengajuan-clean-final">
+/* Stage 10.17 — Pengajuan Anak: hilangkan wrapper/header ganda dan style tabel tidak bocor ke panel pengajuan. */
+#kazkaAdminPengajuanPanel{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  padding:0!important;
+  margin-bottom:1.25rem!important;
+}
+#kazkaAdminPengajuanPanel > #kazkaAdminPengajuanList > div{
+  background:#fff!important;
+  border:1px solid #e2e8f0!important;
+  border-radius:1rem!important;
+  box-shadow:0 1px 2px rgba(15,23,42,.04)!important;
+  overflow:hidden!important;
+}
+/* Header pengajuan tetap ada, tetapi bukan kotak terpisah. */
+#kazkaAdminPengajuanList > div > div:first-child{
+  background:transparent!important;
+  border:0!important;
+  border-bottom:1px solid #eef2f7!important;
+  box-shadow:none!important;
+  padding:1.1rem 1.25rem!important;
+}
+/* Hapus ikon kecil yang sebelumnya muncul di atas panel. */
+#page-anak > div:first-child > div:first-child:before{content:none!important;display:none!important}
+/* Jangan biarkan style tabel Data Anak menambahkan judul/ruang kosong ke tabel pengajuan. */
+#kazkaAdminPengajuanList .overflow-x-auto{
+  position:relative!important;
+  padding:0!important;
+  background:#fff!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+#kazkaAdminPengajuanList .overflow-x-auto:before{
+  content:none!important;
+  display:none!important;
+}
+#kazkaAdminPengajuanList table{
+  border-collapse:separate!important;
+  border-spacing:0!important;
+  min-width:0!important;
+}
+#kazkaAdminPengajuanList table thead th{
+  background:#f8fafc!important;
+  color:#475569!important;
+  border-bottom:1px solid #e2e8f0!important;
+  padding:.8rem 1rem!important;
+}
+#kazkaAdminPengajuanList table tbody tr{background:#fff!important;box-shadow:none!important;transform:none!important}
+#kazkaAdminPengajuanList table tbody tr:hover{background:#f8fafc!important;box-shadow:none!important;transform:none!important}
+#kazkaAdminPengajuanList table td{padding:1rem!important;color:#334155!important}
+#kazkaAdminPengajuanList > div > div:last-child{
+  background:#f8fafc!important;
+  border-top:1px solid #eef2f7!important;
+}
+/* Kembalikan header Data Anak asli menjadi bersih; jangan terpengaruh selector panel pengajuan. */
+#page-anak > div:not(#kazkaAdminPengajuanPanel) .overflow-x-auto:before{
+  color:#334155!important;
+}
+@media(max-width:640px){
+  #kazkaAdminPengajuanList > div > div:first-child{padding:.95rem 1rem!important}
+  #kazkaAdminPengajuanList table{min-width:760px!important}
+}
+</style>
+
+<style id="stage10-19-pengajuan-button-text-fix">
+/* Stage 10.19 — force approval button labels to white; high-contrast page rules must not override them. */
+html:not(.dark) #page-anak #kazkaAdminPengajuanList button.bg-emerald-600,
+html:not(.dark) #page-anak #kazkaAdminPengajuanList button.bg-rose-600,
+#page-anak #kazkaAdminPengajuanList button.bg-emerald-600,
+#page-anak #kazkaAdminPengajuanList button.bg-rose-600{
+  color:#ffffff!important;
+  -webkit-text-fill-color:#ffffff!important;
+}
+html:not(.dark) #page-anak #kazkaAdminPengajuanList button.bg-emerald-600:hover,
+html:not(.dark) #page-anak #kazkaAdminPengajuanList button.bg-rose-600:hover,
+#page-anak #kazkaAdminPengajuanList button.bg-emerald-600:hover,
+#page-anak #kazkaAdminPengajuanList button.bg-rose-600:hover{
+  color:#ffffff!important;
+  -webkit-text-fill-color:#ffffff!important;
+}
+</style>
 </head>
 <body class="bg-slate-100 text-slate-800 min-h-screen selection:bg-amber-400 selection:text-slate-900 flex flex-col md:flex-row pb-20 md:pb-0 transition-colors duration-300">
+<!-- ROLE / PROFILE SELECTOR: first-use friendly access without password login -->
+<div id="roleGate" class="fixed inset-0 z-[100] bg-slate-100/95 dark:bg-slate-950/95 backdrop-blur-xl flex items-center justify-center p-4">
+  <div class="w-full max-w-xl">
+    <div class="text-center mb-7">
+      <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-white shadow-lg border border-slate-200 flex items-center justify-center overflow-hidden">
+        <img alt="Logo Kazka Edu" class="w-12 h-12 object-contain" src="https://asuxuopnlouervbyvcfg.supabase.co/storage/v1/object/public/kazkaedu/logo.png.PNG"/>
+      </div>
+      <p class="text-[11px] uppercase tracking-[.2em] font-extrabold text-amber-500">KAZKA EDU</p>
+      <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mt-1">Selamat datang 👋</h1>
+      <p class="text-sm text-slate-500 dark:text-slate-400 mt-2">Pilih akses yang ingin digunakan hari ini.</p>
+    </div>
+    <div class="role-choice-panel">
+      <div class="grid sm:grid-cols-2 gap-5">
+      <button type="button" onclick="pilihAksesKazka('admin')" class="group text-left bg-white dark:bg-[#1e293b] border border-slate-200 dark:border-slate-700 rounded-3xl p-5 sm:p-6 shadow-sm hover:shadow-xl hover:-translate-y-0.5 hover:border-amber-400 transition-all">
+        <div class="w-12 h-12 rounded-2xl bg-amber-500/15 border border-amber-500/20 flex items-center justify-center text-2xl mb-4">👩‍💼</div>
+        <h2 class="font-extrabold text-slate-900 dark:text-white text-lg">Admin</h2>
+        <p class="text-xs leading-relaxed text-slate-500 dark:text-slate-400 mt-1.5">Kelola data anak, guru, jadwal, paket, arsip, dan operasional Kazka Edu.</p>
+        <span class="inline-flex mt-4 text-xs font-extrabold text-amber-600 dark:text-amber-400">Masuk sebagai Admin →</span>
+      </button>
+      <button type="button" onclick="pilihAksesKazka('guru')" class="group text-left bg-white dark:bg-[#1e293b] border border-slate-200 dark:border-slate-700 rounded-3xl p-5 sm:p-6 shadow-sm hover:shadow-xl hover:-translate-y-0.5 hover:border-emerald-400 transition-all">
+        <div class="w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-500/20 flex items-center justify-center text-2xl mb-4">👨‍🏫</div>
+        <h2 class="font-extrabold text-slate-900 dark:text-white text-lg">Guru</h2>
+        <p class="text-xs leading-relaxed text-slate-500 dark:text-slate-400 mt-1.5">Lihat jadwal pribadi, anak yang diajar, dan catat perkembangan setiap sesi.</p>
+        <span class="inline-flex mt-4 text-xs font-extrabold text-emerald-600 dark:text-emerald-400">Pilih Profil Guru →</span>
+      </button>
+      </div>
+    </div>
+    <p class="text-center text-[10px] text-slate-400 mt-5">Tidak perlu username atau password. Pilih akses untuk melanjutkan.</p>
+  </div>
+</div>
+<div id="guruPicker" class="fixed inset-0 z-[101] bg-slate-100/95 dark:bg-slate-950/95 backdrop-blur-xl hidden items-center justify-center p-4">
+  <div class="w-full max-w-md bg-white dark:bg-[#1e293b] border border-slate-200 dark:border-slate-700 rounded-3xl p-5 sm:p-6 shadow-2xl">
+    <button type="button" onclick="kembaliKeRoleGate()" class="text-xs font-bold text-slate-500 hover:text-slate-900 dark:hover:text-white mb-4">← Kembali</button>
+    <div class="mb-4">
+      <p class="text-[10px] uppercase tracking-wider font-extrabold text-emerald-500">Akses Guru</p>
+      <h2 class="text-xl font-black text-slate-900 dark:text-white mt-1">Siapa kamu?</h2>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Pilih nama kamu untuk membuka dashboard pribadi.</p>
+    </div>
+    <div class="relative mb-3">
+      <input id="guruPickerSearch" oninput="renderGuruPicker()" class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm outline-none focus:border-emerald-500" placeholder="🔎 Cari nama guru..." autocomplete="off"/>
+    </div>
+    <div id="guruPickerList" class="space-y-2 max-h-[52vh] overflow-y-auto"></div>
+  </div>
+</div>
+
 <!-- SIDEBAR NAVIGATION (Desktop) / TOP BRAND (Mobile) -->
 <aside class="hidden md:flex w-64 bg-white dark:bg-[#1e293b]/95 border-r border-slate-200 dark:border-slate-800 flex-col justify-between p-6 sticky top-0 h-screen z-45 shadow-lg">
 <div class="space-y-6">
@@ -97,7 +415,7 @@
 </div>
 </aside>
 <!-- MOBILE BOTTOM NAVIGATION BAR -->
-<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-[#1e293b]/95 backdrop-blur-lg border-t border-slate-200 dark:border-slate-800 z-50 flex justify-around items-center px-2 py-2 shadow-xl">
+<nav id="mobileNav" class="md:hidden fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-[#1e293b]/95 backdrop-blur-lg border-t border-slate-200 dark:border-slate-800 z-50 flex justify-around items-center px-2 py-2 shadow-xl">
 <button class="flex flex-col items-center justify-center py-1 px-2 text-amber-500 font-bold transition-all" id="mob-tab-ringkasan" onclick="pindahTab('ringkasan')">
 <span aria-hidden="true" class="mob-icon mob-home"></span>
 <span class="text-[10px] mt-0.5">Home</span>
@@ -144,9 +462,70 @@
 </div>
 
 </div>
+<div id="kazkaConnectionStatus" class="hidden sm:flex items-center gap-2 rounded-full border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-900/70 px-3 py-1.5 text-[10px] font-bold text-slate-500 shadow-sm" title="Status koneksi data">
+<span id="kazkaConnectionDot" class="w-2 h-2 rounded-full bg-slate-300"></span>
+<span id="kazkaConnectionText">Menghubungkan...</span>
+</div>
 
 </header>
 <main class="p-3 sm:p-8 space-y-5 sm:space-y-6 flex-1 relative overflow-hidden">
+
+<!-- PAGE: GURU DASHBOARD -->
+<div class="page-transition space-y-5 hidden" id="page-guru-dashboard">
+  <div class="bg-gradient-to-r from-emerald-500/10 via-emerald-500/5 to-transparent p-5 sm:p-6 rounded-3xl border border-emerald-500/20">
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <span class="inline-flex px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-300 text-[10px] font-extrabold uppercase tracking-wider">Dashboard Guru</span>
+        <h1 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-2">Halo, <span id="teacherWelcomeName">Guru</span> 👋</h1>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Ini adalah area kerja pribadi kamu di Kazka Edu.</p>
+      </div>
+      <div class="flex flex-wrap items-center gap-2 justify-end">
+        <button onclick="bukaModalEditProfilGuru()" class="shrink-0 bg-emerald-500 hover:bg-emerald-600 text-white border border-emerald-500 rounded-xl px-3 py-2 text-[11px] font-extrabold shadow-sm">✏️ Edit Profil Saya</button>
+        <button onclick="gantiPenggunaKazka()" class="shrink-0 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-[11px] font-bold text-slate-600 dark:text-slate-300">Ganti Pengguna</button>
+      </div>
+    </div>
+  </div>
+  <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+    <div class="bg-white dark:bg-[#1e293b] p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm"><p class="text-[11px] text-slate-500">Anak Saya</p><p id="teacherStatAnak" class="text-2xl font-black text-slate-900 dark:text-white mt-1">0</p></div>
+    <div class="bg-white dark:bg-[#1e293b] p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm"><p class="text-[11px] text-slate-500">Jadwal Hari Ini</p><p id="teacherStatToday" class="text-2xl font-black text-emerald-600 mt-1">0</p></div>
+    <div class="bg-white dark:bg-[#1e293b] p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm col-span-2 sm:col-span-1"><p class="text-[11px] text-slate-500">Jadwal Mendatang</p><p id="teacherStatUpcoming" class="text-2xl font-black text-slate-900 dark:text-white mt-1">0</p></div>
+  </div>
+  <div class="bg-white dark:bg-[#1e293b] rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
+    <div class="flex items-center justify-between mb-3"><div><p class="text-[10px] uppercase tracking-wider font-extrabold text-emerald-500">Agenda</p><h2 class="font-extrabold text-slate-900 dark:text-white mt-0.5">Jadwal Saya</h2></div></div>
+    <div id="teacherScheduleList" class="space-y-2"></div>
+  </div>
+  <div class="bg-white dark:bg-[#1e293b] rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
+    <div class="flex items-center justify-between gap-3 mb-3"><div><p class="text-[10px] uppercase tracking-wider font-extrabold text-emerald-500">Siswa</p><h2 class="font-extrabold text-slate-900 dark:text-white mt-0.5">Anak yang Saya Ajar</h2></div><button onclick="bukaModalPengajuanAnakGuru()" class="shrink-0 bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-[11px] px-3 py-2 rounded-xl shadow-sm">+ Tambah Anak</button></div>
+    <div id="teacherStudentList" class="grid sm:grid-cols-2 gap-2"></div>
+  </div>
+</div>
+
+<!-- MODAL EDIT PROFIL GURU (khusus profil Guru yang sedang aktif) -->
+<div class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[80] flex justify-center items-center p-3 hidden" id="modalEditProfilGuru">
+  <div class="bg-white dark:bg-[#1e293b] border border-slate-200 dark:border-slate-700/80 rounded-3xl max-w-md w-full p-5 sm:p-6 space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl">
+    <div class="flex justify-between items-center border-b border-slate-200 dark:border-slate-800 pb-3">
+      <div><p class="text-[10px] uppercase tracking-wider font-extrabold text-emerald-600">Profil Guru</p><h3 class="font-extrabold text-slate-900 dark:text-white text-base">Edit Data Saya</h3></div>
+      <button class="text-slate-400 hover:text-slate-900 dark:hover:text-white text-2xl font-bold" onclick="tutupModalEditProfilGuru()">×</button>
+    </div>
+    <div class="space-y-3 text-xs">
+      <div><label class="block text-slate-700 dark:text-slate-300 font-medium mb-1">Nama Guru</label><input id="editProfilNamaGuru" class="w-full bg-slate-100 dark:bg-[#0f172a] border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-slate-900 dark:text-white outline-none focus:border-emerald-500" type="text"/></div>
+      <div><label class="block text-slate-700 dark:text-slate-300 font-medium mb-1">No. HP / WhatsApp</label><input id="editProfilHpGuru" class="w-full bg-slate-100 dark:bg-[#0f172a] border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-slate-900 dark:text-white outline-none focus:border-emerald-500" type="text"/></div>
+      <div><label class="block text-slate-700 dark:text-slate-300 font-medium mb-1">Ganti Foto Guru (Opsional)</label><input accept="image/*" id="editProfilFotoGuruInput" class="w-full text-xs text-slate-500 dark:text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-emerald-500/10 file:text-emerald-600 dark:file:text-emerald-300 cursor-pointer" type="file"/></div>
+      <div><label class="block text-slate-700 dark:text-slate-300 font-medium mb-1.5">Mata Pelajaran</label>
+        <div class="bg-slate-100 dark:bg-[#0f172a] border border-slate-300 dark:border-slate-700 rounded-xl p-3 grid grid-cols-2 gap-2">
+          <label class="flex items-center gap-2 text-slate-700 dark:text-slate-300 cursor-pointer"><input name="editProfilMapelGuruOption" type="checkbox" value="Calistung" class="text-emerald-500"/><span>Calistung</span></label>
+          <label class="flex items-center gap-2 text-slate-700 dark:text-slate-300 cursor-pointer"><input name="editProfilMapelGuruOption" type="checkbox" value="Sensori" class="text-emerald-500"/><span>Sensori</span></label>
+          <label class="flex items-center gap-2 text-slate-700 dark:text-slate-300 cursor-pointer"><input name="editProfilMapelGuruOption" type="checkbox" value="Mengaji" class="text-emerald-500"/><span>Mengaji</span></label>
+          <label class="flex items-center gap-2 text-slate-700 dark:text-slate-300 cursor-pointer"><input name="editProfilMapelGuruOption" type="checkbox" value="English Phonic" class="text-emerald-500"/><span>English Phonic</span></label>
+          <label class="flex items-center gap-2 text-slate-700 dark:text-slate-300 cursor-pointer"><input name="editProfilMapelGuruOption" type="checkbox" value="Mapel SD" class="text-emerald-500"/><span>Mapel SD</span></label>
+          <label class="flex items-center gap-2 text-slate-700 dark:text-slate-300 cursor-pointer"><input name="editProfilMapelGuruOption" type="checkbox" value="Mapel SMP" class="text-emerald-500"/><span>Mapel SMP</span></label>
+        </div>
+      </div>
+    </div>
+    <button onclick="simpanEditProfilGuru()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold py-3 rounded-xl text-xs sm:text-sm shadow-lg shadow-emerald-500/20">💾 Simpan Perubahan</button>
+  </div>
+</div>
+
 <!-- PAGE: RINGKASAN -->
 <div class="page-transition active space-y-5" id="page-ringkasan">
 <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent p-4 sm:p-6 rounded-2xl border border-amber-500/20">
@@ -375,7 +754,7 @@
 </main>
 </div>
 <!-- MODAL PIN -->
-<div class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex justify-center items-center p-3 hidden" id="modalPin">
+<div class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[200] flex justify-center items-center p-3 hidden" id="modalPin">
 <div class="bg-white dark:bg-[#1e293b] border border-slate-200 dark:border-slate-700/80 rounded-3xl max-w-xs w-full p-6 text-center space-y-4 shadow-2xl">
 <div class="w-12 h-12 bg-amber-500/15 text-amber-500 border border-amber-500/30 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold">🔒</div>
 <div>
@@ -389,6 +768,30 @@
 </div>
 </div>
 </div>
+<!-- MODAL PENGAJUAN ANAK OLEH GURU -->
+<div class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[70] flex justify-center items-center p-3 hidden" id="modalPengajuanAnakGuru">
+  <div class="bg-white dark:bg-[#1e293b] border border-slate-200 dark:border-slate-700 rounded-3xl max-w-md w-full p-5 sm:p-6 space-y-4 shadow-2xl">
+    <div class="flex justify-between items-center border-b border-slate-200 dark:border-slate-700 pb-3">
+      <div><p class="text-[10px] uppercase tracking-wider font-extrabold text-emerald-600">Pengajuan Guru</p><h3 class="font-extrabold text-slate-900 dark:text-white text-base">Tambah Anak Baru</h3></div>
+      <button class="text-slate-400 hover:text-slate-900 dark:hover:text-white text-2xl font-bold" onclick="tutupModalPengajuanAnakGuru()">×</button>
+    </div>
+    <p class="text-xs text-slate-500 dark:text-slate-400">Data ini akan dikirim ke Admin untuk diperiksa. Anak belum akan muncul di dashboard sebelum disetujui.</p>
+    <div class="space-y-3 text-xs">
+      <div><label class="block text-slate-700 dark:text-slate-300 font-semibold mb-1">Nama Anak *</label><input id="pengajuanNamaAnak" class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-slate-900 dark:text-white" placeholder="Contoh: Aisyah"/></div>
+      <div><label class="block text-slate-700 dark:text-slate-300 font-semibold mb-1">Kegiatan / Mapel</label><select id="pengajuanKegiatanAnak" class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-slate-900 dark:text-white outline-none focus:border-emerald-500 transition-all"><option value="" disabled selected>Pilih kegiatan / mapel</option><option value="Calistung">Calistung</option><option value="Sensori">Sensori</option><option value="Mengaji">Mengaji</option><option value="English Phonic">English Phonic</option><option value="English">English / Mapel English</option><option value="Mapel SD - Umum">Mapel SD (Pelajaran Umum)</option><option value="Mapel SD - English">Mapel SD (Khusus English)</option><option value="Mapel SMP - Umum">Mapel SMP (Pelajaran Umum)</option><option value="Mapel SMP - English">Mapel SMP (Khusus English)</option><option value="Mapel SMA">Mapel SMA</option></select></div>
+      <div><label class="block text-slate-700 dark:text-slate-300 font-semibold mb-1">Jarak Tempuh</label><select id="pengajuanJarakAnak" class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-slate-900 dark:text-white"><option value="kurang_7">&lt; 7 km</option><option value="7_10">7–10 km</option><option value="lebih_10">&gt; 10 km</option></select></div>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div><label class="block text-slate-700 dark:text-slate-300 font-semibold mb-1">Hari</label><select id="pengajuanHariAnak" class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-slate-900 dark:text-white"><option value="1">Senin</option><option value="2">Selasa</option><option value="3">Rabu</option><option value="4">Kamis</option><option value="5">Jumat</option><option value="6">Sabtu</option><option value="0">Minggu</option></select></div>
+        <div><label class="block text-slate-700 dark:text-slate-300 font-semibold mb-1">Mulai</label><input id="pengajuanJamMulai" type="time" value="16:00" class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-slate-900 dark:text-white"/></div>
+        <div><label class="block text-slate-700 dark:text-slate-300 font-semibold mb-1">Selesai</label><input id="pengajuanJamSelesai" type="time" value="17:30" class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-slate-900 dark:text-white"/></div>
+      </div>
+      <div class="rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 p-3 text-[11px] text-slate-500 dark:text-slate-400">Hari dan jam ini menjadi <b class="text-slate-700 dark:text-slate-200">usulan jadwal</b>. Setelah anak disetujui, Admin tetap harus mengaktifkan jadwalnya agar baru masuk ke kalender.</div>
+      <div><label class="block text-slate-700 dark:text-slate-300 font-semibold mb-1">Catatan Tambahan</label><textarea id="pengajuanCatatanAnak" rows="3" class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-slate-900 dark:text-white" placeholder="Alamat area, kebutuhan belajar, jadwal yang diharapkan, atau catatan lain"></textarea></div>
+    </div>
+    <button onclick="kirimPengajuanAnakGuru()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold py-3 rounded-xl text-xs">Kirim Pengajuan ke Admin</button>
+  </div>
+</div>
+
 <!-- MODAL TAMBAH ANAK -->
 <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex justify-center items-center p-3 hidden" id="modalAnak">
 <div class="bg-white dark:bg-[#1e293b] border border-slate-200 dark:border-slate-700/80 rounded-3xl max-w-md w-full p-5 sm:p-6 space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl">
@@ -473,6 +876,12 @@
 <div>
 <label class="block text-slate-700 dark:text-slate-300 font-medium mb-1">Jumlah Paket Sesi</label>
 <input class="w-full bg-slate-100 dark:bg-[#0f172a] border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-slate-900 dark:text-white outline-none focus:border-amber-500 transition-all" id="newPaketAnak" type="number" value="4"/>
+</div>
+<div class="rounded-2xl border border-emerald-200 dark:border-emerald-500/20 bg-emerald-50/70 dark:bg-emerald-500/5 p-3">
+<label class="flex items-center gap-3 cursor-pointer">
+<input id="newJadwalAktif" type="checkbox" class="w-4 h-4 accent-emerald-500" checked/>
+<span><span class="block font-extrabold text-slate-800 dark:text-slate-100">Aktifkan Jadwal di Kalender</span><span class="block text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Jika dimatikan, jadwal anak belum akan muncul di Kalender Home Visit.</span></span>
+</label>
 </div>
 <div>
 <label class="block text-slate-700 dark:text-slate-300 font-medium mb-1">Upload / Ganti Dokumen Pendaftaran (opsional)</label>
@@ -720,10 +1129,29 @@
       const pinVal = document.getElementById('inputPinAdmin').value;
       if (pinVal === PIN_ADMIN) {
         isUnlocked = true;
+        window.isKazkaAdminUnlocked = true;
         document.getElementById('modalPin').classList.add('hidden');
         document.getElementById('inputPinAdmin').value = '';
+
+        // Entry PIN: once verified, open the complete Admin workspace.
+        if (window.kazkaPendingEntryRole === 'admin') {
+          window.kazkaPendingEntryRole = null;
+          const profile = { role: 'admin', name: 'Admin' };
+          localStorage.setItem('kazka_active_profile_v1', JSON.stringify(profile));
+          window.kazkaProfile = profile;
+          if (typeof window.applyKazkaProfile === 'function') window.applyKazkaProfile(profile);
+          else if (typeof window.pilihAksesKazka === 'function') {
+            // access.js exposes the profile application through this bridge below.
+            document.getElementById('roleGate')?.classList.add('hidden');
+            if (typeof window.pindahTab === 'function') window.pindahTab('ringkasan', false);
+          }
+          return;
+        }
+
         if (pendingTab) pindahTab(pendingTab, false);
         if (pendingAction === 'tambahAnak') bukaModalTambahAnakDirect();
+        pendingTab = null;
+        pendingAction = null;
       } else {
         alert('PIN Salah! Akses ditolak.');
         document.getElementById('inputPinAdmin').value = '';
@@ -731,10 +1159,26 @@
     }
 
     function tutupModalPin() {
+      // Membatalkan PIN saat memilih Admin harus benar-benar membatalkan
+      // proses masuk Admin, bukan sekadar menutup modal.
       document.getElementById('modalPin').classList.add('hidden');
       document.getElementById('inputPinAdmin').value = '';
       pendingTab = null;
       pendingAction = null;
+
+      if (window.kazkaPendingEntryRole === 'admin') {
+        window.kazkaPendingEntryRole = null;
+        window.isKazkaAdminUnlocked = false;
+        window.kazkaProfile = null;
+        localStorage.removeItem('kazka_active_profile_v1');
+        document.body.classList.remove('admin-mode', 'teacher-mode');
+
+        // Kembalikan pengguna ke halaman pilihan Admin / Guru.
+        const gate = document.getElementById('roleGate');
+        const picker = document.getElementById('guruPicker');
+        if (picker) { picker.classList.add('hidden'); picker.classList.remove('flex'); }
+        if (gate) { gate.classList.remove('hidden'); gate.classList.add('flex'); }
+      }
     }
 
     function bukaModalTambahGuru() { document.getElementById('modalGuru').classList.remove('hidden'); }
@@ -791,12 +1235,32 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 // Single public bridge for all classic JS modules.
-window.kazkaDb = { db, ref, update, push, remove };
+window.kazkaDb = { db, ref, update, push, remove, onValue };
 window.db = db;
 window.ref = ref;
 window.push = push;
 window.remove = remove;
 window.update = update;
+
+// Status koneksi ditampilkan agar Guru/Admin tahu apakah data cloud sedang tersambung.
+// Ini hanya indikator operasional; hak akses tetap bergantung pada Firebase Rules.
+window.kazkaDb.isConnected = false;
+const connectionRef = ref(db, '.info/connected');
+onValue(connectionRef, snapshot => {
+  const connected = snapshot.val() === true;
+  window.kazkaDb.isConnected = connected;
+  const box = document.getElementById('kazkaConnectionStatus');
+  const dot = document.getElementById('kazkaConnectionDot');
+  const text = document.getElementById('kazkaConnectionText');
+  if (box && dot && text) {
+    box.classList.remove('hidden');
+    box.classList.add('sm:flex');
+    dot.className = `w-2 h-2 rounded-full ${connected ? 'bg-emerald-500' : 'bg-rose-500'}`;
+    text.textContent = connected ? 'Tersambung' : 'Koneksi terputus';
+    text.className = `text-[10px] font-bold ${connected ? 'text-emerald-600' : 'text-rose-600'}`;
+    box.title = connected ? 'Data cloud tersambung' : 'Koneksi ke data cloud sedang terputus. Jangan menutup aplikasi setelah menekan Simpan sampai koneksi kembali.';
+  }
+});
 
 window.dataSiswa = [];
 window.dataGuru = [];
@@ -858,6 +1322,46 @@ onValue(ref(db, 'arsip'), snapshot => {
   if (data) Object.keys(data).forEach(id => window.dataArsip.push({ id, ...data[id] }));
   if (typeof window.renderArsipDokumen === 'function') window.renderArsipDokumen();
 });
+
+window.bukaModalEditProfilGuru = function() {
+  const profile = window.kazkaProfile;
+  const guru = profile?.role === 'guru' ? window.dataGuru.find(g => String(g.id) === String(profile.id)) : null;
+  if (!guru) { alert('Data profil guru belum tersedia. Silakan coba lagi.'); return; }
+  document.getElementById('editProfilNamaGuru').value = guru.nama || '';
+  document.getElementById('editProfilHpGuru').value = guru.hp || '';
+  document.getElementById('editProfilFotoGuruInput').value = '';
+  document.querySelectorAll('input[name="editProfilMapelGuruOption"]').forEach(cb => cb.checked = !!(guru.mapel || []).includes(cb.value));
+  document.getElementById('modalEditProfilGuru').classList.remove('hidden');
+};
+window.tutupModalEditProfilGuru = function() { document.getElementById('modalEditProfilGuru')?.classList.add('hidden'); };
+window.simpanEditProfilGuru = async function() {
+  const profile = window.kazkaProfile;
+  if (!profile || profile.role !== 'guru') return;
+  const guru = window.dataGuru.find(g => String(g.id) === String(profile.id));
+  if (!guru) return;
+  const nama = document.getElementById('editProfilNamaGuru').value.trim();
+  const hp = document.getElementById('editProfilHpGuru').value.trim();
+  const fotoInput = document.getElementById('editProfilFotoGuruInput');
+  const mapel = Array.from(document.querySelectorAll('input[name="editProfilMapelGuruOption"]:checked')).map(cb => cb.value);
+  if (!nama) { alert('Nama guru wajib diisi!'); return; }
+  const updateData = { nama, hp, mapel };
+  try {
+    if (fotoInput.files.length > 0 && window.kazkaStorage) {
+      if (guru.fotoFilePath) await window.kazkaStorage.deleteFromSupabase(guru.fotoFilePath);
+      const uploaded = await window.kazkaStorage.uploadToSupabase(fotoInput.files[0], 'foto_guru');
+      if (uploaded) { updateData.fotoUrl = uploaded.url; updateData.fotoFilePath = uploaded.path; }
+    }
+    await update(ref(db, `guru/${guru.id}`), updateData);
+    const nextProfile = { ...profile, name: nama };
+    localStorage.setItem('kazka_active_profile_v1', JSON.stringify(nextProfile));
+    window.kazkaProfile = nextProfile;
+    const welcome = document.getElementById('teacherWelcomeName'); if (welcome) welcome.textContent = nama;
+    const pill = document.getElementById('activeProfileName'); if (pill) pill.textContent = nama;
+    tutupModalEditProfilGuru();
+    if (typeof window.renderTeacherDashboard === 'function') window.renderTeacherDashboard();
+    alert('Profil guru berhasil diperbarui.');
+  } catch (err) { console.error(err); alert('Gagal menyimpan perubahan profil: ' + err.message); }
+};
 
 window.simpanGuruBaru = async function() {
   const nama = document.getElementById('newNamaGuru').value.trim();
@@ -929,5 +1433,6 @@ window.hapusGuru = async function(id, fotoFilePath) {
 <script src="js/pertemuan.js"></script>
 <script src="js/paket.js"></script>
 <script src="js/anak.js"></script>
+<script src="js/access.js"></script>
 </body>
 </html>
