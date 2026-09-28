@@ -1397,7 +1397,7 @@ document.addEventListener('DOMContentLoaded', function () {
 // Stage 5.4: centralized Firebase runtime + realtime listeners + Guru actions.
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import {
-  getDatabase, ref, push, remove, update, onValue
+  getDatabase, ref, push, remove, update, onValue, get
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 const firebaseConfig = {
@@ -1408,7 +1408,7 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 // Single public bridge for all classic JS modules.
-window.kazkaDb = { db, ref, update, push, remove, onValue };
+window.kazkaDb = { db, ref, update, push, remove, onValue, get };
 window.db = db;
 window.ref = ref;
 window.push = push;

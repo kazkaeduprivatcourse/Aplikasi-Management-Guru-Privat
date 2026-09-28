@@ -35,13 +35,17 @@ if (!window.supabase || typeof window.supabase.createClient !== 'function') {
   }
 
   async function deleteFromSupabase(filePath) {
-    if (!filePath) return;
+    if (!filePath) return true;
     const { error } = await supabaseClient.storage.from(BUCKET_NAME).remove([filePath]);
     if (error) {
       console.error("Gagal menghapus file di Supabase:", error.message);
+      return false;
     }
+    return true;
   }
 
+  // Kompatibilitas dengan modul aplikasi yang memakai namespace kazkaStorage.
+  window.kazkaStorage = { uploadToSupabase, deleteFromSupabase };
   window.uploadToSupabase = uploadToSupabase;
   window.deleteFromSupabase = deleteFromSupabase;
 }

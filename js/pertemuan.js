@@ -64,7 +64,7 @@
           updateData.laporanTanggalUpload = uploaded.tanggalUpload;
 
           await window.kazkaDb.push(window.kazkaDb.ref(window.kazkaDb.db, 'arsip'), {
-            anak: siswa.anak, guru: siswa.guru || 'Pengajar', kegiatan: siswa.kegiatan,
+            siswaId: siswa.id, anak: siswa.anak, guru: siswa.guru || 'Pengajar', kegiatan: siswa.kegiatan,
             jenis: 'laporan', fileUrl: uploaded.url, filePath: uploaded.path, tanggalUpload: uploaded.tanggalUpload
           });
         }

@@ -185,10 +185,13 @@
             updateData.fileUrl = uploadedFile.url;
             updateData.filePath = uploadedFile.path;
             updateData.tanggalUpload = uploadedFile.tanggalUpload;
-            await window.kazkaDb.push(window.kazkaDb.ref(window.kazkaDb.db, 'arsip'), { anak, guru: 'Admin', kegiatan, jenis: 'pendaftaran', fileUrl: uploadedFile.url, filePath: uploadedFile.path, tanggalUpload: uploadedFile.tanggalUpload });
+            await window.kazkaDb.push(window.kazkaDb.ref(window.kazkaDb.db, 'arsip'), { siswaId: editId, anak, guru: 'Admin', kegiatan, jenis: 'pendaftaran', fileUrl: uploadedFile.url, filePath: uploadedFile.path, tanggalUpload: uploadedFile.tanggalUpload });
           }
           await window.kazkaDb.update(window.kazkaDb.ref(window.kazkaDb.db, `siswa/${editId}`), updateData);
         } else {
+          const siswaRef = window.kazkaDb.push(window.kazkaDb.ref(window.kazkaDb.db, 'siswa'));
+          const siswaId = siswaRef?.key;
+          if (!siswaId) throw new Error('ID anak tidak berhasil dibuat.');
           const dataBaru = {
             anak, tipeHarga, wilayah, kegiatan, guru, guruId, jarak, paket, manualFee,
             jadwalMingguan,
@@ -200,9 +203,9 @@
             sesiList: {},
             sudahMasukRekap: false
           };
-          await window.kazkaDb.push(window.kazkaDb.ref(window.kazkaDb.db, 'siswa'), dataBaru);
+          await window.kazkaDb.update(window.kazkaDb.ref(window.kazkaDb.db, `siswa/${siswaId}`), dataBaru);
           if (uploadedFile) {
-            await window.kazkaDb.push(window.kazkaDb.ref(window.kazkaDb.db, 'arsip'), { anak, guru: 'Admin', kegiatan, jenis: 'pendaftaran', fileUrl: uploadedFile.url, filePath: uploadedFile.path, tanggalUpload: uploadedFile.tanggalUpload });
+            await window.kazkaDb.push(window.kazkaDb.ref(window.kazkaDb.db, 'arsip'), { siswaId, anak, guru: 'Admin', kegiatan, jenis: 'pendaftaran', fileUrl: uploadedFile.url, filePath: uploadedFile.path, tanggalUpload: uploadedFile.tanggalUpload });
           }
         }
 
@@ -211,7 +214,63 @@
       } catch (err) { console.error(err); alert('Gagal menyimpan data anak. Silakan coba lagi.'); }
     }
     window.hapusAnak = async function(id) {
-      if(confirm("Yakin ingin menghapus data anak ini? (File dokumen di Arsip akan tetap aman dan tersimpan)")) {
-        await window.kazkaDb.remove(window.kazkaDb.ref(window.kazkaDb.db, `siswa/${id}`));
+      const siswa = (window.dataSiswa || []).find(x => String(x.id) === String(id));
+      if (!siswa) { alert('Data anak tidak ditemukan.'); return; }
+
+      const arsip = Array.isArray(window.dataArsip) ? window.dataArsip : [];
+      const siswaNama = String(siswa.anak || '').trim();
+      const namaKembar = (window.dataSiswa || []).filter(x =>
+        String(x.anak || '').trim().toLowerCase() === siswaNama.toLowerCase()
+      );
+      const legacyArsip = arsip.filter(a =>
+        !a.siswaId && String(a.anak || '').trim().toLowerCase() === siswaNama.toLowerCase()
+      );
+
+      // Arsip sebelum 10.24 belum punya siswaId. Kalau nama anak kembar, jangan
+      // menebak arsip mana yang milik siapa karena bisa menghapus file anak lain.
+      if (namaKembar.length > 1 && legacyArsip.length) {
+        alert('Nama anak ini terdaftar lebih dari satu. Arsip lama belum memiliki ID anak, jadi penghapusan dibatalkan agar file anak lain tidak ikut terhapus. Arsip baru yang memiliki ID anak tetap aman.');
+        return;
+      }
+
+      const arsipTerkait = arsip.filter(a => {
+        if (String(a.siswaId || '') === String(id)) return true;
+        if (!a.siswaId && legacyArsip.includes(a) && namaKembar.length === 1) return true;
+        return false;
+      });
+
+      const filePaths = new Set();
+      if (siswa.filePath) filePaths.add(siswa.filePath);
+      if (siswa.laporanFilePath) filePaths.add(siswa.laporanFilePath);
+      arsipTerkait.forEach(a => { if (a.filePath) filePaths.add(a.filePath); });
+
+      if (!confirm(`Hapus permanen data anak "${siswaNama || '-'}"?\n\nData Firebase terkait, jadwal, rekap fee, arsip, dan file di Supabase akan ikut dihapus. Tindakan ini tidak dapat dibatalkan.`)) return;
+      if (!window.kazkaDb || !window.kazkaStorage) { alert('Koneksi cloud belum siap. Silakan coba lagi.'); return; }
+
+      const jadwal = Array.isArray(window.dataJadwal) ? window.dataJadwal : [];
+      const rekap = Array.isArray(window.dataRekapFee) ? window.dataRekapFee : [];
+      const jadwalTerkait = jadwal.filter(j => String(j.siswaId || '') === String(id));
+      const rekapTerkait = rekap.filter(r => String(r.siswaId || '') === String(id));
+
+      try {
+        // Hapus file cloud lebih dulu. Jika gagal, Firebase tidak disentuh sehingga
+        // tidak ada penghapusan setengah jalan yang membuat file menjadi yatim.
+        for (const filePath of filePaths) {
+          const ok = await window.kazkaStorage.deleteFromSupabase(filePath);
+          if (!ok) throw new Error(`Gagal menghapus file Supabase: ${filePath}`);
+        }
+
+        // Satu update root Firebase untuk menghapus seluruh data terkait sekaligus.
+        const changes = {};
+        changes[`siswa/${id}`] = null;
+        jadwalTerkait.forEach(j => { changes[`jadwal/${j.id}`] = null; });
+        rekapTerkait.forEach(r => { changes[`rekap_fee/${r.id}`] = null; });
+        arsipTerkait.forEach(a => { changes[`arsip/${a.id}`] = null; });
+        await window.kazkaDb.update(window.kazkaDb.ref(window.kazkaDb.db, ''), changes);
+
+        alert('Data anak dan seluruh file terkait berhasil dihapus dari Firebase dan Supabase.');
+      } catch (err) {
+        console.error('Gagal menghapus data anak secara permanen:', err);
+        alert('Penghapusan belum selesai. Data anak masih dipertahankan agar tidak terjadi kehilangan data sebagian. Silakan cek koneksi lalu coba lagi.');
       }
     }
