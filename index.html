@@ -3,7 +3,7 @@
 <html lang="id">
 <head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
 <title>Management Guru Privat Kazka Edu</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
@@ -320,6 +320,179 @@ html:not(.dark) #page-anak #kazkaAdminPengajuanList button.bg-rose-600:hover,
   -webkit-text-fill-color:#ffffff!important;
 }
 </style>
+
+<style id="kazka-mobile-hardening-10-23">
+/* =========================================================
+   STAGE 10.23 — MOBILE HARDENING
+   Final responsive overrides for phone widths. No business logic changes.
+   ========================================================= */
+@media (max-width: 767px) {
+  html, body { width:100%; min-width:0; max-width:100%; overflow-x:hidden; }
+  body { margin:0; -webkit-text-size-adjust:100%; text-size-adjust:100%; }
+  img, svg, video, canvas { max-width:100%; }
+  input, select, textarea, button { max-width:100%; font-size:16px; }
+
+  /* Access / landing screen */
+  #roleGate, #guruPicker {
+    position:fixed !important;
+    inset:0 !important;
+    width:100vw !important;
+    min-width:0 !important;
+    height:100dvh !important;
+    max-height:100dvh !important;
+    padding:calc(12px + env(safe-area-inset-top))
+             calc(12px + env(safe-area-inset-right))
+             calc(12px + env(safe-area-inset-bottom))
+             calc(12px + env(safe-area-inset-left)) !important;
+    overflow-y:auto !important;
+    overflow-x:hidden !important;
+    box-sizing:border-box !important;
+    align-items:center !important;
+    justify-content:center !important;
+  }
+  #roleGate > div, #guruPicker > div {
+    width:100% !important;
+    max-width:430px !important;
+    max-height:calc(100dvh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+    min-width:0 !important;
+    box-sizing:border-box !important;
+    overflow-y:auto !important;
+    overflow-x:hidden !important;
+    margin:0 auto !important;
+  }
+  #roleGate .role-choice-panel {
+    width:100% !important;
+    max-width:100% !important;
+    box-sizing:border-box !important;
+    padding:16px !important;
+    border-radius:22px !important;
+  }
+  #roleGate .role-choice-panel .grid {
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) !important;
+    width:100% !important;
+    gap:12px !important;
+  }
+  #roleGate .grid > button {
+    width:100% !important;
+    min-width:0 !important;
+    min-height:122px !important;
+    max-height:none !important;
+    box-sizing:border-box !important;
+    padding:16px !important;
+    border-radius:18px !important;
+  }
+  #roleGate .grid > button h2 { font-size:1.05rem !important; line-height:1.25 !important; }
+  #roleGate .grid > button p { font-size:.78rem !important; line-height:1.45 !important; }
+  #roleGate > div > .text-center h1 { font-size:clamp(1.35rem,6vw,1.75rem) !important; line-height:1.2 !important; }
+  #roleGate > div > .text-center p { max-width:100% !important; }
+
+  /* Guru picker */
+  #guruPicker > div { padding:16px !important; border-radius:20px !important; }
+  #guruPickerList {
+    width:100% !important;
+    min-width:0 !important;
+    max-width:100% !important;
+    overflow-x:hidden !important;
+    overflow-y:auto !important;
+  }
+  #guruPickerList > * { min-width:0 !important; max-width:100% !important; }
+  #guruPicker button { min-height:48px; }
+
+  /* Main content: remove accidental desktop widths and horizontal overflow. */
+  main, main > *, main > div, main section, main article,
+  [id^="page-"] { min-width:0 !important; max-width:100% !important; box-sizing:border-box !important; }
+  [id^="page-"] { overflow-x:hidden !important; }
+  [id^="page-"] > div { min-width:0 !important; max-width:100% !important; }
+
+  /* Mobile cards/grids become one comfortable column. */
+  [id^="page-"] .grid {
+    grid-template-columns:minmax(0,1fr) !important;
+  }
+  #page-ringkasan .grid,
+  #page-guru-dashboard .grid,
+  #page-guru .grid { grid-template-columns:minmax(0,1fr) !important; }
+
+  /* Forms: no clipped two-column controls. */
+  form .grid,
+  .form-grid,
+  [id^="modal"] .grid,
+  [role="dialog"] .grid {
+    grid-template-columns:minmax(0,1fr) !important;
+  }
+  form .grid > *, .form-grid > *, [id^="modal"] .grid > *, [role="dialog"] .grid > * {
+    min-width:0 !important;
+  }
+
+  /* Tables: keep the table readable; scroll only the table area horizontally. */
+  .overflow-x-auto {
+    max-width:100% !important;
+    width:100% !important;
+    overflow-x:auto !important;
+    overflow-y:visible !important;
+    -webkit-overflow-scrolling:touch !important;
+  }
+  table { min-width:620px; }
+  #page-rekap table, #kazkaAdminPengajuanList table { min-width:680px; }
+  .overflow-x-auto table { margin-bottom:2px; }
+
+  /* Modals/dialogs: fit within the phone and remain scrollable. */
+  [id^="modal"], [role="dialog"] {
+    padding:10px !important;
+    box-sizing:border-box !important;
+  }
+  [id^="modal"] > div,
+  [role="dialog"] > div {
+    width:100% !important;
+    max-width:520px !important;
+    max-height:calc(100dvh - 20px) !important;
+    overflow-y:auto !important;
+    overflow-x:hidden !important;
+    box-sizing:border-box !important;
+    margin:0 auto !important;
+  }
+
+  /* Long text and controls must wrap instead of pushing the viewport. */
+  .flex { min-width:0; }
+  .flex > * { min-width:0; }
+  h1,h2,h3,h4,p,span,label,td,th { overflow-wrap:anywhere; }
+  .truncate { max-width:100%; }
+
+  /* Images / avatars never create horizontal overflow. */
+  img { height:auto; }
+  .rounded-full { flex:0 0 auto; }
+
+  /* Bottom navigation stays inside the safe area. */
+  nav.md\:hidden {
+    width:100% !important;
+    max-width:100vw !important;
+    left:0 !important;
+    right:0 !important;
+    box-sizing:border-box !important;
+    padding-bottom:env(safe-area-inset-bottom) !important;
+  }
+
+  /* Prevent fixed desktop sidebar from stealing width on phone. */
+  aside { display:none !important; }
+
+  /* Touch targets stay comfortable without making cards enormous. */
+  button, .btn, [role="button"] { min-height:42px; }
+}
+
+@media (max-width: 380px) {
+  #roleGate, #guruPicker { padding-left:8px !important; padding-right:8px !important; }
+  #roleGate .role-choice-panel { padding:12px !important; border-radius:18px !important; }
+  #roleGate .grid > button { min-height:112px !important; padding:12px !important; }
+  #roleGate .grid > button h2 { font-size:1rem !important; }
+  #guruPicker > div { padding:12px !important; }
+}
+
+@media (min-width:768px) {
+  /* Keep mobile-only hardening from changing desktop/tablet layouts. */
+  #roleGate, #guruPicker { overflow-x:hidden; }
+}
+</style>
+
 </head>
 <body class="bg-slate-100 text-slate-800 min-h-screen selection:bg-amber-400 selection:text-slate-900 flex flex-col md:flex-row pb-20 md:pb-0 transition-colors duration-300">
 <!-- ROLE / PROFILE SELECTOR: first-use friendly access without password login -->
