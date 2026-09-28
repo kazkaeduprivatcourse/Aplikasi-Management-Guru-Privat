@@ -1451,6 +1451,12 @@ function renderAllSafe() {
   if (typeof window.renderArsipDokumen === 'function') window.renderArsipDokumen();
   if (typeof window.renderRekapFee === 'function') window.renderRekapFee();
   if (document.getElementById('page-jadwal') && typeof window.renderJadwal === 'function') window.renderJadwal();
+  // Keep the Guru workspace in sync with the same Firebase data as Admin.
+  // This is called by every relevant Firebase listener, so Guru does not
+  // need a manual refresh after child/session/profile changes.
+  if (typeof window.renderTeacherDashboard === 'function' && window.kazkaProfile?.role === 'guru') {
+    window.renderTeacherDashboard();
+  }
 }
 window.renderAll = renderAllSafe;
 

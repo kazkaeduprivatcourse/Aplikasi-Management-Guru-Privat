@@ -190,9 +190,9 @@
         const paket = Math.max(0, Number(s.paket || 0));
         const terisi = getTerisi(s);
         const sisa = Math.max(0, paket - terisi);
-        const statusClass = sisa <= 0 ? 'bg-rose-50 text-rose-600 border-rose-100' : sisa <= 1 ? 'bg-amber-50 text-amber-700 border-amber-100' : 'bg-emerald-50 text-emerald-700 border-emerald-100';
-        const statusText = sisa <= 0 ? 'Habis' : sisa <= 1 ? 'Segera habis' : 'Aktif';
-        return `<div class="p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700">
+        const statusClass = sisa <= 0 ? 'bg-rose-50/60 dark:bg-rose-950/20 border-rose-200/60 dark:border-rose-900/40' : sisa === 1 ? 'bg-amber-50/60 dark:bg-amber-950/20 border-amber-200/60 dark:border-amber-900/40' : 'bg-emerald-50/60 dark:bg-emerald-950/20 border-emerald-200/60 dark:border-emerald-900/40';
+        const statusText = sisa <= 0 ? 'Habis' : sisa === 1 ? 'Segera habis' : 'Aman';
+        return `<div class="p-3.5 rounded-2xl border ${statusClass} transition-colors">
         <div class="flex items-start justify-between gap-3"><div><p class="font-extrabold text-sm text-slate-900 dark:text-white">${esc(s.anak || '-')}</p><p class="text-[11px] text-slate-500 mt-0.5">${esc(s.kegiatan || 'Kegiatan belum diatur')}</p></div>
         <button onclick="bukaModalSesi('${esc(s.id)}')" class="shrink-0 bg-emerald-500 hover:bg-emerald-600 text-white text-[10px] font-extrabold px-2.5 py-2 rounded-xl">Catat Sesi</button></div>
         <div class="mt-2 flex items-center justify-between gap-2"><p class="text-[10px] text-slate-500">Deposit: <b class="text-slate-800 dark:text-slate-200">${esc(sisa)} / ${esc(paket)}</b> sesi tersisa</p><span class="inline-flex items-center rounded-full border px-2 py-1 text-[9px] font-extrabold ${statusClass}">${statusText}</span></div>
