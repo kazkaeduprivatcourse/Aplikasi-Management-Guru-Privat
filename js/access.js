@@ -179,6 +179,33 @@
       }).join('') : '<div class="p-5 text-center text-xs text-slate-400">Belum ada jadwal mendatang.</div>';
     }
 
+    const completedBox = document.getElementById('teacherCompletedList');
+    if (completedBox) {
+      const studentIds = new Set(students.map(s => String(s.id)));
+      const guruName = String(teacherById(profile.id)?.nama || profile.name || '').trim();
+      const completed = (w.dataRekapFee || []).filter(r =>
+        (r.siswaId && studentIds.has(String(r.siswaId))) ||
+        (!r.siswaId && String(r.guru || '').trim() === guruName) ||
+        (r.siswaId && !studentIds.has(String(r.siswaId)) && String(r.guru || '').trim() === guruName)
+      ).sort((a,b) => String(b.tanggalSelesai || '').localeCompare(String(a.tanggalSelesai || '')));
+
+      completedBox.innerHTML = completed.length ? completed.map(r => {
+        const report = r.laporanUrl
+          ? '<span class=\"text-[9px] font-extrabold text-emerald-600 dark:text-emerald-400\">Laporan sudah upload</span>'
+          : '<span class=\"text-[9px] font-extrabold text-amber-600 dark:text-amber-400\">Laporan belum upload</span>';
+        const reportAction = r.laporanUrl
+          ? `<a href=\"${esc(r.laporanUrl)}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"shrink-0 text-[10px] font-extrabold text-sky-600 dark:text-sky-300 underline hover:no-underline\">Lihat</a>`
+          : '';
+        return `<div class=\"p-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/60 dark:bg-slate-900/30\">
+          <div class=\"flex items-start justify-between gap-3\">
+            <div class=\"min-w-0\"><p class=\"font-extrabold text-sm text-slate-900 dark:text-white truncate\">${esc(r.anak || '-')}</p><p class=\"text-[10px] text-slate-500 mt-0.5 truncate\">${esc(r.kegiatan || '-')} · ${esc(r.paket || 0)} sesi</p></div>
+            <span class=\"shrink-0 inline-flex items-center rounded-full bg-emerald-500/10 border border-emerald-200/70 dark:border-emerald-900/40 px-2 py-1 text-[9px] font-extrabold text-emerald-600 dark:text-emerald-400\">Selesai</span>
+          </div>
+          <div class=\"mt-2 flex items-center justify-between gap-2\"><div class=\"min-w-0\">${report}${r.tanggalSelesai ? `<p class=\"text-[9px] text-slate-400 mt-0.5\">Selesai: ${esc(r.tanggalSelesai)}</p>` : ''}</div>${reportAction}</div>
+        </div>`;
+      }).join('') : '<div class=\"p-5 text-center text-xs text-slate-400\">Belum ada murid yang menyelesaikan paket.</div>';
+    }
+
     const studentBox = document.getElementById('teacherStudentList');
     if (studentBox) {
       studentBox.innerHTML = students.length ? students.map(s => {

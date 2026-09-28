@@ -670,6 +670,10 @@ html:not(.dark) #page-anak #kazkaAdminPengajuanList button.bg-rose-600:hover,
     <div class="flex items-center justify-between gap-3 mb-3"><div><p class="text-[10px] uppercase tracking-wider font-extrabold text-emerald-500">Siswa</p><h2 class="font-extrabold text-slate-900 dark:text-white mt-0.5">Anak yang Saya Ajar</h2></div><button onclick="bukaModalPengajuanAnakGuru()" class="shrink-0 bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-[11px] px-3 py-2 rounded-xl shadow-sm">+ Tambah Anak</button></div>
     <div id="teacherStudentList" class="grid sm:grid-cols-2 gap-2"></div>
   </div>
+  <div class="bg-white dark:bg-[#1e293b] rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
+    <div class="flex items-center justify-between gap-3 mb-3"><div><p class="text-[10px] uppercase tracking-wider font-extrabold text-amber-500">Riwayat</p><h2 class="font-extrabold text-slate-900 dark:text-white mt-0.5">Murid yang Sudah Selesai</h2></div></div>
+    <div id="teacherCompletedList" class="space-y-2"></div>
+  </div>
 </div>
 
 <!-- MODAL EDIT PROFIL GURU (khusus profil Guru yang sedang aktif) -->
@@ -1493,6 +1497,7 @@ onValue(ref(db, 'rekap_fee'), snapshot => {
   const data = snapshot.val();
   if (data) Object.keys(data).forEach(id => window.dataRekapFee.push({ id, ...data[id] }));
   if (typeof window.renderRekapFee === 'function') window.renderRekapFee();
+  if (typeof window.renderTeacherDashboard === 'function' && window.kazkaProfile?.role === 'guru') window.renderTeacherDashboard();
 });
 
 onValue(ref(db, 'arsip'), snapshot => {
