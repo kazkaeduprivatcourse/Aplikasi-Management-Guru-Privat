@@ -266,7 +266,7 @@
         jadwalTerkait.forEach(j => { changes[`jadwal/${j.id}`] = null; });
         rekapTerkait.forEach(r => { changes[`rekap_fee/${r.id}`] = null; });
         arsipTerkait.forEach(a => { changes[`arsip/${a.id}`] = null; });
-        await window.kazkaDb.update(window.kazkaDb.ref(window.kazkaDb.db, ''), changes);
+        await window.kazkaDb.update(window.kazkaDb.ref(window.kazkaDb.db), changes);
 
         alert('Data anak dan seluruh file terkait berhasil dihapus dari Firebase dan Supabase.');
       } catch (err) {

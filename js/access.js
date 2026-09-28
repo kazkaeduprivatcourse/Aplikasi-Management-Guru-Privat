@@ -360,7 +360,7 @@
       const changes={};
       changes[`siswa/${siswaId}`]=data;
       changes[`${PATH}/${id}`]=null;
-      await w.kazkaDb.update(w.kazkaDb.ref(w.kazkaDb.db,''),changes);
+      await w.kazkaDb.update(w.kazkaDb.ref(w.kazkaDb.db),changes);
       if(typeof w.renderAll==='function')w.renderAll();
       alert('Anak disetujui. Silakan lengkapi Data Anak dan fee terlebih dahulu. Jadwal belum masuk kalender.');
     }catch(e){console.error(e);alert('Gagal menyetujui pengajuan: '+(e?.message||'koneksi bermasalah')+'. Tidak ada perubahan yang dianggap berhasil.');}
