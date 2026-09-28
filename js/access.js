@@ -156,9 +156,18 @@
     const statAnak = document.getElementById('teacherStatAnak');
     const statToday = document.getElementById('teacherStatToday');
     const statUpcoming = document.getElementById('teacherStatUpcoming');
+    const statDeposit = document.getElementById('teacherStatDeposit');
+    const getTerisi = s => {
+      const hasSesiList = s?.sesiList && typeof s.sesiList === 'object';
+      const list = hasSesiList ? Object.values(s.sesiList) : [];
+      const computed = list.filter(x => x && (x.terisi === true || String(x.tanggal || '').trim() !== '' || String(x.materi || '').trim() !== '')).length;
+      return Math.max(0, hasSesiList ? computed : Number(s?.terisi || 0));
+    };
+    const totalSisaDeposit = students.reduce((sum, s) => sum + Math.max(0, Number(s.paket || 0) - getTerisi(s)), 0);
     if (statAnak) statAnak.textContent = students.length;
     if (statToday) statToday.textContent = todayCount;
     if (statUpcoming) statUpcoming.textContent = upcoming.length;
+    if (statDeposit) statDeposit.textContent = totalSisaDeposit;
 
     const scheduleBox = document.getElementById('teacherScheduleList');
     if (scheduleBox) {
@@ -177,11 +186,18 @@
 
     const studentBox = document.getElementById('teacherStudentList');
     if (studentBox) {
-      studentBox.innerHTML = students.length ? students.map(s => `<div class="p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700">
+      studentBox.innerHTML = students.length ? students.map(s => {
+        const paket = Math.max(0, Number(s.paket || 0));
+        const terisi = getTerisi(s);
+        const sisa = Math.max(0, paket - terisi);
+        const statusClass = sisa <= 0 ? 'bg-rose-50 text-rose-600 border-rose-100' : sisa <= 1 ? 'bg-amber-50 text-amber-700 border-amber-100' : 'bg-emerald-50 text-emerald-700 border-emerald-100';
+        const statusText = sisa <= 0 ? 'Habis' : sisa <= 1 ? 'Segera habis' : 'Aktif';
+        return `<div class="p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700">
         <div class="flex items-start justify-between gap-3"><div><p class="font-extrabold text-sm text-slate-900 dark:text-white">${esc(s.anak || '-')}</p><p class="text-[11px] text-slate-500 mt-0.5">${esc(s.kegiatan || 'Kegiatan belum diatur')}</p></div>
-        <button onclick="bukaModalSesi('${esc(s.id)}')" class="shrink-0 bg-emerald-500 text-white text-[10px] font-extrabold px-2.5 py-2 rounded-xl">Catat Sesi</button></div>
-        <p class="text-[10px] text-slate-400 mt-2">Paket: ${esc(s.paket ?? 0)} · Terisi: ${esc(s.terisi ?? 0)} · Sisa: ${esc((s.paket||0)-(s.terisi||0))}</p>
-      </div>`).join('') : '<div class="p-5 text-center text-xs text-slate-400 sm:col-span-2">Belum ada anak yang ditugaskan ke profil ini.</div>';
+        <button onclick="bukaModalSesi('${esc(s.id)}')" class="shrink-0 bg-emerald-500 hover:bg-emerald-600 text-white text-[10px] font-extrabold px-2.5 py-2 rounded-xl">Catat Sesi</button></div>
+        <div class="mt-2 flex items-center justify-between gap-2"><p class="text-[10px] text-slate-500">Deposit: <b class="text-slate-800 dark:text-slate-200">${esc(sisa)} / ${esc(paket)}</b> sesi tersisa</p><span class="inline-flex items-center rounded-full border px-2 py-1 text-[9px] font-extrabold ${statusClass}">${statusText}</span></div>
+      </div>`;
+      }).join('') : '<div class="p-5 text-center text-xs text-slate-400 sm:col-span-2">Belum ada anak yang ditugaskan ke profil ini.</div>';
     }
   }
 
@@ -283,6 +299,7 @@
   function resetForm(){
     ['pengajuanNamaAnak','pengajuanCatatanAnak'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
     ['pengajuanKegiatanAnak','pengajuanHariAnak','pengajuanJarakAnak'].forEach(id=>{const el=document.getElementById(id);if(el)el.selectedIndex=0;});
+    const paket=document.getElementById('pengajuanPaketAnak'); if(paket)paket.value='4';
     const jm=document.getElementById('pengajuanJamMulai'); if(jm)jm.value='16:00';
     const js=document.getElementById('pengajuanJamSelesai'); if(js)js.value='17:30';
   }
@@ -295,6 +312,7 @@
     if(!w.kazkaDb){alert('Koneksi data belum siap. Silakan coba lagi sebentar.');return;}
     const nama=document.getElementById('pengajuanNamaAnak')?.value.trim();
     const kegiatan=document.getElementById('pengajuanKegiatanAnak')?.value||'';
+    const paket=Math.max(1, parseInt(document.getElementById('pengajuanPaketAnak')?.value || '4', 10) || 4);
     const hari=Number(document.getElementById('pengajuanHariAnak')?.value ?? 1);
     const jamMulai=document.getElementById('pengajuanJamMulai')?.value||'';
     const jamSelesai=document.getElementById('pengajuanJamSelesai')?.value||'';
@@ -302,13 +320,14 @@
     const catatan=document.getElementById('pengajuanCatatanAnak')?.value.trim()||'';
     if(!nama){alert('Nama anak wajib diisi.');return;}
     if(!kegiatan){alert('Pilih kegiatan / mapel terlebih dahulu.');return;}
+    if(!Number.isInteger(paket) || paket < 1){alert('Paket pertemuan harus berupa angka minimal 1 sesi.');return;}
     if(!jamMulai || !jamSelesai){alert('Jam mulai dan jam selesai wajib diisi.');return;}
     if(jamSelesai<=jamMulai){alert('Jam selesai harus lebih besar dari jam mulai.');return;}
     const duplicate=listPengajuan().some(x=>x.status==='menunggu' && String(x.guruId)===String(profile.id) && String(x.nama||'').trim().toLowerCase()===nama.toLowerCase());
     if(duplicate){alert('Pengajuan anak dengan nama tersebut masih menunggu persetujuan Admin.');return;}
     try{
       await w.kazkaDb.push(w.kazkaDb.ref(w.kazkaDb.db,PATH),{
-        nama,kegiatan,jarak,hari,jamMulai,jamSelesai,catatan,
+        nama,kegiatan,paket,jarak,hari,jamMulai,jamSelesai,catatan,
         guruId:profile.id||'',guru:profile.name||'',status:'menunggu',jadwalAktif:false,createdAt:new Date().toISOString()
       });
       w.tutupModalPengajuanAnakGuru();
@@ -337,7 +356,7 @@
       host.innerHTML=`<div class="w-full bg-white dark:bg-[#1e293b] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">${header}<div class="w-full overflow-x-auto"><table class="w-full table-fixed text-left text-xs"><colgroup><col style="width:27%"><col style="width:18%"><col style="width:17%"><col style="width:23%"><col style="width:15%"></colgroup><thead class="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400 bg-slate-50/80 dark:bg-slate-800/40 border-b border-slate-200 dark:border-slate-800"><tr><th class="px-4 sm:px-5 py-3.5 font-bold">Nama Anak / Guru</th><th class="px-4 py-3.5 font-bold">Kegiatan</th><th class="px-4 py-3.5 font-bold">Usulan Jadwal</th><th class="px-4 py-3.5 font-bold">Catatan</th><th class="px-4 sm:px-5 py-3.5 font-bold text-right">Aksi</th></tr></thead><tbody><tr><td colspan="5" class="px-6 py-10 text-center border-b border-slate-100 dark:border-slate-800"><div class="mx-auto w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg">✓</div><p class="mt-3 text-sm font-extrabold text-slate-800 dark:text-slate-100">Tidak ada pengajuan yang menunggu</p><p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">Pengajuan baru dari Guru akan muncul di sini.</p></td></tr></tbody></table></div><div class="px-4 sm:px-5 py-3 bg-slate-50/60 dark:bg-slate-800/30 border-t border-slate-100 dark:border-slate-800"><p class="text-[10px] text-slate-500 dark:text-slate-400"><span class="font-bold text-slate-700 dark:text-slate-200">Catatan:</span> pengajuan baru dari Guru akan tersinkron otomatis ke perangkat Admin.</p></div></div>`;
       return;
     }
-    const rows=pending.map(r=>`<tr class="border-b border-slate-100 dark:border-slate-800 last:border-b-0 hover:bg-slate-50/70 dark:hover:bg-slate-800/30 transition-colors align-middle"><td class="px-4 sm:px-5 py-4"><div class="flex items-center gap-3 min-w-0"><div class="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-700 flex items-center justify-center font-extrabold text-xs shrink-0">${escHtml((r.nama||'?').charAt(0).toUpperCase())}</div><div class="min-w-0"><div class="font-extrabold text-slate-900 dark:text-white text-[12px] truncate">${escHtml(r.nama)}</div><div class="text-[10px] text-slate-500 dark:text-slate-400 mt-1 truncate">Guru: ${escHtml(r.guru||'-')}</div></div></div></td><td class="px-4 py-4"><span class="inline-flex items-center rounded-lg bg-amber-50 border border-amber-100 px-2.5 py-1.5 text-[10px] font-extrabold text-amber-700">${escHtml(r.kegiatan||'-')}</span><div class="text-[10px] text-slate-500 dark:text-slate-400 mt-1.5">Jarak ${escHtml(jarakNama[r.jarak]||r.jarak||'-')}</div></td><td class="px-4 py-4"><div class="font-bold text-slate-800 dark:text-slate-200 text-[11px]">${escHtml(hariNama[r.hari]||'-')}</div><div class="text-[10px] text-slate-500 dark:text-slate-400 mt-1">${escHtml(r.jamMulai||'--:--')} – ${escHtml(r.jamSelesai||'--:--')}</div></td><td class="px-4 py-4">${r.catatan?`<div class="text-[10px] leading-relaxed text-slate-600 dark:text-slate-300 whitespace-normal line-clamp-2">${escHtml(r.catatan)}</div>`:'<span class="text-[10px] text-slate-400">Tidak ada catatan</span>'}</td><td class="px-4 sm:px-5 py-4"><div class="flex flex-wrap lg:flex-nowrap justify-end gap-2"><button class="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-3.5 py-2.5 text-[10px] font-extrabold shadow-sm transition-all whitespace-nowrap" onclick="setujuiPengajuanAnak('${escHtml(r.id)}')">✓ Setujui</button><button class="bg-rose-600 hover:bg-rose-700 border border-rose-600 hover:border-rose-700 text-white rounded-xl px-3.5 py-2.5 text-[10px] font-extrabold transition-all whitespace-nowrap" onclick="tolakPengajuanAnak('${escHtml(r.id)}')">Tolak</button></div></td></tr>`).join('');
+    const rows=pending.map(r=>`<tr class="border-b border-slate-100 dark:border-slate-800 last:border-b-0 hover:bg-slate-50/70 dark:hover:bg-slate-800/30 transition-colors align-middle"><td class="px-4 sm:px-5 py-4"><div class="flex items-center gap-3 min-w-0"><div class="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-700 flex items-center justify-center font-extrabold text-xs shrink-0">${escHtml((r.nama||'?').charAt(0).toUpperCase())}</div><div class="min-w-0"><div class="font-extrabold text-slate-900 dark:text-white text-[12px] truncate">${escHtml(r.nama)}</div><div class="text-[10px] text-slate-500 dark:text-slate-400 mt-1 truncate">Guru: ${escHtml(r.guru||'-')}</div></div></div></td><td class="px-4 py-4"><span class="inline-flex items-center rounded-lg bg-amber-50 border border-amber-100 px-2.5 py-1.5 text-[10px] font-extrabold text-amber-700">${escHtml(r.kegiatan||'-')}</span><div class="text-[10px] text-slate-500 dark:text-slate-400 mt-1.5">Jarak ${escHtml(jarakNama[r.jarak]||r.jarak||'-')} · Paket ${escHtml(r.paket||4)} sesi</div></td><td class="px-4 py-4"><div class="font-bold text-slate-800 dark:text-slate-200 text-[11px]">${escHtml(hariNama[r.hari]||'-')}</div><div class="text-[10px] text-slate-500 dark:text-slate-400 mt-1">${escHtml(r.jamMulai||'--:--')} – ${escHtml(r.jamSelesai||'--:--')}</div></td><td class="px-4 py-4">${r.catatan?`<div class="text-[10px] leading-relaxed text-slate-600 dark:text-slate-300 whitespace-normal line-clamp-2">${escHtml(r.catatan)}</div>`:'<span class="text-[10px] text-slate-400">Tidak ada catatan</span>'}</td><td class="px-4 sm:px-5 py-4"><div class="flex flex-wrap lg:flex-nowrap justify-end gap-2"><button class="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-3.5 py-2.5 text-[10px] font-extrabold shadow-sm transition-all whitespace-nowrap" onclick="setujuiPengajuanAnak('${escHtml(r.id)}')">✓ Setujui</button><button class="bg-rose-600 hover:bg-rose-700 border border-rose-600 hover:border-rose-700 text-white rounded-xl px-3.5 py-2.5 text-[10px] font-extrabold transition-all whitespace-nowrap" onclick="tolakPengajuanAnak('${escHtml(r.id)}')">Tolak</button></div></td></tr>`).join('');
     host.innerHTML=`<div class="w-full bg-white dark:bg-[#1e293b] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">${header}<div class="overflow-x-auto"><table class="w-full table-fixed text-left text-xs"><colgroup><col style="width:27%"><col style="width:18%"><col style="width:17%"><col style="width:23%"><col style="width:15%"></colgroup><thead class="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400 bg-slate-50/80 dark:bg-slate-800/40 border-b border-slate-200 dark:border-slate-800"><tr><th class="px-4 sm:px-5 py-3.5 font-bold">Nama Anak / Guru</th><th class="px-4 py-3.5 font-bold">Kegiatan</th><th class="px-4 py-3.5 font-bold">Usulan Jadwal</th><th class="px-4 py-3.5 font-bold">Catatan</th><th class="px-4 sm:px-5 py-3.5 font-bold text-right">Aksi</th></tr></thead><tbody class="divide-y divide-slate-100 dark:divide-slate-800/70">${rows}</tbody></table></div><div class="px-4 sm:px-5 py-3 bg-slate-50/60 dark:bg-slate-800/30 border-t border-slate-100 dark:border-slate-800"><p class="text-[10px] text-slate-500 dark:text-slate-400"><span class="font-bold text-slate-700 dark:text-slate-200">Catatan:</span> menyetujui anak belum mengaktifkan jadwal di kalender. Data fee dan jadwal tetap perlu diselesaikan oleh Admin.</p></div></div>`;
   }
 
@@ -350,7 +369,7 @@
     actionBusy=true;
     const guru=(w.dataGuru||[]).find(g=>String(g.id)===String(req.guruId));
     const jadwalMingguan=[{hari:Number(req.hari),jamMulai:req.jamMulai||'',jamSelesai:req.jamSelesai||''}];
-    const data={anak:req.nama,kegiatan:req.kegiatan,jarak:req.jarak,guru:req.guru||guru?.nama||'',guruId:req.guruId||guru?.id||'',tipeHarga:'baru',wilayah:'',paket:0,manualFee:0,terisi:0,jadwalMingguan,sesiList:{},sudahMasukRekap:false,catatanPengajuan:req.catatan||'',jadwalAktif:false,createdAt:Date.now()};
+    const data={anak:req.nama,kegiatan:req.kegiatan,jarak:req.jarak,guru:req.guru||guru?.nama||'',guruId:req.guruId||guru?.id||'',tipeHarga:'baru',wilayah:'',paket:Math.max(1,Number(req.paket||4)),manualFee:0,terisi:0,jadwalMingguan,sesiList:{},sudahMasukRekap:false,catatanPengajuan:req.catatan||'',jadwalAktif:false,createdAt:Date.now()};
     try{
       // Buat ID siswa lalu lakukan penambahan siswa + penghapusan pengajuan dalam satu update root.
       // Ini mencegah kasus klik ganda / koneksi putus di tengah proses yang dapat membuat data anak ganda.
@@ -362,7 +381,7 @@
       changes[`${PATH}/${id}`]=null;
       await w.kazkaDb.update(w.kazkaDb.ref(w.kazkaDb.db),changes);
       if(typeof w.renderAll==='function')w.renderAll();
-      alert('Anak disetujui. Silakan lengkapi Data Anak dan fee terlebih dahulu. Jadwal belum masuk kalender.');
+      alert(`Anak disetujui dengan paket awal ${data.paket} sesi. Silakan lengkapi fee/data lainnya. Jadwal belum masuk kalender.`);
     }catch(e){console.error(e);alert('Gagal menyetujui pengajuan: '+(e?.message||'koneksi bermasalah')+'. Tidak ada perubahan yang dianggap berhasil.');}
     finally{actionBusy=false;}
   };
