@@ -151,11 +151,8 @@
     const upcoming = schedules
       .filter(j => (j.tanggal || '') >= today)
       .sort((a,b) => String(a.tanggal+a.jamMulai).localeCompare(String(b.tanggal+b.jamMulai)));
-    const todayCount = schedules.filter(j => j.tanggal === today).length;
 
     const statAnak = document.getElementById('teacherStatAnak');
-    const statToday = document.getElementById('teacherStatToday');
-    const statUpcoming = document.getElementById('teacherStatUpcoming');
     const statDeposit = document.getElementById('teacherStatDeposit');
     const getTerisi = s => {
       const hasSesiList = s?.sesiList && typeof s.sesiList === 'object';
@@ -165,8 +162,6 @@
     };
     const totalSisaDeposit = students.reduce((sum, s) => sum + Math.max(0, Number(s.paket || 0) - getTerisi(s)), 0);
     if (statAnak) statAnak.textContent = students.length;
-    if (statToday) statToday.textContent = todayCount;
-    if (statUpcoming) statUpcoming.textContent = upcoming.length;
     if (statDeposit) statDeposit.textContent = totalSisaDeposit;
 
     const scheduleBox = document.getElementById('teacherScheduleList');
