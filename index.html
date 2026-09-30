@@ -618,6 +618,24 @@ html:not(.dark) #page-anak #kazkaAdminPengajuanList button.bg-rose-600:hover,
 <span class="text-[10px] mt-0.5">Rekap</span>
 </button>
 </nav>
+<!-- MOBILE BOTTOM NAVIGATION — GURU -->
+<nav id="teacherMobileNav" class="teacher-mobile-nav" aria-label="Navigasi Dashboard Guru">
+  <button type="button" class="teacher-mobile-nav-item is-active" data-target="page-guru-dashboard" onclick="scrollDashboardGuru('top')">
+    <span class="teacher-mobile-nav-icon">⌂</span><span>Beranda</span>
+  </button>
+  <button type="button" class="teacher-mobile-nav-item" onclick="scrollDashboardGuru('schedule')">
+    <span class="teacher-mobile-nav-icon">◷</span><span>Agenda</span>
+  </button>
+  <button type="button" class="teacher-mobile-nav-item teacher-mobile-nav-main" onclick="bukaModalPengajuanAnakGuru()">
+    <span class="teacher-mobile-nav-plus">＋</span><span>Tambah</span>
+  </button>
+  <button type="button" class="teacher-mobile-nav-item" onclick="scrollDashboardGuru('students')">
+    <span class="teacher-mobile-nav-icon">♧</span><span>Murid</span>
+  </button>
+  <button type="button" class="teacher-mobile-nav-item" onclick="scrollDashboardGuru('completed')">
+    <span class="teacher-mobile-nav-icon">✓</span><span>Selesai</span>
+  </button>
+</nav>
 <!-- MAIN CONTENT AREA -->
 <div class="flex-1 flex flex-col min-w-0">
 <!-- Top Bar dengan Tombol Tema & Info -->
@@ -645,35 +663,51 @@ html:not(.dark) #page-anak #kazkaAdminPengajuanList button.bg-rose-600:hover,
 
 <!-- PAGE: GURU DASHBOARD -->
 <div class="page-transition space-y-5 hidden" id="page-guru-dashboard">
-  <div class="bg-gradient-to-r from-emerald-500/10 via-emerald-500/5 to-transparent p-5 sm:p-6 rounded-3xl border border-emerald-500/20">
-    <div class="flex items-start justify-between gap-4">
-      <div>
-        <span class="inline-flex px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-300 text-[10px] font-extrabold uppercase tracking-wider">Dashboard Guru</span>
-        <h1 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-2">Halo, <span id="teacherWelcomeName">Guru</span> 👋</h1>
-        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Ini adalah area kerja pribadi kamu di Kazka Edu.</p>
+  <div class="teacher-hero relative overflow-hidden rounded-[28px] border border-emerald-200/70 dark:border-emerald-500/15 p-5 sm:p-7">
+    <div class="teacher-hero-glow" aria-hidden="true"></div>
+    <div class="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
+      <div class="min-w-0">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="teacher-eyebrow">Dashboard Guru</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">Halo, <span id="teacherWelcomeName">Guru</span> 👋</h1>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1.5 max-w-xl">Semua aktivitas mengajarmu ada di satu tempat. Cek murid, agenda, deposit, dan laporan dengan cepat.</p>
       </div>
-      <div class="flex flex-wrap items-center gap-2 justify-end">
-        <button onclick="bukaModalEditProfilGuru()" class="shrink-0 bg-emerald-500 hover:bg-emerald-600 text-white border border-emerald-500 rounded-xl px-3 py-2 text-[11px] font-extrabold shadow-sm">✏️ Edit Profil Saya</button>
-        <button onclick="gantiPenggunaKazka()" class="shrink-0 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-[11px] font-bold text-slate-600 dark:text-slate-300">Ganti Pengguna</button>
+      <div class="flex items-center gap-2 sm:shrink-0">
+        <button onclick="bukaModalEditProfilGuru()" class="teacher-action teacher-action-primary">✏️ <span>Edit Profil</span></button>
+        <button onclick="gantiPenggunaKazka()" class="teacher-action teacher-action-secondary">Ganti Pengguna</button>
       </div>
     </div>
   </div>
-  <div class="grid grid-cols-2 gap-3">
-    <div class="bg-white dark:bg-[#1e293b] p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm"><p class="text-[11px] text-slate-500">Anak Saya</p><p id="teacherStatAnak" class="text-2xl font-black text-slate-900 dark:text-white mt-1">0</p></div>
-    <div class="bg-white dark:bg-[#1e293b] p-4 rounded-2xl border border-emerald-200 dark:border-emerald-500/20 shadow-sm"><p class="text-[11px] text-slate-500">Sisa Deposit</p><p id="teacherStatDeposit" class="text-2xl font-black text-emerald-600 dark:text-emerald-400 mt-1">0</p><p class="text-[10px] text-emerald-600/80 dark:text-emerald-400/80 mt-0.5">sesi</p></div>
+  <div class="teacher-stat-grid">
+    <div class="teacher-stat-card">
+      <div class="teacher-stat-icon teacher-stat-icon-green">👧</div>
+      <div class="min-w-0"><p class="teacher-stat-label">Murid Aktif</p><p id="teacherStatAnak" class="teacher-stat-value">0</p></div>
+      <span class="teacher-stat-accent"></span>
+    </div>
+    <div class="teacher-stat-card teacher-stat-card-deposit">
+      <div class="teacher-stat-icon teacher-stat-icon-emerald">💰</div>
+      <div class="min-w-0"><p class="teacher-stat-label">Sisa Deposit</p><p class="teacher-stat-value"><span id="teacherStatDeposit">0</span> <small>sesi</small></p></div>
+      <span class="teacher-stat-accent"></span>
+    </div>
+    <div class="teacher-stat-card">
+      <div class="teacher-stat-icon teacher-stat-icon-amber">✓</div>
+      <div class="min-w-0"><p class="teacher-stat-label">Program Selesai</p><p id="teacherStatCompleted" class="teacher-stat-value">0</p></div>
+      <span class="teacher-stat-accent"></span>
+    </div>
   </div>
-  <div class="bg-white dark:bg-[#1e293b] rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
-    <div class="flex items-center justify-between mb-3"><div><p class="text-[10px] uppercase tracking-wider font-extrabold text-emerald-500">Agenda</p><h2 class="font-extrabold text-slate-900 dark:text-white mt-0.5">Jadwal Saya</h2></div></div>
+  <section id="teacherSectionSchedule" class="teacher-section">
+    <div class="teacher-section-head"><div><p class="teacher-section-kicker">Agenda</p><h2 class="teacher-section-title">Jadwal Saya</h2><p class="teacher-section-subtitle">Jadwal belajar yang perlu kamu perhatikan.</p></div></div>
     <div id="teacherScheduleList" class="space-y-2"></div>
-  </div>
-  <div class="bg-white dark:bg-[#1e293b] rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
-    <div class="flex items-center justify-between gap-3 mb-3"><div><p class="text-[10px] uppercase tracking-wider font-extrabold text-emerald-500">Siswa</p><h2 class="font-extrabold text-slate-900 dark:text-white mt-0.5">Anak yang Saya Ajar</h2></div><button onclick="bukaModalPengajuanAnakGuru()" class="shrink-0 bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-[11px] px-3 py-2 rounded-xl shadow-sm">+ Tambah Anak</button></div>
-    <div id="teacherStudentList" class="grid sm:grid-cols-2 gap-2"></div>
-  </div>
-  <div class="bg-white dark:bg-[#1e293b] rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
-    <div class="flex items-center justify-between gap-3 mb-3"><div><p class="text-[10px] uppercase tracking-wider font-extrabold text-amber-500">Riwayat</p><h2 class="font-extrabold text-slate-900 dark:text-white mt-0.5">Murid yang Sudah Selesai</h2></div></div>
-    <div id="teacherCompletedList" class="space-y-2"></div>
-  </div>
+  </section>
+  <section id="teacherSectionStudents" class="teacher-section">
+    <div class="teacher-section-head"><div><p class="teacher-section-kicker">Murid</p><h2 class="teacher-section-title">Anak yang Saya Ajar</h2><p class="teacher-section-subtitle">Pantau deposit dan laporan setiap murid.</p></div><button onclick="bukaModalPengajuanAnakGuru()" class="teacher-add-button">＋ Tambah Anak</button></div>
+    <div id="teacherStudentList" class="teacher-student-grid"></div>
+  </section>
+  <section id="teacherSectionCompleted" class="teacher-section teacher-section-completed">
+    <div class="teacher-section-head"><div><p class="teacher-section-kicker teacher-kicker-amber">Riwayat</p><h2 class="teacher-section-title">Murid yang Sudah Selesai</h2><p class="teacher-section-subtitle">Program yang sudah selesai tetap tersimpan di Rekap Fee.</p></div></div>
+    <div id="teacherCompletedList" class="teacher-completed-list"></div>
+  </section>
 </div>
 
 <!-- MODAL EDIT PROFIL GURU (khusus profil Guru yang sedang aktif) -->
@@ -1373,6 +1407,20 @@ html:not(.dark) #page-anak #kazkaAdminPengajuanList button.bg-rose-600:hover,
     function bukaModalTambahGuru() { document.getElementById('modalGuru').classList.remove('hidden'); }
     function tutupModalGuru() { document.getElementById('modalGuru').classList.add('hidden'); }
     function tutupModalEditGuru() { document.getElementById('modalEditGuru').classList.add('hidden'); }
+    window.scrollDashboardGuru = function(target) {
+      const map = {
+        top: 'page-guru-dashboard',
+        schedule: 'teacherSectionSchedule',
+        students: 'teacherSectionStudents',
+        completed: 'teacherSectionCompleted'
+      };
+      const el = document.getElementById(map[target] || map.top);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: target === 'top' ? 'start' : 'center' });
+      document.querySelectorAll('#teacherMobileNav .teacher-mobile-nav-item').forEach(btn => btn.classList.remove('is-active'));
+      const active = document.querySelector(`#teacherMobileNav .teacher-mobile-nav-item[onclick*="${target}"]`);
+      if (active) active.classList.add('is-active');
+    };
+
     window.tutupModalSesi = function() { document.getElementById('modalSesi').classList.add('hidden'); };
 
     window.toggleDropdownGuru = function(guruId) {
@@ -1630,5 +1678,7 @@ window.hapusGuru = async function(id, fotoFilePath) {
 <script src="js/paket.js"></script>
 <script src="js/anak.js"></script>
 <script src="js/access.js"></script>
+<!-- Stage 11.2 — Lightweight toast feedback -->
+<div id="kazkaToastHost" class="kazka-toast-host" aria-live="polite" aria-atomic="true"></div>
 </body>
 </html>

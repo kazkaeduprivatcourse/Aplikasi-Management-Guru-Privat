@@ -106,7 +106,11 @@
       try {
         await window.kazkaDb.update(window.kazkaDb.ref(window.kazkaDb.db, `siswa/${id}`), updateData);
         if (typeof window.tutupModalSesi === 'function') window.tutupModalSesi();
-      } catch (err) { console.log(err); }
+        if (typeof window.showKazkaToast === 'function') window.showKazkaToast('Pertemuan berhasil disimpan dan deposit diperbarui.');
+      } catch (err) {
+        console.error(err);
+        if (typeof window.showKazkaToast === 'function') window.showKazkaToast('Pertemuan belum berhasil disimpan. Coba lagi saat koneksi stabil.', 'error');
+      }
     };
 
 ;

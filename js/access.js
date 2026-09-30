@@ -141,6 +141,21 @@
     }
   }
 
+  function showKazkaToast(message, type = 'success', duration = 2600) {
+    const host = document.getElementById('kazkaToastHost');
+    if (!host) { try { alert(message); } catch (_) {} return; }
+    const toast = document.createElement('div');
+    toast.className = `kazka-toast is-${type}`;
+    const icon = type === 'error' ? '!' : type === 'info' ? 'i' : '✓';
+    toast.innerHTML = `<span class="kazka-toast-icon">${icon}</span><span class="min-w-0 flex-1 leading-relaxed">${esc(message)}</span>`;
+    host.appendChild(toast);
+    window.setTimeout(() => {
+      toast.classList.add('is-leaving');
+      window.setTimeout(() => toast.remove(), 220);
+    }, Math.max(1200, duration));
+  }
+  w.showKazkaToast = showKazkaToast;
+
   function renderTeacherDashboard() {
     const profile = current();
     if (!profile || profile.role !== 'guru') return;
@@ -170,7 +185,7 @@
       scheduleBox.innerHTML = rows.length ? rows.map(j => {
         const s = students.find(x => String(x.id) === String(j.siswaId));
         const status = j.status || 'Terjadwal';
-        return `<div class="flex items-center gap-3 p-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-900/40">
+        return `<div class="teacher-schedule-item">
           <div class="w-11 text-center"><div class="text-[10px] font-bold text-emerald-500 uppercase">${esc(formatDate(j.tanggal).split(',')[0])}</div><div class="font-black text-slate-900 dark:text-white">${esc((j.tanggal || '').slice(8,10) || '-')}</div></div>
           <div class="w-px h-10 bg-slate-200 dark:bg-slate-700"></div>
           <div class="min-w-0 flex-1"><p class="font-extrabold text-sm text-slate-900 dark:text-white truncate">${esc(s?.anak || j.anak || 'Siswa')}</p><p class="text-[11px] text-slate-500 truncate">${esc(j.jamMulai || '--:--')}–${esc(j.jamSelesai || '--:--')} · ${esc(j.kegiatan || s?.kegiatan || 'Home Visit')}</p></div>
@@ -195,6 +210,9 @@
         const dateCompare = String(b.tanggalSelesai || '').localeCompare(String(a.tanggalSelesai || ''));
         return dateCompare || String(b.id || '').localeCompare(String(a.id || ''));
       });
+
+      const completedStat = document.getElementById('teacherStatCompleted');
+      if (completedStat) completedStat.textContent = completed.length;
 
       completedBox.innerHTML = completed.length ? completed.map(r => {
         const report = r.laporanUrl
@@ -229,7 +247,7 @@
         const laporanInfo = laporanUrl
           ? `<div class="mt-2 flex items-center justify-between gap-2 rounded-xl border border-sky-200/70 dark:border-sky-900/40 bg-sky-50/70 dark:bg-sky-950/20 px-2.5 py-2"><div class="min-w-0"><p class="text-[10px] font-extrabold text-sky-700 dark:text-sky-300">📄 Laporan sudah diupload</p>${laporanTanggal ? `<p class="text-[9px] text-slate-500 mt-0.5">${esc(laporanTanggal)}</p>` : ''}</div><a href="${esc(laporanUrl)}" target="_blank" rel="noopener noreferrer" class="shrink-0 text-[10px] font-extrabold text-sky-600 dark:text-sky-300 underline hover:no-underline">Lihat Laporan</a></div>`
           : `<div class="mt-2 rounded-xl border border-slate-200/70 dark:border-slate-700 bg-white/50 dark:bg-slate-900/20 px-2.5 py-2 text-[10px] text-slate-400">📄 Laporan belum diupload</div>`;
-        return `<div class="p-3.5 rounded-2xl border ${statusClass} transition-colors">
+        return `<div class="teacher-student-card ${statusClass}">
         <div class="flex items-start justify-between gap-3"><div><p class="font-extrabold text-sm text-slate-900 dark:text-white">${esc(s.anak || '-')}</p><p class="text-[11px] text-slate-500 mt-0.5">${esc(s.kegiatan || 'Kegiatan belum diatur')}</p></div>
         <button onclick="bukaModalSesi('${esc(s.id)}')" class="shrink-0 bg-emerald-500 hover:bg-emerald-600 text-white text-[10px] font-extrabold px-2.5 py-2 rounded-xl">Catat Sesi</button></div>
         <div class="mt-2 flex items-center justify-between gap-2"><p class="text-[10px] text-slate-500">Deposit: <b class="text-slate-800 dark:text-slate-200">${esc(sisa)} / ${esc(paket)}</b> sesi tersisa</p><span class="inline-flex items-center rounded-full border px-2 py-1 text-[9px] font-extrabold ${statusClass}">${statusText}</span></div>
@@ -309,9 +327,10 @@
       const hiddenFor = (item.dashboardGuruHiddenFor && typeof item.dashboardGuruHiddenFor === 'object') ? { ...item.dashboardGuruHiddenFor } : {};
       hiddenFor[String(profile.id)] = true;
       await w.kazkaDb.update(w.kazkaDb.ref(w.kazkaDb.db, `rekap_fee/${rekapId}`), { dashboardGuruHiddenFor: hiddenFor });
+      showKazkaToast('Murid berhasil disembunyikan dari daftar Guru. Data Rekap Fee tetap aman.', 'success');
     } catch (err) {
       console.error('Gagal menyembunyikan murid selesai dari dashboard Guru:', err);
-      alert('Data belum berhasil disembunyikan. Silakan coba lagi.');
+      showKazkaToast('Data belum berhasil disembunyikan. Silakan coba lagi.', 'error');
     }
   };
   w.applyKazkaProfile = applyProfile;
