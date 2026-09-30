@@ -2990,43 +2990,6 @@ body > div.flex-1 > main{
   .teacher-schedule-item{padding:10px;gap:9px;}
 }
 
-/* Stage 11.1 — Mobile UX polish for Guru dashboard */
-.teacher-mobile-nav{display:none;}
-@media(max-width:767px){
-  body.teacher-mode{padding-bottom:78px!important;}
-  body.teacher-mode #mobileNav{display:none!important;}
-  body.teacher-mode .teacher-mobile-nav{
-    position:fixed;display:flex;left:0;right:0;bottom:0;z-index:60;
-    height:70px;padding:7px 8px calc(7px + env(safe-area-inset-bottom));
-    align-items:flex-end;justify-content:space-around;gap:3px;
-    background:rgba(255,255,255,.94);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
-    border-top:1px solid #e2e8f0;box-shadow:0 -10px 28px rgba(15,23,42,.08);
-  }
-  .dark body.teacher-mode .teacher-mobile-nav{background:rgba(15,23,42,.94);border-color:#263548;box-shadow:0 -10px 28px rgba(0,0,0,.22);}
-  .teacher-mobile-nav-item{position:relative;display:flex;min-width:52px;min-height:50px;padding:5px 6px 3px;flex:1;max-width:82px;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:0;background:transparent;color:#94a3b8;font-size:8px;font-weight:800;line-height:1.1;transition:transform .18s ease,color .18s ease;}
-  .teacher-mobile-nav-item.is-active{color:#059669;transform:translateY(-1px);}
-  .teacher-mobile-nav-icon{display:flex;align-items:center;justify-content:center;width:25px;height:25px;border-radius:9px;font-size:16px;font-weight:900;}
-  .teacher-mobile-nav-item.is-active .teacher-mobile-nav-icon{background:#ecfdf5;color:#059669;}
-  .dark .teacher-mobile-nav-item.is-active .teacher-mobile-nav-icon{background:rgba(16,185,129,.13);color:#6ee7b7;}
-  .teacher-mobile-nav-main{transform:translateY(-8px);color:#059669;}
-  .teacher-mobile-nav-main:hover{transform:translateY(-9px);}
-  .teacher-mobile-nav-plus{display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:15px;background:#10b981;color:#fff;font-size:24px;font-weight:500;box-shadow:0 9px 20px rgba(16,185,129,.28);border:4px solid rgba(255,255,255,.94);}
-  .dark .teacher-mobile-nav-plus{border-color:#0f172a;}
-
-  #page-guru-dashboard{scroll-margin-top:10px;}
-  #teacherSectionSchedule,#teacherSectionStudents,#teacherSectionCompleted{scroll-margin-top:76px;}
-  .teacher-hero{box-shadow:0 12px 28px rgba(23,107,91,.07)!important;}
-  .teacher-hero h1{font-size:22px!important;}
-  .teacher-section{box-shadow:0 8px 22px rgba(27,48,43,.035)!important;}
-  .teacher-schedule-item{position:relative;overflow:hidden;padding:11px 11px 11px 14px!important;}
-  .teacher-schedule-item:before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:999px;background:#10b981;opacity:.75;}
-  .teacher-student-card{padding:14px!important;border-radius:18px!important;}
-  .teacher-student-card .teacher-card-topline{height:4px;}
-  .teacher-section-head{gap:8px!important;}
-  .teacher-section-subtitle{max-width:70vw;}
-}
-
-
 /* =========================================================
    STAGE 11.2 — MICRO POLISH / FEEDBACK
    Small interaction improvements without changing data flow.
@@ -3252,4 +3215,18 @@ body > div.flex-1 > main{
     text-align:left !important;
     margin-left:0 !important;
   }
+}
+
+
+/* STAGE 11.2.6 — Guru mobile: no bottom navigation
+   Dashboard Guru is a single-page workspace, so keep the mobile view clean
+   and return to the original full-screen layout. */
+@media(max-width:767px){
+  body.teacher-mode{padding-bottom:0!important;}
+  body.teacher-mode main{padding-bottom:1rem!important;}
+  body.teacher-mode #page-guru-dashboard{padding-bottom:1rem!important;}
+  body.teacher-mode #teacherSectionSchedule,
+  body.teacher-mode #teacherSectionStudents,
+  body.teacher-mode #teacherSectionCompleted{scroll-margin-top:12px!important;}
+  body.teacher-mode .kazka-toast-host{bottom:calc(18px + env(safe-area-inset-bottom))!important;}
 }
